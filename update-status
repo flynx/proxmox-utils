@@ -1,0 +1,50 @@
+#!/usr/bin/bash
+
+
+CONFIG=/etc/pve/nodes/pve/config
+
+TMP_TARGET=${CONFIG}.new-status
+
+TARGET=${TARGET:=${TMP_TARGET}}
+
+
+if [ -e $TMP_TARGET ] ; then
+	rm -f $TMP_TARGET
+fi
+
+IFS=$'\n' \
+	SITES=($(\
+		sed -n '/STATUS BEGIN/,/STATUS END/p' "$CONFIG" \
+			| sed \
+				-e '1d;$d' \
+				-e 's/^#//' \
+				-e 's/^- //' \
+				-e 's/^\**//' \
+				-e 's/%3A/:/g' \
+				-e 's/ : .*//' \
+		| grep 'http'))
+
+cp -f "$CONFIG" "$CONFIG".bak
+{
+	sed '/STATUS BEGIN/q' "$CONFIG" | sed '$d'
+	echo '#<!-- STATUS BEGIN -->'
+
+	for site in "${SITES[@]}" ; do
+		./check-status "$site" \
+			| sed \
+				-e 's/^\s*\(.*ERROR.*$\)/**\1**/' \
+				-e 's/^/#- /' \
+				-e 's/$/\n#/'
+	done
+	echo "#_(checked on: `date +'%Y-%m-%d %H:%M'`)_"
+
+	echo '#<!-- STATUS END -->'
+	sed -ne '/STATUS END/,$ p' "$CONFIG" | sed '1d' 
+} > "$TARGET"
+
+if [ -e $TMP_TARGET ] ; then
+	mv -f "$TMP_TARGET" "$CONFIG"
+fi
+
+
+# vim:set ts=4 sw=4 nowrap :

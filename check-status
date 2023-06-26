@@ -1,0 +1,56 @@
+#!/usr/bin/bash
+
+IFS=$'\n' 
+SITES=("$@")
+
+check(){
+	local comment=`sed \
+			-e 's/^\(.*\)https\?:\/\/.*$/\1/' \
+			-e 's/^\s*//;s/\s*$//' \
+		<<<$1`
+	local target=`sed \
+			-e 's/^.*\s*\(https\?:\/\/\)/\1/' \
+			-e 's/^\s*//;s/\s*$//' \
+		<<<$1`
+
+	# open port...
+	# nmap $target -Pn -p ssh | grep open  
+
+	# http/https
+	local safe=--no-check-certificate
+	local response=$(\
+		wget -S --spider $safe $target 2>&1 \
+			| awk '/HTTP\// {print $2}' )
+
+	echo "COMMENT=$comment"
+	echo "URL=$target"
+	echo "RESPONSE=$response"
+}
+
+problems=
+for site in ${SITES[@]} ; do
+	IFS=$'\n' \
+		res=($(check "$site"))
+
+	comment=${res[0]/COMMENT=/}
+	site=${res[1]/URL=/}
+	res=${res[2]/RESPONSE=/}
+
+	! [ -z $comment ] \
+		&& comment="$comment "
+
+	if [ $(grep '\(2[0-9][0-9]\|30[1-9]\|401\|501\)' <<<$res) ] ; then
+		state=OK
+	else
+		state="ERROR ($res)"
+		problems=1
+	fi
+	echo "${comment}${site} : ${state}"
+done
+
+if [ $problems ] ; then
+	exit 1
+fi
+
+
+# vim:set ts=4 sw=4 :
