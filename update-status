@@ -10,12 +10,16 @@ TARGET=${TARGET:=${TMP_TARGET}}
 TEXT_TARGET=/media/shared/status
 
 
+
+DATE=``date +'%Y-%m-%d %H:%M'` 
+
 if [ -e $TMP_TARGET ] ; then
 	rm -f $TMP_TARGET
 fi
 
 if [ -e $TEXT_TARGET ] ; then
 	mv -f $TEXT_TARGET{,.old}
+	echo $DATE > $TEXT_TARGET
 else
 	TEXT_TARGET=/dev/null
 fi
@@ -45,7 +49,7 @@ cp -f "$CONFIG" "$CONFIG".bak
 				-e 's/^/#- /' \
 				-e 's/$/\n#/'
 	done
-	echo "#_(checked on: `date +'%Y-%m-%d %H:%M'`)_"
+	echo "#_(checked on: ${DATE})_"
 
 	echo '#<!-- STATUS END -->'
 	sed -ne '/STATUS END/,$ p' "$CONFIG" | sed '1d' 
