@@ -7,9 +7,17 @@ TMP_TARGET=${CONFIG}.new-status
 
 TARGET=${TARGET:=${TMP_TARGET}}
 
+TEXT_TARGET=/media/shared/status
+
 
 if [ -e $TMP_TARGET ] ; then
 	rm -f $TMP_TARGET
+fi
+
+if [ -e $TEXT_TARGET ] ; then
+	mv -f $TEXT_TARGET{,.old}
+else
+	TEXT_TARGET=/dev/null
 fi
 
 IFS=$'\n' \
@@ -31,6 +39,7 @@ cp -f "$CONFIG" "$CONFIG".bak
 
 	for site in "${SITES[@]}" ; do
 		./check-status "$site" \
+			| tee -a $TEXT_TARGET \
 			| sed \
 				-e 's/^\s*\(.*ERROR.*$\)/**\1**/' \
 				-e 's/^/#- /' \
