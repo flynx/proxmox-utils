@@ -1,13 +1,14 @@
 #!/usr/bin/bash
 
 
+TEXT_TARGET=/media/shared/status
+
 CONFIG=/etc/pve/nodes/pve/config
 
 TMP_TARGET=${CONFIG}.new-status
 
 TARGET=${TARGET:=${TMP_TARGET}}
 
-TEXT_TARGET=/media/shared/status
 
 
 
