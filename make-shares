@@ -1,0 +1,51 @@
+#!/usr/bin/bash
+
+source ./.pct-helpers
+
+# config...
+CT_DIR=/etc/pve/lxc/
+SHARE_ROOT=/media/shared/
+
+SYNCTHING=syncthing
+SYNCTHING_DIR=/home/syncthing/Proxmox
+
+# normalize...
+SHARE_ROOT=${SHARE_ROOT%/}
+
+
+# create base shared directory...
+if ! [ -d "${SHARE_ROOT}/$(hostname)" ] ; then
+	@ mkdir -p "${SHARE_ROOT}/$(hostname)"
+	@ chmod 777 "${SHARE_ROOT}"
+fi
+
+# mount ct shares...
+for ct in $CT_DIR/*.conf ; do
+	id=$(basename ${ct/.conf/})
+
+	host=$(cat $ct | grep hostname | head -1)
+	host=${host/hostname: /}
+
+	# skip templates...
+	if [ "$(cat $ct | grep 'template: 1')" != "" ] ; then
+		continue
+	fi
+
+	# mount...
+	# NOTE: we are not taking care of the actual mount numbers here...
+	if [[ "$(cat $ct | grep "mp[0-9]:.*${SHARE_ROOT}/${host}" | wc -l)" = 0 ]] ; then
+		if ! [ -e ${SHARE_ROOT}/${host} ] ; then
+			@ mkdir -p ${SHARE_ROOT}/${host}
+		fi
+		@ pct set $id -mp0 ${SHARE_ROOT}/${host},mp=/mnt/shared,backup=0
+	fi
+
+	# special case: syncthing...
+	if [ -n $SYNCTHING ] && [ "$host" = "$SYNCTHING" ] ; then
+		if [[ "$(cat $ct | grep "mp[0-9]:.*mp=$SYNCTHING_DIR" | wc -l)" = 0 ]] ; then
+			@ pct set $id -mp1 ${SHARE_ROOT},mp=$SYNCTHING_DIR,backup=0
+		fi
+	fi
+done
+
+# vim:set ts=4 sw=4 nowrap :

@@ -1,63 +1,72 @@
 #!/usr/bin/bash
 
-
-TEXT_TARGET=/media/shared/status
-
-CONFIG=/etc/pve/nodes/pve/config
-
-TMP_TARGET=${CONFIG}.new-status
-
-TARGET=${TARGET:=${TMP_TARGET}}
+source .pct-helpers
 
 
 
+TEXT_STATUS=${TEXT_STATUS:=/media/shared/status}
 
-DATE=``date +'%Y-%m-%d %H:%M'` 
+CONFIG=${CONFIG:=/etc/pve/nodes/pve/config}
 
-if [ -e $TMP_TARGET ] ; then
-	rm -f $TMP_TARGET
+# NOTE: since proxmox monitors files, it is better modify the file in 
+#		one go but since checking can not be done in an instant we write 
+#		the check results to $TMP_RESULTS and when done will swap it with
+#		$CONFIG...
+# XXX move this to /tmp???
+TMP_RESULTS=${TMP_RESULTS:=${CONFIG}.live}
+
+
+
+DATE=`date +'%Y-%m-%d %H:%M'` 
+
+
+if [ -e $TMP_RESULTS ] ; then
+	rm -f $TMP_RESULTS
 fi
 
-if [ -e $TEXT_TARGET ] ; then
-	mv -f $TEXT_TARGET{,.old}
-	echo $DATE > $TEXT_TARGET
+if [ -e $TEXT_STATUS ] ; then
+	mv -f $TEXT_STATUS{,.old}
+	echo $DATE > $TEXT_STATUS
 else
-	TEXT_TARGET=/dev/null
+	TEXT_STATUS=/dev/null
 fi
 
+
+# read the sites from the status section in $CONFIG...
 IFS=$'\n' \
 	SITES=($(\
 		sed -n '/STATUS BEGIN/,/STATUS END/p' "$CONFIG" \
 			| sed \
 				-e '1d;$d' \
 				-e 's/^#//' \
-				-e 's/^- //' \
 				-e 's/^\**//' \
 				-e 's/%3A/:/g' \
 				-e 's/ : .*//' \
 		| grep 'http'))
 
+
+# fill the status section -> $TMP_RESULTS...
 cp -f "$CONFIG" "$CONFIG".bak
 {
-	sed '/STATUS BEGIN/q' "$CONFIG" | sed '$d'
 	echo '#<!-- STATUS BEGIN -->'
-
 	for site in "${SITES[@]}" ; do
 		./check-status "$site" \
-			| tee -a $TEXT_TARGET \
+			| tee -a $TEXT_STATUS \
 			| sed \
 				-e 's/^\s*\(.*ERROR.*$\)/**\1**/' \
-				-e 's/^/#- /' \
+				-e 's/^/#/' \
 				-e 's/$/\n#/'
 	done
 	echo "#_(checked on: ${DATE})_"
-
 	echo '#<!-- STATUS END -->'
-	sed -ne '/STATUS END/,$ p' "$CONFIG" | sed '1d' 
-} > "$TARGET"
+} \
+	| fillsection -r STATUS ${CONFIG} \
+	> "$TMP_RESULTS"
 
-if [ -e $TMP_TARGET ] ; then
-	mv -f "$TMP_TARGET" "$CONFIG"
+
+# replace $TMP_RESULTS -> $CONFIG
+if [ -e $TMP_RESULTS ] ; then
+	mv -f "$TMP_RESULTS" "$CONFIG"
 fi
 
 

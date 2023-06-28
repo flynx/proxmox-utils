@@ -1,0 +1,105 @@
+#!/usr/bin/bash
+#----------------------------------------------------------------------
+#
+#----------------------------------------------------------------------
+
+source ./.pct-helpers
+
+
+# config...
+CT_DIR=/etc/pve/lxc/
+SHARE_ROOT=/media/shared/
+
+
+# XXX better argument handling / help...
+id=$1
+to=$2
+tpl=$3
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+ct=${CT_DIR}/${id}.conf
+host=$(cthostname $id)
+running=$(pct list | grep "running\s*$host\s*$")
+
+
+#----------------------------------------------------------------------
+# checks...
+
+# error checking...
+if [ -z $id ] || [ -z $to ] ; then
+	echo ERR need both id and target id
+	exit 1
+fi
+if [ $id = $to ] ; then
+	echo ERR need id and target id must be different
+	exit 1
+fi
+
+if ! [ -e $ct ] ; then
+	echo ERR $ct does not exist. 
+	exit 1
+fi
+if [ -e ${CT_DIR}/${to}.conf ] ; then
+	echo ERR $to already exists.
+	exit 1
+fi
+if ! [ -z $tpl ] && [ -e ${CT_DIR}/${tpl}.conf ] ; then
+	echo ERR $to already exists.
+	exit 1
+fi
+
+# check mount points...
+IFS=$'\n' mounts=($(cat $ct | grep 'mp[0-9]*:'))
+# check...
+for mp in ${mounts[@]} ; do
+	if ! [ $(grep ": $SHARE_ROOT" <<< $mp) ] ; then
+		echo "ERR mountpoint: \"$mp\" heeds to handled manually."
+		exit 1
+	fi
+done
+
+
+#----------------------------------------------------------------------
+# after this point we are making changes...
+
+# need to shutdown to clone...
+# XXX might be a good idea to also do this with a snapshot...
+if ! [ -z $running ] ; then 
+	@ pct shutdown $id
+fi
+
+
+# delete mount points...
+for mp in ${mounts[@]} ; do
+	@ pct set ${id} -delete ${mp/: */}
+done
+
+
+# clone...
+@ pct clone ${id} ${to} --hostname ${host} 
+@ pct set ${to} -onboot 0
+@ ./make-shares
+
+
+# startup if we stopped...
+if ! [ -z $running ] ; then 
+	@ pct start $id
+fi
+
+
+#----------------------------------------------------------------------
+# after this point are are not affecting uptime...
+
+# make template...
+if ! [ -z $tpl ] ; then
+	@ pct clone ${to} ${tpl} --hostname ${host} 
+	@ pct template ${tpl}
+fi
+
+@ ./make-shares
+
+
+#----------------------------------------------------------------------
+# vim:set ts=4 sw=4 nowrap :

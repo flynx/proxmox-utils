@@ -3,6 +3,12 @@
 IFS=$'\n' 
 SITES=("$@")
 
+TIMEOUT=${TIMEOUT:=10}
+TRIES=${TRIES:=2}3
+SAFE=${SAFE:=1}
+
+OK_STATUS='2[0-9][0-9]|30[1-9]|401|501'
+
 check(){
 	local comment=`sed \
 			-e 's/^\(.*\)https\?:\/\/.*$/\1/' \
@@ -17,9 +23,13 @@ check(){
 	# nmap $target -Pn -p ssh | grep open  
 
 	# http/https
-	local safe=--no-check-certificate
+	if [ $SAFE ] ; then
+		local safe=--no-check-certificate
+	else
+		local safe
+	fi
 	local response=$(\
-		wget -S --spider $safe $target 2>&1 \
+		wget -S --spider -T $TIMEOUT --tries=$TRIES $safe $target 2>&1 \
 			| awk '/HTTP\// {print $2}' )
 
 	echo "COMMENT=$comment"
@@ -28,6 +38,7 @@ check(){
 }
 
 problems=
+status_pattern="\(${OK_STATUS//|/\\|}\)"
 for site in ${SITES[@]} ; do
 	IFS=$'\n' \
 		res=($(check "$site"))
@@ -39,7 +50,8 @@ for site in ${SITES[@]} ; do
 	! [ -z $comment ] \
 		&& comment="$comment "
 
-	if [ $(grep '\(2[0-9][0-9]\|30[1-9]\|401\|501\)' <<<$res) ] ; then
+	#if [ $(grep '\(2[0-9][0-9]\|30[1-9]\|401\|501\)' <<<$res) ] ; then
+	if [ $(grep "$status_pattern" <<<$res) ] ; then
 		state=OK
 	else
 		state="ERROR ($res)"

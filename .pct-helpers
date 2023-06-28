@@ -1,0 +1,84 @@
+#!/usr/bin/bash
+#----------------------------------------------------------------------
+
+#----------------------------------------------------------------------
+#QUIET=
+#DRY_RUN=
+@(){
+	if [ -z $DRY_RUN ] ; then
+		! [ $QUIET ] \
+			&& echo "### $@"
+		$@
+	else
+		echo $@
+	fi
+}
+
+
+#----------------------------------------------------------------------
+# get CT hostname...
+cthostname(){
+	local ct=${CT_DIR}/${id}.conf
+	local host=$(cat $ct | grep hostname | head -1)
+	echo ${host/hostname: /}
+}
+
+
+#----------------------------------------------------------------------
+fillsection(){ (
+	usage(){
+		echo "Usage:"
+		echo "    ${FUNCNAME[0]} [-h]"
+		echo "    ${FUNCNAME[0]} [-r] NAME FILE [CONTENT]"
+		echo
+	}
+	while true ; do
+		case $1 in
+			-h|--help)
+				usage
+				echo "Options:"
+				#	  .	  .					.
+				echo "    -h | --help       print this help message and exit."
+				echo "    -r | --return     replace section markers with CONTENT."
+				echo
+				return 0
+				;;
+			-r|--replace)
+				local replace=1
+				shift
+				;;
+
+			*)
+				break
+				;;
+		esac
+	done
+	if [[ $# < 2 ]] ; then
+		usage
+		return 1
+	fi
+
+	name=$1
+	file=$2
+	content=$3
+	content=${content:=/dev/stdin}
+
+	# print file upto section marker...
+	if [ $replace ] ; then
+		sed "/${name^^} BEGIN/q" "$file" | sed '$d'
+	else
+		sed "/${name^^} BEGIN/q" "$file"
+	fi
+	# print content...
+	cat $content
+	# print file from section end marker...
+	if [ $replace ] ; then
+		sed -ne "/${name^^} END/,$ p" "$file" | sed '1d' 
+	else
+		sed -ne "/${name^^} END/,$ p" "$file"
+	fi
+) }
+
+
+#----------------------------------------------------------------------
+# vim:set ts=4 sw=4 nowrap :
