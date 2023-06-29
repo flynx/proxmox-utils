@@ -80,7 +80,6 @@ done
 # clone...
 @ pct clone ${id} ${to} --hostname ${host} 
 @ pct set ${to} -onboot 0
-@ ./make-shares
 
 
 # startup if we stopped...
@@ -97,6 +96,8 @@ if ! [ -z $tpl ] ; then
 	@ pct clone ${to} ${tpl} --hostname ${host} 
 	@ pct template ${tpl}
 fi
+
+#----------------------------------------------------------------------
 
 @ ./make-shares
 

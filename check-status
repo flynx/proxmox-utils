@@ -47,6 +47,10 @@ for site in ${SITES[@]} ; do
 	site=${res[1]/URL=/}
 	res=${res[2]/RESPONSE=/}
 
+	if [ -z $res ] ; then
+		res='Timeout?'
+	fi
+
 	! [ -z $comment ] \
 		&& comment="$comment "
 
