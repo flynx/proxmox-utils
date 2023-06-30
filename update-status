@@ -1,6 +1,5 @@
 #!/usr/bin/bash
 
-source .pct-helpers
 
 
 
@@ -16,6 +15,12 @@ CONFIG=${CONFIG:=/etc/pve/nodes/pve/config}
 TMP_RESULTS=${TMP_RESULTS:=${CONFIG}.live}
 
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+source .pct-helpers
+
+
+#----------------------------------------------------------------------
 
 DATE=`date +'%Y-%m-%d %H:%M'` 
 
@@ -33,29 +38,33 @@ fi
 
 
 # read the sites from the status section in $CONFIG...
-IFS=$'\n' \
-	SITES=($(\
-		sed -n '/STATUS BEGIN/,/STATUS END/p' "$CONFIG" \
-			| sed \
-				-e '1d;$d' \
-				-e 's/^#//' \
-				-e 's/^\**//' \
-				-e 's/%3A/:/g' \
-				-e 's/ : .*//' \
-		| grep 'http'))
-
+readarray -t lines <<<$(\
+	sed -n '/STATUS BEGIN/,/STATUS END/p' "$CONFIG" \
+		| sed \
+			-e '1d;$d' \
+			-e 's/^#//' \
+			-e 's/%3A/:/g' \
+			-e 's/ : \(OK\|**ERROR\).*//')
 
 # fill the status section -> $TMP_RESULTS...
 cp -f "$CONFIG" "$CONFIG".bak
 {
 	echo '#<!-- STATUS BEGIN -->'
-	for site in "${SITES[@]}" ; do
-		./check-status "$site" \
+	for line in "${lines[@]}" ; do
+		# empty lines...
+		if [[ "$line" =~ ^[[:space:]]*$ ]] ; then
+			echo "#"
+			continue
+		# skip check date...
+		elif [[ "$line" =~ ^_\(checked[[:blank:]]on:[[:blank:]].*\)_$ ]] ; then
+			continue
+		fi
+
+		./check-status "$line" \
 			| tee -a $TEXT_STATUS \
 			| sed \
-				-e 's/^\s*\(.*ERROR.*$\)/**\1**/' \
-				-e 's/^/#/' \
-				-e 's/$/\n#/'
+			-e 's/^\(.*\)\(ERROR.*$\)/\1**\2**/' \
+				-e 's/^/#/'
 	done
 	echo "#_(checked on: ${DATE})_"
 	echo '#<!-- STATUS END -->'

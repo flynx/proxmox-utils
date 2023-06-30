@@ -20,7 +20,7 @@ tpl=$3
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 ct=${CT_DIR}/${id}.conf
-host=$(cthostname $id)
+host=$(ct2hostname $id)
 running=$(pct list | grep "running\s*$host\s*$")
 
 

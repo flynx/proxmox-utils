@@ -1,6 +1,9 @@
 #!/usr/bin/bash
 #----------------------------------------------------------------------
 
+CT_DIR=${CT_DIR:=/etc/pve/lxc/}
+
+
 #----------------------------------------------------------------------
 #QUIET=
 #DRY_RUN=
@@ -17,10 +20,38 @@
 
 #----------------------------------------------------------------------
 # get CT hostname...
-cthostname(){
-	local ct=${CT_DIR}/${id}.conf
+ct2hostname(){
+	local ct=${CT_DIR}/${1}.conf
 	local host=$(cat $ct | grep hostname | head -1)
 	echo ${host/hostname: /}
+}
+
+hostname2ct(){
+	if [ -e "${CT_DIR}/${1}.conf" ] ; then
+		echo $1
+	fi
+	local running=$2
+	running=${running:=any}
+	local ct
+	local host
+	for ct in "${CT_DIR}"/*.conf ; do
+		host=$(cat $ct | grep hostname | head -1)
+		host=${host/hostname: /}
+		if [ "$host" = $1 ] ; then
+			ct=${ct#${CT_DIR}}
+			ct=${ct%.conf}
+			ct=${ct#\/}
+			# filter results if needed...
+			if [ $running = "any" ] ; then
+				echo $ct
+			else
+				local status=`pct status $ct`
+				if [ "$running" = "${status/status: /}" ] ; then
+					echo $ct
+				fi
+			fi
+		fi
+	done
 }
 
 
