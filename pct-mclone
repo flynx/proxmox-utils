@@ -25,7 +25,9 @@ case $1 in
 		echo
 		exit
 		;;
-	*)
+	-*)
+		echo "Unknown option: $1"
+		exit
 		;;
 esac
 
