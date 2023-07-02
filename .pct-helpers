@@ -5,6 +5,7 @@ CT_DIR=${CT_DIR:=/etc/pve/lxc/}
 
 
 #----------------------------------------------------------------------
+
 #QUIET=
 #DRY_RUN=
 @(){
@@ -19,7 +20,8 @@ CT_DIR=${CT_DIR:=/etc/pve/lxc/}
 
 
 #----------------------------------------------------------------------
-# get CT hostname...
+# CT hostname <-> id...
+
 ct2hostname(){
 	local ct=${CT_DIR}/${1}.conf
 	local host=$(cat $ct | grep hostname | head -1)
