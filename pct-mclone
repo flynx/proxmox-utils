@@ -3,13 +3,33 @@
 #
 #----------------------------------------------------------------------
 
-source ./.pct-helpers
-
 
 # config...
 CT_DIR=/etc/pve/lxc/
 SHARE_ROOT=/media/shared/
 
+
+#----------------------------------------------------------------------
+
+source ./.pct-helpers
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+case $1 in
+	-h|--help)
+		echo "Create a clone and optionally a replate from a CT with directory mounts"
+		echo
+		echo "Usage:"
+		echo "    `basename $0` SOURCE_ID CLONE_ID [TEMPLATE_ID]"
+		echo
+		exit
+		;;
+	-*)
+		echo "Unknown option: $1"
+		exit
+		;;
+esac
 
 # XXX better argument handling / help...
 id=$1
