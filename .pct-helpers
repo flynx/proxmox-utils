@@ -9,6 +9,8 @@ CT_DIR=${CT_DIR:=/etc/pve/lxc/}
 # XXX this is quite generic, might be a good idea to move this to a 
 # 		seporate lib/file...
 
+# Execute (optionally) and print a command.
+#
 #QUIET=
 #DRY_RUN=
 @(){
