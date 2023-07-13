@@ -4,7 +4,7 @@ A set of scripts for automating setup and tasks in proxmox.
 
 
 # Goals
-- suppoer the basicy CT lifecicle:
+- support the basic CT lifecicle:
   - setup/build
   - run
   - destroy
