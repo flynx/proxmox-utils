@@ -219,6 +219,7 @@ check(){
 	# NOTE: we are preserving whitespace here...
 	local comment=`sed \
 			-e 's/^\(.*\)\('"$PROTOCOLS"'\):\/\/.*$/\1/' \
+			-e 's/\s*$//' \
 		<<<$1`
 	local target=`sed \
 			-e 's/^.*\s*\(\('"$PROTOCOLS"'\):\/\/\)/\1/' \
