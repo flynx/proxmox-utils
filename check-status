@@ -203,6 +203,9 @@ check-http(){
 	if [ "$(grep "$status_pattern" <<<$response)" ] ; then
 		response=OK
 	else
+		if [ -z $response ] ; then
+			response='Timeout?'
+		fi
 		response="ERROR ($response)"
 	fi
 
