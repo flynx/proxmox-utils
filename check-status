@@ -204,9 +204,10 @@ check-http(){
 		response=OK
 	else
 		if [ -z $response ] ; then
-			response='Timeout?'
+			response='ERROR: TIMEOUT'
+		else
+			response="ERROR ($response)"
 		fi
-		response="ERROR ($response)"
 	fi
 
 	echo $response
