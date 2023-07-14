@@ -216,9 +216,9 @@ PROTOCOLS=$(printf "\\|%s" "${!HANDLERS[@]}")
 PROTOCOLS=${PROTOCOLS:2}
 
 check(){
+	# NOTE: we are preserving whitespace here...
 	local comment=`sed \
 			-e 's/^\(.*\)\('"$PROTOCOLS"'\):\/\/.*$/\1/' \
-			-e 's/^\s*//;s/\s*$//' \
 		<<<$1`
 	local target=`sed \
 			-e 's/^.*\s*\(\('"$PROTOCOLS"'\):\/\/\)/\1/' \
@@ -249,7 +249,7 @@ for site in ${SITES[@]} ; do
 	IFS=$'\n' \
 		res=($(check "$site"))
 
-	comment=${res[0]/COMMENT=/}
+	comment="${res[0]/COMMENT=/}"
 	site=${res[1]/URL=/}
 	res=${res[2]/RESPONSE=/}
 

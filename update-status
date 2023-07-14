@@ -63,7 +63,7 @@ cp -f "$CONFIG" "$CONFIG".bak
 		./check-status "$line" \
 			| tee -a $TEXT_STATUS \
 			| sed \
-			-e 's/^\(.*\)\(ERROR.*$\)/\1**\2**/' \
+				-e 's/^\(.*\)\(ERROR.*$\)/\1**\2**/' \
 				-e 's/^/#/'
 	done
 	echo "#_(checked on: ${DATE})_"
