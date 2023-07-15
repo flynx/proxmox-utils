@@ -206,7 +206,7 @@ check-http(){
 		if [ -z $response ] ; then
 			response='ERROR: TIMEOUT'
 		else
-			response="ERROR ($response)"
+			response="ERROR: $response"
 		fi
 	fi
 
