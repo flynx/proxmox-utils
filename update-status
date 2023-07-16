@@ -1,8 +1,6 @@
 #!/usr/bin/bash
 
 
-
-
 TEXT_STATUS=${TEXT_STATUS:=/media/shared/status}
 
 CONFIG=${CONFIG:=/etc/pve/nodes/pve/config}
@@ -23,7 +21,6 @@ source .pct-helpers
 #----------------------------------------------------------------------
 
 DATE=`date +'%Y-%m-%d %H:%M'` 
-
 
 if [ -e $TMP_RESULTS ] ; then
 	rm -f $TMP_RESULTS

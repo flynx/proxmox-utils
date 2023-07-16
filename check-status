@@ -36,6 +36,7 @@ case $1 in
 		echo "            already implemented when I found out about this."
 		echo "    lxc://<ct-id>:<comman>:<args>"
 		echo "        Proxmox-specific set of checks."
+		echo
 		exit
 		;;
 	*)
