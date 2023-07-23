@@ -21,6 +21,7 @@ A set of scripts for automating setup and tasks in proxmox.
 - basic recurent tasks
   - backups
   - archiving
+  - updates
   - ...
 
 
