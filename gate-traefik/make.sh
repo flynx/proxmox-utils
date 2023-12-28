@@ -88,6 +88,7 @@ echo Creating CT...
 
 TEMPLATE=($(ls /var/lib/vz/template/cache/alpine-3.18*.tar.xz))
 
+# NOTE: we are not setting the password here to avoid printing it to the terminal...
 @ pct create $ID \
 	${TEMPLATE[-1]} \
 	--hostname $CTHOSTNAME \
