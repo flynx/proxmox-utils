@@ -4,7 +4,6 @@ iface lo inet6 loopback
 
 auto lan
 iface lan inet dhcp
-	post-up echo 1 > /proc/sys/net/ipv4/ip_forward
 	hostname $(hostname)
 
 auto admin
@@ -16,3 +15,14 @@ iface wan inet static
 	address ${WAN_IP}
 	gateway ${WAN_GATE} 
 	hostname $(hostname)
+
+auto br0
+iface br0 inet stattic
+	post-up echo 1 > /proc/sys/net/ipv4/ip_forward
+	pre-up brctl addbr br0
+
+	bridge-ports lan wan
+	bridge-sip off
+	hostname $(hostname)
+
+	post-down brctl delbr br0
