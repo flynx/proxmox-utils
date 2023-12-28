@@ -1,0 +1,6 @@
+#!/bin/bash
+
+cut -d " " -f 3,4 /var/lib/misc/dnsmasq.leases \
+	| sort -t "." -k 4 -n \
+	| sed 's/ /\t/;s/^/    /'
+

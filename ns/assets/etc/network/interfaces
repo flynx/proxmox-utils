@@ -1,0 +1,15 @@
+auto lo
+iface lo inet loopback
+iface lo inet6 loopback
+
+auto lan
+iface lan inet static
+	address 10.0.0.1/24
+	gateway 10.0.0.2
+	hostname $(hostname)
+
+auto admin
+iface admin inet dhcp
+	hostname $(hostname)
+
+
