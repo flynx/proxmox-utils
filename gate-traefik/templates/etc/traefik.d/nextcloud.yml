@@ -1,0 +1,15 @@
+http:
+  routers:
+    nextcloud:
+      entryPoints:
+        - https
+      service: nextcloud
+      rule: "Host(`nc.${DOMAIN}`)"
+      tls:
+        certResolver: letsEncrypt
+
+  services:
+    nextcloud:
+      loadBalancer:
+        servers:
+          - url: https://nextcloud.srv/

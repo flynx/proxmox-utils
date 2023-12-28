@@ -1,0 +1,18 @@
+auto lo
+iface lo inet loopback
+iface lo inet6 loopback
+
+auto lan
+iface lan inet dhcp
+	post-up echo 1 > /proc/sys/net/ipv4/ip_forward
+	hostname $(hostname)
+
+auto admin
+iface admin inet dhcp
+	hostname $(hostname)
+
+auto wan
+iface wan inet static
+	address ${WAN_IP}
+	gateway ${WAN_GATE} 
+	hostname $(hostname)

@@ -1,0 +1,15 @@
+#http:
+#  routers:
+#    dashboard:
+#      entryPoints:
+#        - traefik
+#      rule: Host(`<IP>`)
+#      service: api@internal
+##      middlewares:
+##        - auth
+##  middlewares:
+##    auth:
+##      basicAuth:
+##        users:
+##          - "test:<password-hash>"
+##          - "test2:<password-hash>"

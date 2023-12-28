@@ -1,0 +1,13 @@
+tcp:
+  routers:
+    ssh:
+      entryPoints:
+        - ssh2
+      service: ssh
+      rule: "HostSNI(`*`)"
+
+  services:
+    ssh:
+      loadBalancer:
+        servers:
+          - address: ssh.srv:22
