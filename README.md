@@ -5,7 +5,7 @@ A set of scripts for automating setup and tasks in proxmox.
 
 # Goals
 - support the basic CT lifecicle:
-  - setup/build
+  - setup/build/update
   - run
   - destroy
 - basic infrastructure CT's
@@ -18,6 +18,11 @@ A set of scripts for automating setup and tasks in proxmox.
   - vpn
   - ssh
   - mail (???)
+- basic recurent tasks
+  - backups
+  - archiving
+  - updates
+  - ...
 
 
 
