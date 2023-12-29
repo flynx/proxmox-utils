@@ -184,7 +184,7 @@ echo Setup: iptables...
 
 [ "$OPTS_STAGE_2" ] \
 	&& @ pct set $ID \
-		${OPTS_STAGE_1}
+		${OPTS_STAGE_2}
 
 
 echo Done.
