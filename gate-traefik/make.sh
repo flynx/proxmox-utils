@@ -15,33 +15,26 @@ source ../.pct-helpers
 
 #----------------------------------------------------------------------
 
-UPDATE_ON_LAN=1
-TIMEOUT=5
-TMP_PASS_LEN=32
+TEMPLATE_DIR=${TEMPLATE_DIR:=templates}
+ASSETS_DIR=${ASSETS_DIR:=assets}
 
-TEMPLATE_DIR=templates
-ASSETS_DIR=assets
-
-# EMAIL=
-# DOMAIN=
-# ID=
-# CTHOSTNAME=
-# WAN_IP=
-# WAN_GATE=
 # ROOTPASS=
+TMP_PASS_LEN=${TMP_PASS_LEN:=32}
 
-DFL_EMAIL=user@example.com
-DFL_DOMAIN=example.com
-DFL_ID=500
-DFL_CTHOSTNAME=gate-test
-DFL_WAN_IP=192.168.1.101/24
-DFL_WAN_GATE=192.168.1.252
+DFL_EMAIL=${DFL_EMAIL:=user@example.com}
+DFL_DOMAIN=${DFL_DOMAIN:=example.com}
+DFL_ID=${DFL_ID:=500}
+DFL_CTHOSTNAME=${DFL_CTHOSTNAME:=gate-test}
+DFL_WAN_IP=${DFL_WAN_IP:=192.168.1.101/24}
+DFL_WAN_GATE=${DFL_WAN_GATE:=192.168.1.252}
 
-DFL_WAN_BRIDGE=2
-DFL_LAN_BRIDGE=0
-DFL_ADMIN_BRIDGE=1
+DFL_WAN_BRIDGE=${DFL_WAN_BRIDGE:=2}
+DFL_LAN_BRIDGE=${DFL_LAN_BRIDGE:=0}
+DFL_ADMIN_BRIDGE=${DFL_ADMIN_BRIDGE:=1}
 
-DFL_PCT_EXTRA=
+DFL_PCT_EXTRA=${DFL_PCT_EXTRA:=}
+
+REBOOT=${REBOOT:=1}
 
 
 #----------------------------------------------------------------------
@@ -108,6 +101,8 @@ OPTS_STAGE_1="\
 
 OPTS_STAGE_2="\
 	--net2 name=wan,bridge=vmbr${WAN_BRIDGE},firewall=1${WAN_GATE:+,gw=${WAN_GATE}}${WAN_IP:+,ip=${WAN_IP}},type=veth \
+	--startup order=80 \
+	--onboot 1 \
 "
 
 
@@ -142,8 +137,8 @@ echo Creating CT...
 	--start 1 \
 || exit 1
 
-echo Setting root password...
 if [ $PASS ] ; then
+	echo Setting root password...
 	echo "root:$PASS" \
 		| @ lxc-attach $ID chpasswd
 fi
@@ -168,16 +163,16 @@ echo Setup: iptables...
 @ lxc-attach $ID rc-service iptables save
 @ lxc-attach $ID rc-service iptables start
 
-
-#[ $UPDATE_ON_LAN ] \
-#	&& @ lxc-attach $ID ifup wan
-
+echo "Post config..."
 [ "$OPTS_STAGE_2" ] \
 	&& @ pct set $ID \
 		${OPTS_STAGE_2}
 
+[ "$REBOOT" ] \
+	&& @ pct reboot $ID
 
 echo Done.
+
 
 
 #----------------------------------------------------------------------
