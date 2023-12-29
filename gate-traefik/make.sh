@@ -9,7 +9,7 @@ source ../.pct-helpers
 [ -e ../config.global ] \
 	&& source ../config.global
 
-[ -e ./config] \
+[ -e ./config ] \
 	&& source ./config
 
 
