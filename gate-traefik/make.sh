@@ -111,7 +111,7 @@ echo Creating CT...
 
 TEMPLATE=($(ls /var/lib/vz/template/cache/alpine-3.18*.tar.xz))
 
-OPTS_STAGE_1=\
+OPTS_STAGE_1="\
 	--hostname $CTHOSTNAME \
 	--memory 128 \
 	--swap 128 \
@@ -119,10 +119,12 @@ OPTS_STAGE_1=\
 	--net1 name=admin,bridge=vmbr${ADMIN_BRIDGE},firewall=1,type=veth \
 	--storage local-lvm \
 	--rootfs local-lvm:0.5 \
-	--unprivileged 1
+	--unprivileged 1 \
+"
 
-OPTS_STAGE_2=\
-	--net2 name=wan,bridge=vmbr${WAN_BRIDGE},firewall=1${WAN_GATE:+,gw=${WAN_GATE}}${WAN_IP:+,ip=${WAN_IP}},type=veth 
+OPTS_STAGE_2="\
+	--net2 name=wan,bridge=vmbr${WAN_BRIDGE},firewall=1${WAN_GATE:+,gw=${WAN_GATE}}${WAN_IP:+,ip=${WAN_IP}},type=veth \
+"
 
 
 # NOTE: we are not setting the password here to avoid printing it to the terminal...
