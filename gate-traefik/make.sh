@@ -130,7 +130,7 @@ OPTS_STAGE_2=\
 	${TEMPLATE[-1]} \
 	${OPTS_STAGE_1} \
 	--password="$TMP_PASS" \
-	--start 1
+	--start 1 \
 || exit 1
 
 
