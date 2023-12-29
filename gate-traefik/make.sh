@@ -182,7 +182,7 @@ echo Setup: iptables...
 #[ $UPDATE_ON_LAN ] \
 #	&& @ lxc-attach $ID ifup wan
 
-[ $OPTS_STAGE_2 ] \
+[ "$OPTS_STAGE_2" ] \
 	&& @ pct set $ID \
 		${OPTS_STAGE_1}
 
