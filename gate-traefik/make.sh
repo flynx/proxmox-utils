@@ -6,6 +6,15 @@ source ../.pct-helpers
 
 #----------------------------------------------------------------------
 
+[ -e ../config.global ] \
+	&& source ../config.global
+
+[ -e ./config] \
+	&& source ./config
+
+
+#----------------------------------------------------------------------
+
 UPDATE_ON_LAN=1
 TIMEOUT=5
 TMP_PASS_LEN=32
@@ -28,6 +37,10 @@ DFL_CTHOSTNAME=gate-test
 DFL_WAN_IP=192.168.1.101/24
 DFL_WAN_GATE=192.168.1.252
 
+DFL_WAN_BRIDGE=2
+DFL_LAN_BRIDGE=0
+DFL_ADMIN_BRIDGE=1
+
 TMP_PASS=$(cat /dev/urandom | base64 | head -c ${TMP_PASS_LEN:=32})
 
 
@@ -43,6 +56,14 @@ DOMAIN=${DOMAIN:=$DFL_DOMAIN}
 	&& read -ep "ID: " -i "$DFL_ID" ID
 [ -z $CTHOSTNAME ] \
 	&& read -ep "Hostname: " -i "$DFL_CTHOSTNAME" CTHOSTNAME
+# bridge config...
+[ -z $WAN_BRIDGE ] \
+	&& read -ep "WAN bridge: vmbr" -i "$DFL_WAN_BRIDGE" WAN_BRIDGE
+[ -z $LAN_BRIDGE ] \
+	&& read -ep "LAN bridge: vmbr" -i "$DFL_LAN_BRIDGE" LAN_BRIDGE
+[ -z $ADMIN_BRIDGE ] \
+	&& read -ep "ADMIN bridge: vmbr" -i "$DFL_ADMIN_BRIDGE" ADMIN_BRIDGE
+# wan...
 [ -z $WAN_IP ] \
 	&& read -ep "WAN ip: " -i "$DFL_WAN_IP" WAN_IP
 [ -z $WAN_GATE ] \
@@ -71,6 +92,8 @@ TEMPLATES=($(find "$TEMPLATE_DIR" -type f))
 for file in "${TEMPLATES[@]}" ; do
 	file=${file#${TEMPLATE_DIR}}
 	echo Generating: ${file}...
+	# ensure the directory exists...
+	mkdir -p "$(dirname "${ASSETS_DIR}/${file}")"
 	cat "${TEMPLATE_DIR}/${file}" \
 		| sed \
 			-e 's/\${EMAIL}/'$EMAIL'/' \
@@ -88,37 +111,43 @@ echo Creating CT...
 
 TEMPLATE=($(ls /var/lib/vz/template/cache/alpine-3.18*.tar.xz))
 
-# NOTE: we are not setting the password here to avoid printing it to the terminal...
-@ pct create $ID \
-	${TEMPLATE[-1]} \
+OPTS_STAGE_1=\
 	--hostname $CTHOSTNAME \
 	--memory 128 \
 	--swap 128 \
-	--net0 name=lan,bridge=vmbr0,firewall=1,ip=dhcp,type=veth \
-	--net1 name=admin,bridge=vmbr1,firewall=1,type=veth \
-	--net2 name=wan,bridge=vmbr2,firewall=1${WAN_GATE:+,gw=${WAN_GATE}}${WAN_IP:+,ip=${WAN_IP}},type=veth \
+	--net0 name=lan,bridge=vmbr${LAN_BRIDGE},firewall=1,ip=dhcp,type=veth \
+	--net1 name=admin,bridge=vmbr${ADMIN_BRIDGE},firewall=1,type=veth \
 	--storage local-lvm \
 	--rootfs local-lvm:0.5 \
-	--unprivileged 1 \
+	--unprivileged 1
+
+OPTS_STAGE_2=\
+	--net2 name=wan,bridge=vmbr${WAN_BRIDGE},firewall=1${WAN_GATE:+,gw=${WAN_GATE}}${WAN_IP:+,ip=${WAN_IP}},type=veth 
+
+
+# NOTE: we are not setting the password here to avoid printing it to the terminal...
+@ pct create $ID \
+	${TEMPLATE[-1]} \
+	${OPTS_STAGE_1} \
 	--password="$TMP_PASS" \
-	--start 1 \
+	--start 1
 || exit 1
 
 
-# wait for network to initialize...
-sleep $TIMEOUT
-if [ $UPDATE_ON_LAN ] ; then
-	tries=5
-	while ! @ lxc-attach $ID ifdown wan 2> /dev/null ; do
-		tries=$(( tries - 1 ))
-		if [[ $tries == "0" ]] ; then
-			echo Giving up.
-			break
-		fi
-		echo Waiting for networking to start...
-		sleep $TIMEOUT
-	done
-fi
+## wait for network to initialize...
+#sleep $TIMEOUT
+#if [ $UPDATE_ON_LAN ] ; then
+#	tries=5
+#	while ! @ lxc-attach $ID ifdown wan 2> /dev/null ; do
+#		tries=$(( tries - 1 ))
+#		if [[ $tries == "0" ]] ; then
+#			echo Giving up.
+#			break
+#		fi
+#		echo Waiting for networking to start...
+#		sleep $TIMEOUT
+#	done
+#fi
 
 
 echo Setting root password...
@@ -148,8 +177,12 @@ echo Setup: iptables...
 @ lxc-attach $ID rc-service iptables start
 
 
-[ $UPDATE_ON_LAN ] \
-	&& @ lxc-attach $ID ifup wan
+#[ $UPDATE_ON_LAN ] \
+#	&& @ lxc-attach $ID ifup wan
+
+[ $OPTS_STAGE_2 ] \
+	&& @ pct set $ID \
+		${OPTS_STAGE_1}
 
 
 echo Done.
