@@ -1,0 +1,17 @@
+#
+# Setting an option here will disable its interactive dialog. prefixing 
+# an option (except for ROOTPASS) with "DFL_" will set the default value 
+# and show the dialog enabling the user to tweak/confirm the value.
+#
+
+DFL_EMAIL=user@example.com
+DFL_DOMAIN=example.com
+DFL_WAN_IP=192.168.1.101/24
+DFL_WAN_GATE=192.168.1.252
+
+DFL_WAN_BRIDGE=2
+DFL_LAN_BRIDGE=0
+DFL_ADMIN_BRIDGE=1
+
+DFL_PCT_EXTRA=
+

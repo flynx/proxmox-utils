@@ -18,7 +18,7 @@ iface wan inet static
 
 auto br0
 iface br0 inet stattic
-	post-up echo 1 > /proc/sys/net/ipv4/ip_forward
+	pre-up echo 1 > /proc/sys/net/ipv4/ip_forward
 	pre-up brctl addbr br0
 
 	bridge-ports lan wan

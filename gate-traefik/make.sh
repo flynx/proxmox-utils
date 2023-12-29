@@ -41,7 +41,7 @@ DFL_WAN_BRIDGE=2
 DFL_LAN_BRIDGE=0
 DFL_ADMIN_BRIDGE=1
 
-TMP_PASS=$(cat /dev/urandom | base64 | head -c ${TMP_PASS_LEN:=32})
+DFL_PCT_EXTRA=
 
 
 #----------------------------------------------------------------------
@@ -68,6 +68,8 @@ DOMAIN=${DOMAIN:=$DFL_DOMAIN}
 	&& read -ep "WAN ip: " -i "$DFL_WAN_IP" WAN_IP
 [ -z $WAN_GATE ] \
 	&& read -ep "WAN gateway: " -i "$DFL_WAN_GATE" WAN_GATE
+# root password...
+TMP_PASS=$(cat /dev/urandom | base64 | head -c ${TMP_PASS_LEN:=32})
 if [ -z $ROOTPASS ] ; then
 	read -sep "root password (Enter to skip): " PASS1
 	echo
@@ -83,6 +85,30 @@ if [ -z $ROOTPASS ] ; then
 else
 	PASS=$ROOTPASS
 fi
+# extra stuff...
+[ -z $PCT_EXTRA ] \
+	&& read -ep "pct extra options: " -i "$DFL_PCT_EXTRA" PCT_EXTRA
+
+
+#----------------------------------------------------------------------
+
+TEMPLATE=($(ls /var/lib/vz/template/cache/alpine-3.18*.tar.xz))
+
+OPTS_STAGE_1="\
+	--hostname $CTHOSTNAME \
+	--memory 128 \
+	--swap 128 \
+	--net0 name=lan,bridge=vmbr${LAN_BRIDGE},firewall=1,ip=dhcp,type=veth \
+	--net1 name=admin,bridge=vmbr${ADMIN_BRIDGE},firewall=1,type=veth \
+	--storage local-lvm \
+	--rootfs local-lvm:0.5 \
+	--unprivileged 1 \
+	${PCT_EXTRA} \
+"
+
+OPTS_STAGE_2="\
+	--net2 name=wan,bridge=vmbr${WAN_BRIDGE},firewall=1${WAN_GATE:+,gw=${WAN_GATE}}${WAN_IP:+,ip=${WAN_IP}},type=veth \
+"
 
 
 #----------------------------------------------------------------------
@@ -108,25 +134,6 @@ done
 #----------------------------------------------------------------------
 
 echo Creating CT...
-
-TEMPLATE=($(ls /var/lib/vz/template/cache/alpine-3.18*.tar.xz))
-
-OPTS_STAGE_1="\
-	--hostname $CTHOSTNAME \
-	--memory 128 \
-	--swap 128 \
-	--net0 name=lan,bridge=vmbr${LAN_BRIDGE},firewall=1,ip=dhcp,type=veth \
-	--net1 name=admin,bridge=vmbr${ADMIN_BRIDGE},firewall=1,type=veth \
-	--storage local-lvm \
-	--rootfs local-lvm:0.5 \
-	--unprivileged 1 \
-"
-
-OPTS_STAGE_2="\
-	--net2 name=wan,bridge=vmbr${WAN_BRIDGE},firewall=1${WAN_GATE:+,gw=${WAN_GATE}}${WAN_IP:+,ip=${WAN_IP}},type=veth \
-"
-
-
 # NOTE: we are not setting the password here to avoid printing it to the terminal...
 @ pct create $ID \
 	${TEMPLATE[-1]} \
@@ -134,23 +141,6 @@ OPTS_STAGE_2="\
 	--password="$TMP_PASS" \
 	--start 1 \
 || exit 1
-
-
-## wait for network to initialize...
-#sleep $TIMEOUT
-#if [ $UPDATE_ON_LAN ] ; then
-#	tries=5
-#	while ! @ lxc-attach $ID ifdown wan 2> /dev/null ; do
-#		tries=$(( tries - 1 ))
-#		if [[ $tries == "0" ]] ; then
-#			echo Giving up.
-#			break
-#		fi
-#		echo Waiting for networking to start...
-#		sleep $TIMEOUT
-#	done
-#fi
-
 
 echo Setting root password...
 if [ $PASS ] ; then
