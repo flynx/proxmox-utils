@@ -1,0 +1,51 @@
+#!/usr/bin/bash
+#----------------------------------------------------------------------
+#
+#----------------------------------------------------------------------
+
+case $1 in
+	-h|--help)
+		echo "Recursively push a directory to a CT creating the necessary paths"
+		echo
+		echo "Usage:"
+		echo "    `basename $0` ID FROM TO"
+		echo
+		exit
+		;;
+	-*)
+		echo "Unknown option: $1"
+		exit
+		;;
+esac
+
+if [[ $# < 3 ]] ; then
+	echo ERR need both id and target id 1>&2
+	exit 1
+fi
+
+id=$1
+from=$2
+to=$3
+
+IFS=$'\n'
+
+dirs=($(find "$from" -type d))
+for dir in "${dirs[@]}" ; do
+	if [[ "$dir" == "${to}"  ]] ; then
+		continue
+	fi
+	dir=${dir#${from}}
+	lxc-attach $id -- mkdir -p "${to}/${dir}"
+done
+
+local files=($(find "$from" -type f))
+for file in "${files[@]}" ; do
+	file=${file#${from}}
+	[ $QUIET ] \
+		|| echo "copy: \"${from}/${file}\" -> $id:\"${to}/${file}\""
+	pct push $id "${from}/${file}" "${to}/${file}"
+done
+
+
+#----------------------------------------------------------------------
+# vim:set ts=4 sw=4 nowrap :

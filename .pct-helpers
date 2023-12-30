@@ -126,33 +126,6 @@ hostname2ct(){
 }
 
 
-#----------------------------------------------------------------------
-
-pct-push-r(){
-	local id=$1
-	local from=$2
-	local to=$3
-
-	local IFS=$'\n'
-
-	local dirs=($(find "$from" -type d))
-	for dir in "${dirs[@]}" ; do
-		if [[ "$dir" == "${to}"  ]] ; then
-			continue
-		fi
-		dir=${dir#${from}}
-		lxc-attach $id -- mkdir -p "${to}/${dir}"
-	done
-
-	local files=($(find "$from" -type f))
-	for file in "${files[@]}" ; do
-		file=${file#${from}}
-		[ $QUIET ] \
-			|| echo "copy: \"${from}/${file}\" -> $id:\"${to}/${file}\""
-		pct push $id "${from}/${file}" "${to}/${file}"
-	done
-}
-
 
 #----------------------------------------------------------------------
 # vim:set ts=4 sw=4 nowrap :

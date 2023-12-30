@@ -49,24 +49,24 @@ running=$(pct list | grep "running\s*$host\s*$")
 
 # error checking...
 if [ -z $id ] || [ -z $to ] ; then
-	echo ERR need both id and target id
+	echo ERR need both id and target id 1>&2
 	exit 1
 fi
 if [ $id = $to ] ; then
-	echo ERR need id and target id must be different
+	echo ERR need id and target id must be different 1>&2
 	exit 1
 fi
 
 if ! [ -e $ct ] ; then
-	echo ERR $ct does not exist. 
+	echo ERR $ct does not exist.  1>&2
 	exit 1
 fi
 if [ -e ${CT_DIR}/${to}.conf ] ; then
-	echo ERR $to already exists.
+	echo ERR $to already exists. 1>&2
 	exit 1
 fi
 if ! [ -z $tpl ] && [ -e ${CT_DIR}/${tpl}.conf ] ; then
-	echo ERR $to already exists.
+	echo ERR $to already exists. 1>&2
 	exit 1
 fi
 
@@ -75,7 +75,7 @@ IFS=$'\n' mounts=($(cat $ct | grep 'mp[0-9]*:'))
 # check...
 for mp in ${mounts[@]} ; do
 	if ! [ $(grep ": $SHARE_ROOT" <<< $mp) ] ; then
-		echo "ERR mountpoint: \"$mp\" heeds to handled manually."
+		echo "ERR mountpoint: \"$mp\" heeds to handled manually." 1>&2
 		exit 1
 	fi
 done
