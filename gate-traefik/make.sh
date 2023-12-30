@@ -89,12 +89,15 @@ fi
 
 TEMPLATE=($(ls /var/lib/vz/template/cache/alpine-3.18*.tar.xz))
 
+# XXX should we set the initial ip as 10.x.x.2/23, dhcp or empty???
+#	--net0 name=lan,bridge=vmbr${LAN_BRIDGE},firewall=1,ip=10.1.1.2/24,type=veth \
+#	--net1 name=admin,bridge=vmbr${ADMIN_BRIDGE},firewall=1,ip=10.0.0.2/24,type=veth \
 OPTS_STAGE_1="\
 	--hostname $CTHOSTNAME \
 	--memory 128 \
 	--swap 128 \
 	--net0 name=lan,bridge=vmbr${LAN_BRIDGE},firewall=1,ip=dhcp,type=veth \
-	--net1 name=admin,bridge=vmbr${ADMIN_BRIDGE},firewall=1,type=veth \
+	--net1 name=admin,bridge=vmbr${ADMIN_BRIDGE},firewall=1,ip=dhcp,type=veth \
 	--storage local-lvm \
 	--rootfs local-lvm:0.5 \
 	--unprivileged 1 \
