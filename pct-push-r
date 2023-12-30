@@ -3,6 +3,11 @@
 #
 #----------------------------------------------------------------------
 
+source ./.pct-helpers
+
+
+#----------------------------------------------------------------------
+
 case $1 in
 	-h|--help)
 		echo "Recursively push a directory to a CT creating the necessary paths"
