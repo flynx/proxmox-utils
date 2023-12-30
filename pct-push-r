@@ -55,7 +55,7 @@ for dir in "${dirs[@]}" ; do
 	lxc-attach $id -- mkdir -p "${to}/${dir}"
 done
 
-local files=($(find "$from" -type f))
+files=($(find "$from" -type f))
 for file in "${files[@]}" ; do
 	file=${file#${from}}
 	f=$(normpath "${from}/${file}")
