@@ -23,11 +23,22 @@ if [[ $# < 3 ]] ; then
 	exit 1
 fi
 
+IFS=$'\n'
+
+
+#----------------------------------------------------------------------
+
 id=$1
 from=$2
 to=$3
 
-IFS=$'\n'
+# get from path relative to working directory...
+if [[ ${from:0:1} != '/' ]] ; then
+	from="$(pwd)/${from}"
+fi
+
+
+#----------------------------------------------------------------------
 
 dirs=($(find "$from" -type d))
 for dir in "${dirs[@]}" ; do
