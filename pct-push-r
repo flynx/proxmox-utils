@@ -38,13 +38,14 @@ id=$1
 from=$2
 to=$3
 
-# get from path relative to working directory...
-if [[ ${from:0:1} != '/' ]] ; then
-	from="$(normpath "$(pwd)/${from}")"
-fi
-
 
 #----------------------------------------------------------------------
+
+wd=$(pwd)
+# get from path relative to working directory...
+if [[ ${from:0:1} != '/' ]] ; then
+	from="$(normpath "${wd}/${from}")"
+fi
 
 dirs=($(find "$from" -type d))
 for dir in "${dirs[@]}" ; do
@@ -61,7 +62,7 @@ for file in "${files[@]}" ; do
 	f=$(normpath "${from}/${file}")
 	t=$(normpath "${to}/${file}")
 	[ $QUIET ] \
-		|| echo "copy: \"$f\" -> $id:\"$t\""
+		|| echo "copy: \"${f#${wd}/}\" -> $id:\"$t\""
 	pct push $id "$f" "$t"
 done
 
