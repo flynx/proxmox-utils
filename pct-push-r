@@ -34,7 +34,7 @@ to=$3
 
 # get from path relative to working directory...
 if [[ ${from:0:1} != '/' ]] ; then
-	from="$(pwd)/${from}"
+	from="$(normpath "$(pwd)/${from}")"
 fi
 
 
@@ -52,9 +52,11 @@ done
 local files=($(find "$from" -type f))
 for file in "${files[@]}" ; do
 	file=${file#${from}}
+	f=$(normpath "${from}/${file}")
+	t=$(normpath "${to}/${file}")
 	[ $QUIET ] \
-		|| echo "copy: \"${from}/${file}\" -> $id:\"${to}/${file}\""
-	pct push $id "${from}/${file}" "${to}/${file}"
+		|| echo "copy: \"$f\" -> $id:\"$t\""
+	pct push $id "$f" "$t"
 done
 
 
