@@ -2,14 +2,14 @@ auto lo
 iface lo inet loopback
 iface lo inet6 loopback
 
-auto lan
-iface lan inet dhcp
-	#address 10.1.1.2
-	hostname $(hostname)
-
 auto admin
 iface admin inet dhcp
 	#address 10.0.0.2
+	hostname $(hostname)
+
+auto lan
+iface lan inet dhcp
+	#address 10.1.1.2
 	hostname $(hostname)
 
 auto wan
