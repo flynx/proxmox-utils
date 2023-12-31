@@ -65,3 +65,4 @@ certificatesResolvers:
     acme:
       email: '${EMAIL}'
       storage: '/etc/traefik/acme.json'
+      tlsChallenge: {}
