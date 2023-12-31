@@ -97,8 +97,8 @@ OPTS_STAGE_1="\
 	--memory 128 \
 	--swap 128 \
 	--net0 name=wan,bridge=vmbr${WAN_BRIDGE},firewall=1${WAN_GATE:+,gw=${WAN_GATE}}${WAN_IP:+,ip=${WAN_IP}},type=veth \
-	--net1 name=admin,bridge=vmbr${ADMIN_BRIDGE},firewall=1,ip=10.0.0.2,type=veth \
-	--net2 name=lan,bridge=vmbr${LAN_BRIDGE},firewall=1,ip=10.1.1.2,type=veth \
+	--net1 name=admin,bridge=vmbr${ADMIN_BRIDGE},firewall=1,ip=10.0.0.2/24,type=veth \
+	--net2 name=lan,bridge=vmbr${LAN_BRIDGE},firewall=1,ip=10.1.1.2/24,type=veth \
 	--storage local-lvm \
 	--rootfs local-lvm:0.5 \
 	--unprivileged 1 \
