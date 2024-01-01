@@ -66,6 +66,7 @@ declare -A HANDLERS
 HANDLERS[tcp]=check-port
 HANDLERS[udp]=check-port
 
+# XXX this seems to be broken...
 check-port(){
 	local udp=
 	if [[ "${1:0:3}" == "udp" ]] ; then
@@ -81,7 +82,7 @@ check-port(){
 
 	local res=$(timeout $TIMEOUT nc -vz${udp} $target $port 2>&1)
 
-	if [[ "$res" =~ .*open$ ]] ; then
+	if [[ $res =~ .*open$ ]] ; then
 		echo ERROR
 	else
 		echo OK
