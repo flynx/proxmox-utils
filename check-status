@@ -22,6 +22,7 @@ case $1 in
 		echo "Suage:"
 		echo "    `basename $0` URL ..."
 		echo
+		# XXX would be fun to make the docs dynamic...
 		echo "Supported URL formats and schemes:"
 		echo "    http://<url>"
 		echo "    https://<url>"
@@ -53,6 +54,39 @@ source .pct-helpers
 # Handlers...
 
 declare -A HANDLERS
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+# Port
+#
+#	tcp://<addr>:<port>
+#	udp://<addr>:<port>
+#
+
+HANDLERS[tcp]=check-port
+HANDLERS[udp]=check-port
+
+check-port(){
+	local udp=
+	if [[ "${1:0:3}" == "udp" ]] ; then
+		udp='u'
+	fi
+	local target=`sed \
+			-e 's/^.*\s*\(tcp\|udp\):\/\///' \
+			-e 's/^\s*//;s/\s*$//' \
+		<<<$1`
+	local port=`cut -sd ':' -f 2 <<<$target`
+	port=${port:=80}
+	target=`cut -d ':' -f 1 <<<$target`
+
+	local res=$(timeout $TIMEOUT nc -vz${udp} $target $port 2>&1)
+
+	if [[ "$res" =~ .*open$ ]] ; then
+		echo ERROR
+	else
+		echo OK
+	fi
+}
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -140,7 +174,7 @@ check-ovpn(){
 	target=`cut -d ':' -f 1 <<<$target`
 
 	local res=$(echo -e "\x38\x01\x00\x00\x00\x00\x00\x00\x00" \
-		| timeout $TIMEOUT nc -u 46.138.244.248 5555 \
+		| timeout $TIMEOUT nc -u $target $port \
 		| cat -v)
 
 	if [ -z $res ] ; then
