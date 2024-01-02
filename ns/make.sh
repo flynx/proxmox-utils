@@ -6,6 +6,15 @@ source ../.pct-helpers
 
 #----------------------------------------------------------------------
 
+[ -e ../config.global ] \
+	&& source ../config.global
+
+[ -e ./config ] \
+	&& source ./config
+
+
+#----------------------------------------------------------------------
+
 UPDATE_ON_LAN=1
 TIMEOUT=5
 TMP_PASS_LEN=32
