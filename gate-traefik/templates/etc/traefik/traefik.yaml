@@ -14,10 +14,10 @@ entryPoints:
     address: ':22'
   ssh2:
     address: ':23'
-  openvpn:
-    address: ':1194/udp'
-  openvpn2:
-    address: ':5555/udp'
+  #openvpn:
+  #  address: ':1194/udp'
+  #openvpn2:
+  #  address: ':5555/udp'
   wireguard:
     address: ':51820/udp'
   wireguard2:

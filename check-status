@@ -82,7 +82,7 @@ check-port(){
 
 	local res=$(timeout $TIMEOUT nc -vz${udp} $target $port 2>&1)
 
-	if [[ $res =~ .*open$ ]] ; then
+	if ! [[ $res =~ .*open$ ]] ; then
 		echo ERROR
 	else
 		echo OK
