@@ -2,21 +2,15 @@ auto lo
 iface lo inet loopback
 iface lo inet6 loopback
 
-# bootstrap...
-auto wan
-iface wan inet static
-	address ${WAN_IP}
-	gateway ${WAN_GATE}
-	hostname $(hostname)
-
 auto lan
 iface lan inet static
-	address 10.0.0.1/24
-	gateway 10.0.0.2
+	address ${LAN_IP}
+	gateway ${LAN_GATE}
 	hostname $(hostname)
 
 auto admin
-iface admin inet dhcp
+iface admin inet static
+	address ${ADMIN_IP}
 	hostname $(hostname)
 
 
