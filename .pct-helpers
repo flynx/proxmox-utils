@@ -254,15 +254,15 @@ buildAssets(){
 		mkdir -p "$(dirname "${ASSETS_DIR}/${file}")"
 		cat "${TEMPLATE_DIR}/${file}" \
 			| sed \
-				-e 's/\${EMAIL}/'$EMAIL'/g' \
-				-e 's/\${DOMAIN}/'$DOMAIN'/g' \
-				-e 's/\${CTHOSTNAME}/'$CTHOSTNAME'/g' \
+				-e 's/\${EMAIL}/'${EMAIL/\//\\/}'/g' \
+				-e 's/\${DOMAIN}/'${DOMAIN/\//\\/}'/g' \
+				-e 's/\${CTHOSTNAME}/'${CTHOSTNAME/\//\\/}'/g' \
 				-e 's/\${WAN_IP}/'${WAN_IP/\//\\/}'/g' \
-				-e 's/\${WAN_GATE}/'$WAN_GATE'/g' \
+				-e 's/\${WAN_GATE}/'${WAN_GATE/\//\\/}'/g' \
 				-e 's/\${LAN_IP}/'${LAN_IP/\//\\/}'/g' \
-				-e 's/\${LAN_GATE}/'$LAN_GATE'/' \
+				-e 's/\${LAN_GATE}/'${LAN_GATE/\//\\/}'/' \
 				-e 's/\${ADMIN_IP}/'${ADMIN_IP/\//\\/}'/g' \
-				-e 's/\${ADMIN_GATE}/'$ADMIN_GATE'/g' \
+				-e 's/\${ADMIN_GATE}/'${ADMIN_GATE/\//\\/}'/g' \
 			> "${ASSETS_DIR}/${file}"
 	done
 }
