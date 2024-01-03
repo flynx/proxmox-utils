@@ -4,12 +4,12 @@ iface lo inet6 loopback
 
 auto admin
 iface admin inet static
-	address 10.0.0.2
+	address ${ADMIN_IP}
 	hostname $(hostname)
 
 auto lan
 iface lan inet static
-	address 10.1.1.2
+	address ${LAN_IP}
 	hostname $(hostname)
 
 auto wan
