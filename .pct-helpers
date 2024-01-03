@@ -161,6 +161,8 @@ xread(){
 
 
 #
+#	readVars
+#
 # Variables this handles:
 #	EMAIL
 #	DOMAIN
@@ -233,7 +235,9 @@ readVars(){
 }
 
 
-# buildAssets [TEMPLATES [ASSETS]]
+#
+#	buildAssets [TEMPLATES [ASSETS]]
+#
 buildAssets(){
 	local TEMPLATE_DIR=$1
 	TEMPLATE_DIR=${TEMPLATE_DIR:=templates}
@@ -264,7 +268,9 @@ buildAssets(){
 }
 
 
-# pctCreate ID TEMPLATE ARGS [PASS]
+#
+#	pctCreate ID TEMPLATE ARGS [PASS]
+#
 pctCreate(){
 	local TMP_PASS=$(cat /dev/urandom | base64 | head -c ${TMP_PASS_LEN:=32})
 	# NOTE: we are not setting the password here to avoid printing it to the terminal...
@@ -281,13 +287,16 @@ pctCreate(){
 	fi
 }
 
-# pctCreate ID ARGS [PASS]
+#
+#	pctCreate ID ARGS [PASS]
+#
 pctCreateAlpine(){
 	if [ $DRY_RUN ] ; then
 		local TEMPLATE=(/var/lib/vz/template/cache/alpine-3.18\*.tar.xz)
 	else
 		local TEMPLATE=($(ls /var/lib/vz/template/cache/alpine-3.18*.tar.xz))
 	fi
+
 	pctCreate $1 "${TEMPLATE[-1]}" "$2" "$3"
 
 	@ lxc-attach $1 apk update
@@ -295,7 +304,9 @@ pctCreateAlpine(){
 }
 
 
-# pctSet ID [ARGS [REBOOT]]
+#
+#	pctSet ID [ARGS [REBOOT]]
+#
 pctSet(){
 	[ "$2" ] \
 		&& @ pct set $1 \

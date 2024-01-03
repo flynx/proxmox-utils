@@ -9,11 +9,11 @@ config: config.global
 
 
 gate: gate-traefik
-	cd $< && ./make.sh
+	$</make.sh
 
 
 ns: ns
-	cd $< && ./make.sh
+	$</make.sh
 
 
 all: config gate ns
