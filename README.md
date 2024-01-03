@@ -3,7 +3,7 @@
 A set of scripts for automating setup and tasks in proxmox.
 
 ## TODO
-- add base container hostnames and ip's to `ns`'s config template...
+- revise defaults
 
 ## Goals
 - support the basic CT lifecicle:

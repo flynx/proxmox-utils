@@ -260,9 +260,13 @@ buildAssets(){
 				-e 's/\${GATE_HOSTNAME}/'${GATE_HOSTNAME/\//\\/}'/g' \
 				-e 's/\${NS_HOSTNAME}/'${NS_HOSTNAME/\//\\/}'/g' \
 				-e 's/\${GATE_LAN_IP}/'${GATE_LAN_IP/\//\\/}'/g' \
+				-e 's/\${GATE_LAN_IPn}/'${GATE_LAN_IP/\/*}'/g' \
 				-e 's/\${GATE_ADMIN_IP}/'${GATE_ADMIN_IP/\//\\/}'/g' \
+				-e 's/\${GATE_ADMIN_IPn}/'${GATE_ADMIN_IP/\/*}'/g' \
 				-e 's/\${NS_LAN_IP}/'${NS_LAN_IP/\//\\/}'/g' \
+				-e 's/\${NS_LAN_IPn}/'${NS_LAN_IP/\/*}'/g' \
 				-e 's/\${NS_ADMIN_IP}/'${NS_ADMIN_IP/\//\\/}'/g' \
+				-e 's/\${NS_ADMIN_IPn}/'${NS_ADMIN_IP/\/*}'/g' \
 				-e 's/\${WAN_IP}/'${WAN_IP/\//\\/}'/g' \
 				-e 's/\${WAN_IPn}/'${WAN_IP/\/*}'/g' \
 				-e 's/\${WAN_GATE}/'${WAN_GATE/\//\\/}'/g' \
