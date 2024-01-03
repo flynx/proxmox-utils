@@ -140,4 +140,159 @@ normpath(){
 
 
 #----------------------------------------------------------------------
+
+#
+# xread [-n] MSG VAR
+#
+xread(){
+	local non_empty=
+	if [[ $1 == '-n' ]] ; then
+		shift
+		local non_empty=1
+	fi
+	[ -z ${!2} ] \
+		&& eval 'read -ep "'$1'" -i "$DFL_'$2'" '${2}''
+	if [ -z $non_empty ] ; then
+		eval ''$2'=${'$2':=$DFL_'$2'}'
+	fi
+}
+
+
+#
+# Variables this handles:
+#	EMAIL
+#	DOMAIN
+#	ID
+#	CTHOSTNAME
+#	WAN_BRIDGE
+#	LAN_BRIDGE
+#	ADMIN_BRIDGE
+#	WAN_IP
+#	WAN_GATE
+#	LAN_IP
+#	LAN_GATE
+#	ADMIN_IP
+#	ADMIN_GATE
+#	ROOTPASS
+#	PCT_EXTRA
+#
+# Variables this sets:
+#	PASS
+#
+# Variables used:
+# 	TMP_PASS_LEN
+# 	ROOTPASS
+#
+readVars(){
+	xread -n "Email: " EMAIL
+	xread -n "Domain: " DOMAIN
+	xread "ID: " ID
+	xread "Hostname: " CTHOSTNAME
+
+	# bridge config...
+	xread "WAN bridge: vmbr" WAN_BRIDGE
+	xread "LAN bridge: vmbr" LAN_BRIDGE
+	xread "ADMIN bridge: vmbr" ADMIN_BRIDGE
+
+	# gateway...
+	xread "WAN ip: " WAN_IP
+	xread "WAN gateway: " WAN_GATE
+	xread "LAN ip: " LAN_IP
+	xread "LAN gateway: " LAN_GATE
+	xread "ADMIN ip: " ADMIN_IP
+	xread "ADMIN gateway: " ADMIN_GATE
+
+	# root password...
+	if [ -z $ROOTPASS ] ; then
+		read -sep "root password (Enter to skip): " PASS1
+		echo
+		if [ $PASS1 ] ; then
+			read -sep "retype root password: " PASS2
+			echo
+			if [[ $PASS1 != $PASS2 ]] ; then
+				echo "ERR: passwords do not match."
+				exit 1
+			fi
+			PASS=$PASS1
+		fi
+	else
+		PASS=$ROOTPASS
+	fi
+
+	# extra stuff...
+	xread "pct extra options: " PCT_EXTRA
+}
+
+
+# buildAssets [TEMPLATES [ASSETS]]
+buildAssets(){
+	local TEMPLATE_DIR=$1
+	TEMPLATE_DIR=${TEMPLATE_DIR:=templates}
+	local ASSETS_DIR=$2
+	TEMPLATE_DIR=${ASSETS_DIR:=assets}
+
+	local TEMPLATES=($(find "$TEMPLATE_DIR" -type f))
+	for file in "${TEMPLATES[@]}" ; do
+		file=${file#${TEMPLATE_DIR}}
+		echo Generating: ${file}...
+		[ $DRY_RUN ] \
+			&& continue
+		# ensure the directory exists...
+		mkdir -p "$(dirname "${ASSETS_DIR}/${file}")"
+		cat "${TEMPLATE_DIR}/${file}" \
+			| sed \
+				-e 's/\${EMAIL}/'$EMAIL'/' \
+				-e 's/\${DOMAIN}/'$DOMAIN'/' \
+				-e 's/\${CTHOSTNAME}/'$CTHOSTNAME'/' \
+				-e 's/\${WAN_IP}/'${WAN_IP/\//\\/}'/' \
+				-e 's/\${WAN_GATE}/'$WAN_GATE'/' \
+				-e 's/\${LAN_IP}/'${LAN_IP/\//\\/}'/' \
+				-e 's/\${LAN_GATE}/'$LAN_GATE'/' \
+				-e 's/\${ADMIN_IP}/'${ADMIN_IP/\//\\/}'/' \
+				-e 's/\${ADMIN_GATE}/'$ADMIN_GATE'/' \
+			> "${ASSETS_DIR}/${file}"
+	done
+}
+
+
+# pctCreate ID TEMPLATE ARGS [PASS]
+pctCreate(){
+	local TMP_PASS=$(cat /dev/urandom | base64 | head -c ${TMP_PASS_LEN:=32})
+	# NOTE: we are not setting the password here to avoid printing it to the terminal...
+	@ pct create $1 \
+		${2} \
+		${3} \
+		--password="$TMP_PASS" \
+		--start 1 \
+	|| exit 1
+	# set actual root password...
+	if [ "$4" ] ; then
+		echo "root:$4" \
+			| @ lxc-attach $1 chpasswd
+	fi
+}
+
+# pctCreate ID ARGS [PASS]
+pctCreateAlpine(){
+	if [ $DRY_RUN ] ; then
+		local TEMPLATE=(/var/lib/vz/template/cache/alpine-3.18\*.tar.xz)
+	else
+		local TEMPLATE=($(ls /var/lib/vz/template/cache/alpine-3.18*.tar.xz))
+	fi
+	pctCreate $1 "${TEMPLATE[-1]}" "$2" "$3"
+}
+
+
+# pctSet ID [ARGS [REBOOT]]
+pctSet(){
+	[ "$2" ] \
+		&& @ pct set $1 \
+			${2}
+	[ "$3" ] \
+		&& @ pct reboot $1
+}
+
+
+
+#----------------------------------------------------------------------
 # vim:set ts=4 sw=4 nowrap :

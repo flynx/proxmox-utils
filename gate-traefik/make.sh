@@ -17,77 +17,31 @@ PATH=$PATH:$(dirname "$(pwd)")
 
 #----------------------------------------------------------------------
 
-TEMPLATE_DIR=${TEMPLATE_DIR:=templates}
-ASSETS_DIR=${ASSETS_DIR:=assets}
-
-# ROOTPASS=
-TMP_PASS_LEN=${TMP_PASS_LEN:=32}
-
-DFL_EMAIL=${DFL_EMAIL:=user@example.com}
-DFL_DOMAIN=${DFL_DOMAIN:=example.com}
-DFL_ID=${DFL_ID:=500}
+DFL_ID=${DFL_ID:=101}
 DFL_CTHOSTNAME=${DFL_CTHOSTNAME:=gate}
+
 DFL_WAN_IP=${DFL_WAN_IP:=192.168.1.101/24}
 DFL_WAN_GATE=${DFL_WAN_GATE:=192.168.1.252}
+
+# these can be:
+#	<empty>
+#	<IP>/<mask>
+#	dhcp
+DFL_ADMIN_IP=${DFL_ADMIN_IP:=10.0.0.2/24}
+ADMIN_GATE=-
+DFL_LAN_IP=${DFL_LAN_IP:=10.1.1.2/24}
+LAN_GATE=-
 
 DFL_WAN_BRIDGE=${DFL_WAN_BRIDGE:=2}
 DFL_LAN_BRIDGE=${DFL_LAN_BRIDGE:=0}
 DFL_ADMIN_BRIDGE=${DFL_ADMIN_BRIDGE:=1}
 
-DFL_PCT_EXTRA=${DFL_PCT_EXTRA:=}
-
 REBOOT=${REBOOT:=1}
 
-
-#----------------------------------------------------------------------
-
-[ -z $EMAIL ] \
-	&& read -ep "Email: " -i "$DFL_EMAIL" EMAIL
-EMAIL=${EMAIL:=$DFL_EMAIL}
-[ -z $DOMAIN ] \
-	&& read -ep "Domain: " -i "$DFL_DOMAIN" DOMAIN
-DOMAIN=${DOMAIN:=$DFL_DOMAIN}
-[ -z $ID ] \
-	&& read -ep "ID: " -i "$DFL_ID" ID
-[ -z $CTHOSTNAME ] \
-	&& read -ep "Hostname: " -i "$DFL_CTHOSTNAME" CTHOSTNAME
-# bridge config...
-[ -z $WAN_BRIDGE ] \
-	&& read -ep "WAN bridge: vmbr" -i "$DFL_WAN_BRIDGE" WAN_BRIDGE
-[ -z $LAN_BRIDGE ] \
-	&& read -ep "LAN bridge: vmbr" -i "$DFL_LAN_BRIDGE" LAN_BRIDGE
-[ -z $ADMIN_BRIDGE ] \
-	&& read -ep "ADMIN bridge: vmbr" -i "$DFL_ADMIN_BRIDGE" ADMIN_BRIDGE
-# wan...
-[ -z $WAN_IP ] \
-	&& read -ep "WAN ip: " -i "$DFL_WAN_IP" WAN_IP
-[ -z $WAN_GATE ] \
-	&& read -ep "WAN gateway: " -i "$DFL_WAN_GATE" WAN_GATE
-# root password...
-TMP_PASS=$(cat /dev/urandom | base64 | head -c ${TMP_PASS_LEN:=32})
-if [ -z $ROOTPASS ] ; then
-	read -sep "root password (Enter to skip): " PASS1
-	echo
-	if [ $PASS1 ] ; then
-		read -sep "retype root password: " PASS2
-		echo
-		if [[ $PASS1 != $PASS2 ]] ; then
-			echo "ERR: passwords do not match."
-			exit 1
-		fi
-		PASS=$PASS1
-	fi
-else
-	PASS=$ROOTPASS
-fi
-# extra stuff...
-[ -z $PCT_EXTRA ] \
-	&& read -ep "pct extra options: " -i "$DFL_PCT_EXTRA" PCT_EXTRA
+readVars
 
 
 #----------------------------------------------------------------------
-
-TEMPLATE=($(ls /var/lib/vz/template/cache/alpine-3.18*.tar.xz))
 
 # XXX should we set the initial ip as 10.x.x.2/23, dhcp or empty???
 #	--net0 name=lan,bridge=vmbr${LAN_BRIDGE},firewall=1,ip=10.1.1.2/24,type=veth \
@@ -97,8 +51,8 @@ OPTS_STAGE_1="\
 	--memory 128 \
 	--swap 128 \
 	--net0 name=wan,bridge=vmbr${WAN_BRIDGE},firewall=1${WAN_GATE:+,gw=${WAN_GATE}}${WAN_IP:+,ip=${WAN_IP}},type=veth \
-	--net1 name=admin,bridge=vmbr${ADMIN_BRIDGE},firewall=1,ip=10.0.0.2/24,type=veth \
-	--net2 name=lan,bridge=vmbr${LAN_BRIDGE},firewall=1,ip=10.1.1.2/24,type=veth \
+	--net1 name=admin,bridge=vmbr${ADMIN_BRIDGE},firewall=1${ADMIN_IP:+,ip=${ADMIN_IP}},type=veth \
+	--net2 name=lan,bridge=vmbr${LAN_BRIDGE},firewall=1${LAN_IP:+,ip=${LAN_IP}},type=veth \
 	--storage local-lvm \
 	--rootfs local-lvm:0.5 \
 	--unprivileged 1 \
@@ -114,39 +68,10 @@ OPTS_STAGE_2="\
 #----------------------------------------------------------------------
 
 echo Building config...
-TEMPLATES=($(find "$TEMPLATE_DIR" -type f))
-for file in "${TEMPLATES[@]}" ; do
-	file=${file#${TEMPLATE_DIR}}
-	echo Generating: ${file}...
-	# ensure the directory exists...
-	mkdir -p "$(dirname "${ASSETS_DIR}/${file}")"
-	cat "${TEMPLATE_DIR}/${file}" \
-		| sed \
-			-e 's/\${EMAIL}/'$EMAIL'/' \
-			-e 's/\${DOMAIN}/'$DOMAIN'/' \
-			-e 's/\${CTHOSTNAME}/'$CTHOSTNAME'/' \
-			-e 's/\${WAN_IP}/'${WAN_IP/\//\\/}'/' \
-			-e 's/\${WAN_GATE}/'$WAN_GATE'/' \
-		> "${ASSETS_DIR}/${file}"
-done
-
-
-#----------------------------------------------------------------------
+buildAssets "$TEMPLATE_DIR" "$ASSETS_DIR"
 
 echo Creating CT...
-# NOTE: we are not setting the password here to avoid printing it to the terminal...
-@ pct create $ID \
-	${TEMPLATE[-1]} \
-	${OPTS_STAGE_1} \
-	--password="$TMP_PASS" \
-	--start 1 \
-|| exit 1
-
-if [ $PASS ] ; then
-	echo Setting root password...
-	echo "root:$PASS" \
-		| @ lxc-attach $ID chpasswd
-fi
+pctCreateAlpine $ID "${OPTS_STAGE_1}" "$PASS"
 
 echo Updating container...
 @ lxc-attach $ID apk update
@@ -169,12 +94,7 @@ echo Setup: iptables...
 @ lxc-attach $ID rc-service iptables start
 
 echo "Post config..."
-[ "$OPTS_STAGE_2" ] \
-	&& @ pct set $ID \
-		${OPTS_STAGE_2}
-
-[ "$REBOOT" ] \
-	&& @ pct reboot $ID
+pctSet $ID "${OPTS_STAGE_2}" $REBOOT
 
 echo Done.
 
