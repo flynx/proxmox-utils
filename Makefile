@@ -8,11 +8,11 @@ config.global: config.global.example
 config: config.global
 
 
-gate: gate-traefik
+gate: ./gate-traefik
 	$</make.sh
 
 
-ns: ns
+ns: ./ns
 	$</make.sh
 
 

@@ -21,8 +21,8 @@ source ../.pct-helpers
 
 #----------------------------------------------------------------------
 
-DFL_ID=100
-DFL_CTHOSTNAME=ns
+DFL_ID=${DFL_ID:=100}
+DFL_CTHOSTNAME=${DFL_CTHOSTNAME:=ns}
 
 WAN_IP=-
 WAN_GATE=-
