@@ -12,11 +12,11 @@ gate: ./gate-traefik
 	$</make.sh
 
 
-ns: ./ns
+dns: ./ns
 	$</make.sh
 
 
-all: config gate ns
+all: config gate dns
 
 
 
