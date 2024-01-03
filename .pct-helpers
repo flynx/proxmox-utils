@@ -257,11 +257,20 @@ buildAssets(){
 				-e 's/\${EMAIL}/'${EMAIL/\//\\/}'/g' \
 				-e 's/\${DOMAIN}/'${DOMAIN/\//\\/}'/g' \
 				-e 's/\${CTHOSTNAME}/'${CTHOSTNAME/\//\\/}'/g' \
+				-e 's/\${GATE_HOSTNAME}/'${GATE_HOSTNAME/\//\\/}'/g' \
+				-e 's/\${NS_HOSTNAME}/'${NS_HOSTNAME/\//\\/}'/g' \
+				-e 's/\${GATE_LAN_IP}/'${GATE_LAN_IP/\//\\/}'/g' \
+				-e 's/\${GATE_ADMIN_IP}/'${GATE_ADMIN_IP/\//\\/}'/g' \
+				-e 's/\${NS_LAN_IP}/'${NS_LAN_IP/\//\\/}'/g' \
+				-e 's/\${NS_ADMIN_IP}/'${NS_ADMIN_IP/\//\\/}'/g' \
 				-e 's/\${WAN_IP}/'${WAN_IP/\//\\/}'/g' \
+				-e 's/\${WAN_IPn}/'${WAN_IP/\/*}'/g' \
 				-e 's/\${WAN_GATE}/'${WAN_GATE/\//\\/}'/g' \
 				-e 's/\${LAN_IP}/'${LAN_IP/\//\\/}'/g' \
+				-e 's/\${LAN_IPn}/'${LAN_IP/\/*}'/g' \
 				-e 's/\${LAN_GATE}/'${LAN_GATE/\//\\/}'/' \
 				-e 's/\${ADMIN_IP}/'${ADMIN_IP/\//\\/}'/g' \
+				-e 's/\${ADMIN_IPn}/'${ADMIN_IP/\/*}'/g' \
 				-e 's/\${ADMIN_GATE}/'${ADMIN_GATE/\//\\/}'/g' \
 			> "${ASSETS_DIR}/${file}"
 	done

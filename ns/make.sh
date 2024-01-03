@@ -22,14 +22,15 @@ source ../.pct-helpers
 #----------------------------------------------------------------------
 
 DFL_ID=${DFL_ID:=100}
-DFL_CTHOSTNAME=${DFL_CTHOSTNAME:=ns}
+DFL_CTHOSTNAME=${NS_HOSTNAME:=${DFL_CTHOSTNAME:=ns}}
 
 WAN_IP=-
 WAN_GATE=-
 DFL_ADMIN_IP=${DFL_ADMIN_IP:=10.0.0.1/24}
 ADMIN_GATE=-
-DFL_LAN_IP=${DFL_LAN_IP:=10.1.1.1/24}
-DFL_LAN_GATE=${DFL_LAN_GATE:=10.1.1.2}
+DFL_LAN_IP=${NS_LAN_IP:=${DFL_LAN_IP:=10.1.1.1/24}}
+DFL_LAN_GATE=${GATE_LAN_IP:=${DFL_LAN_GATE:=10.1.1.2}}
+DFL_LAN_GATE=${DFL_LAN_GATE/\/*}
 
 REBOOT=${REBOOT:=1}
 
