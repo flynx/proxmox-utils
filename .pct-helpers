@@ -142,7 +142,7 @@ normpath(){
 #----------------------------------------------------------------------
 
 #
-# xread [-n] MSG VAR
+#	xread [-n] MSG VAR
 #
 xread(){
 	local non_empty=
@@ -155,6 +155,8 @@ xread(){
 	if [ -z $non_empty ] ; then
 		eval ''$2'=${'$2':=$DFL_'$2'}'
 	fi
+	[ $SCRIPTING ] \
+		&& echo "$2=${!2}"
 }
 
 
@@ -195,6 +197,13 @@ readVars(){
 	xread "ADMIN bridge: vmbr" ADMIN_BRIDGE
 
 	# gateway...
+	# IPs can be:
+	#	<empty>
+	#	<IP>/<mask>
+	#	dhcp
+	# Gateways can be:
+	#	<empty>
+	#	<IP>
 	xread "WAN ip: " WAN_IP
 	xread "WAN gateway: " WAN_GATE
 	xread "LAN ip: " LAN_IP
@@ -280,6 +289,9 @@ pctCreateAlpine(){
 		local TEMPLATE=($(ls /var/lib/vz/template/cache/alpine-3.18*.tar.xz))
 	fi
 	pctCreate $1 "${TEMPLATE[-1]}" "$2" "$3"
+
+	@ lxc-attach $ID apk update
+	@ lxc-attach $ID apk upgrade
 }
 
 

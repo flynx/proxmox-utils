@@ -23,18 +23,10 @@ DFL_CTHOSTNAME=${DFL_CTHOSTNAME:=gate}
 DFL_WAN_IP=${DFL_WAN_IP:=192.168.1.101/24}
 DFL_WAN_GATE=${DFL_WAN_GATE:=192.168.1.252}
 
-# these can be:
-#	<empty>
-#	<IP>/<mask>
-#	dhcp
 DFL_ADMIN_IP=${DFL_ADMIN_IP:=10.0.0.2/24}
 ADMIN_GATE=-
 DFL_LAN_IP=${DFL_LAN_IP:=10.1.1.2/24}
 LAN_GATE=-
-
-DFL_WAN_BRIDGE=${DFL_WAN_BRIDGE:=2}
-DFL_LAN_BRIDGE=${DFL_LAN_BRIDGE:=0}
-DFL_ADMIN_BRIDGE=${DFL_ADMIN_BRIDGE:=1}
 
 REBOOT=${REBOOT:=1}
 
@@ -43,9 +35,6 @@ readVars
 
 #----------------------------------------------------------------------
 
-# XXX should we set the initial ip as 10.x.x.2/23, dhcp or empty???
-#	--net0 name=lan,bridge=vmbr${LAN_BRIDGE},firewall=1,ip=10.1.1.2/24,type=veth \
-#	--net1 name=admin,bridge=vmbr${ADMIN_BRIDGE},firewall=1,ip=10.0.0.2/24,type=veth \
 OPTS_STAGE_1="\
 	--hostname $CTHOSTNAME \
 	--memory 128 \
@@ -67,36 +56,32 @@ OPTS_STAGE_2="\
 
 #----------------------------------------------------------------------
 
-echo Building config...
+echo "# Building config..."
 buildAssets "$TEMPLATE_DIR" "$ASSETS_DIR"
 
-echo Creating CT...
+echo "# Creating CT..."
 pctCreateAlpine $ID "${OPTS_STAGE_1}" "$PASS"
 
-echo Updating container...
-@ lxc-attach $ID apk update
-@ lxc-attach $ID apk upgrade
-
-echo Installing dependencies...
+echo "# Installing dependencies..."
 @ lxc-attach $ID apk add bash bridge iptables traefik
 
-echo Copying assets...
+echo "# Copying assets..."
 @ pct-push-r $ID ./assets /
 
-echo Setup: traefik...
+echo "# Setup: traefik..."
 @ lxc-attach $ID rc-update add traefik
 @ lxc-attach $ID rc-service traefik start
 
-echo Setup: iptables...
+echo "# Setup: iptables..."
 @ lxc-attach $ID rc-update add iptables
 @ lxc-attach $ID bash /root/routing.sh
 @ lxc-attach $ID rc-service iptables save
 @ lxc-attach $ID rc-service iptables start
 
-echo "Post config..."
+echo "# Post config..."
 pctSet $ID "${OPTS_STAGE_2}" $REBOOT
 
-echo Done.
+echo "# Done."
 
 
 
