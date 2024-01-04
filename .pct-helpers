@@ -156,6 +156,8 @@ getLatestTemplate(){
 
 	latest=$(pveam list local | grep -o "^.*$latest")
 
+	echo Using: $latest
+
 	[ -z $2 ] \
 		|| eval "$2=${latest}"
 }
