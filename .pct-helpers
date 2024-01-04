@@ -142,6 +142,21 @@ normpath(){
 #----------------------------------------------------------------------
 
 #
+#	getLatestTemplate PATTERN [VAR]
+#
+getLatestTemplate(){
+	local pattern=$1
+	local tamplates=($(pveam available | grep $1))
+	local latest=${templates[-1]}
+
+	pvaem download local ${latest}
+
+	[ -z $2 ] \
+		|| eval "$2=${latest}"
+}
+
+
+#
 #	xread [-n] MSG VAR
 #
 xread(){
