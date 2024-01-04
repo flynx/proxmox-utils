@@ -145,6 +145,7 @@ normpath(){
 #	getLatestTemplate PATTERN [VAR]
 #
 getLatestTemplate(){
+	IFS=$'\n'
 	local pattern=$1
 	local tamplates=($(pveam available | grep $1))
 	local latest=${templates[-1]}
