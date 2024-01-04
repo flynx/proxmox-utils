@@ -150,7 +150,7 @@ getLatestTemplate(){
 	local tamplates=($(pveam available | grep $1))
 	local latest=${templates[-1]}
 
-	pvaem download local ${latest}
+	pveam download local ${latest}
 
 	[ -z $2 ] \
 		|| eval "$2=${latest}"
