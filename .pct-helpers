@@ -156,8 +156,6 @@ getLatestTemplate(){
 
 	latest=$(pveam list local | grep -o "^.*$latest")
 
-	echo Using: $latest
-
 	[ -z $2 ] \
 		|| eval "$2=${latest}"
 }
@@ -329,7 +327,7 @@ pctCreateAlpine(){
 	local TEMPLATE
 	getLatestTemplate alpine TEMPLATE
 
-	pctCreate $1 "${TEMPLATE[-1]}" "$2" "$3"
+	pctCreate $1 "${TEMPLATE}" "$2" "$3"
 
 	@ lxc-attach $1 apk update
 	@ lxc-attach $1 apk upgrade
