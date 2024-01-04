@@ -147,7 +147,8 @@ normpath(){
 getLatestTemplate(){
 	IFS=$'\n'
 	local pattern=$1
-	local tamplates=($(pveam available | grep $1))
+	local tamplates=($(pveam available | grep ''${1}'.*$'))
+	# XXX this still includes "system   .."
 	local latest=${templates[-1]}
 
 	pveam download local ${latest}
