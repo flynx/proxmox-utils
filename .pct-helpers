@@ -154,7 +154,8 @@ getLatestTemplate(){
 
 	@ pveam download local ${latest}
 
-	latest=$(pveam list local | grep -o "^.*$latest")
+	#latest=$(pveam list local | grep -o "^.*$latest")
+	latest=/var/lib/vz/template/cache/$latest
 
 	[ -z $2 ] \
 		|| eval "$2=${latest}"
