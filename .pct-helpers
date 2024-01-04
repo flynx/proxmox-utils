@@ -144,13 +144,17 @@ normpath(){
 #
 #	getLatestTemplate PATTERN [VAR]
 #
+# see:
+#	https://pve.proxmox.com/wiki/Linux_Container
 getLatestTemplate(){
 	IFS=$'\n'
 	local pattern=$1
 	local templates=($(pveam available | grep -o ''${1}'.*$'))
 	local latest=${templates[-1]}
 
-	pveam download local ${latest}
+	@ pveam download local ${latest}
+
+	latest=$(pveam list local | grep -o "^.*$latest")
 
 	[ -z $2 ] \
 		|| eval "$2=${latest}"
@@ -320,11 +324,8 @@ pctCreate(){
 #	pctCreate ID ARGS [PASS]
 #
 pctCreateAlpine(){
-	if [ $DRY_RUN ] ; then
-		local TEMPLATE=(/var/lib/vz/template/cache/alpine-3.18\*.tar.xz)
-	else
-		local TEMPLATE=($(ls /var/lib/vz/template/cache/alpine-3.18*.tar.xz))
-	fi
+	local TEMPLATE
+	getLatestTemplate alpine TEMPLATE
 
 	pctCreate $1 "${TEMPLATE[-1]}" "$2" "$3"
 
