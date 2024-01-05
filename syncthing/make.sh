@@ -72,12 +72,12 @@ echo "# Setup: syncthing..."
 @ lxc-attach $ID rc-update add syncthing
 @ lxc-attach $ID rc-service syncthing start
 
-sleep ${TIMEOUT:=5}
-
 echo "# Setup: dashboard..."
-@ lxc-attach $ID -- sed \
-	-e 's/127\.0\.0\.1:8384/0.0.0.0:8384/g' \
-	-i /var/lib/syncthing/.config/syncthing/config.xml
+sleep ${TIMEOUT:=5}
+@ lxc-attach $ID -- \
+	sed \
+		-e 's/127\.0\.0\.1:8384/0.0.0.0:8384/g' \
+		-i /var/lib/syncthing/.config/syncthing/config.xml
 
 echo "# Post config..."
 pctSet $ID "${OPTS_STAGE_2}" $REBOOT

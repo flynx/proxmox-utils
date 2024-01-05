@@ -17,13 +17,17 @@ gate: ./gate-traefik
 ns: 
 	$@/make.sh
 
+.PHONY: ssh
+ssh: 
+	$@/make.sh
+
 .PHONY: syncthing
 syncthing: 
 	$@/make.sh
 
 
 .PHONY: all
-all: config gate dns syncthing
+all: config gate dns ssh syncthing
 
 
 

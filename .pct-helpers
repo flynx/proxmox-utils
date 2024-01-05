@@ -179,6 +179,24 @@ xread(){
 		&& echo "$2=${!2}"
 }
 
+#
+#	xreadpass VAR
+#
+xreadpass(){
+	local PASS1
+	local PASS2
+	read -sep "password (Enter to skip): " PASS1
+	echo
+	if [ $PASS1 ] ; then
+		read -sep "retype password: " PASS2
+		echo
+		if [[ $PASS1 != $PASS2 ]] ; then
+			echo "ERR: passwords do not match."
+			return 1
+		fi
+		eval ''$1'='${PASS1}''
+	fi
+}
 
 #
 #	readVars
@@ -240,17 +258,8 @@ readVars(){
 
 	# root password...
 	if [ -z $ROOTPASS ] ; then
-		read -sep "root password (Enter to skip): " PASS1
-		echo
-		if [ $PASS1 ] ; then
-			read -sep "retype root password: " PASS2
-			echo
-			if [[ $PASS1 != $PASS2 ]] ; then
-				echo "ERR: passwords do not match."
-				exit 1
-			fi
-			PASS=$PASS1
-		fi
+		xreadpass PASS \
+			|| exit 1
 	else
 		PASS=$ROOTPASS
 	fi
@@ -348,7 +357,7 @@ pctCreateDebian(){
 	sleep ${TIMEOUT:=5}
 
 	@ lxc-attach $1 apt update
-	@ lxc-attach $1 apt upgrade
+	@ lxc-attach $1 -- apt upgrade -y
 }
 pctCreateUbuntu(){
 	local TEMPLATE
@@ -359,7 +368,7 @@ pctCreateUbuntu(){
 	sleep ${TIMEOUT:=5}
 
 	@ lxc-attach $1 apt update
-	@ lxc-attach $1 apt upgrade
+	@ lxc-attach $1 -- apt upgrade -y
 }
 
 
