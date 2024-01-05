@@ -27,7 +27,7 @@ syncthing:
 
 
 .PHONY: all
-all: config gate dns ssh syncthing
+all: config gate ns ssh syncthing
 
 
 
