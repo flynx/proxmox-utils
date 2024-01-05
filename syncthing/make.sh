@@ -22,7 +22,7 @@ source ../.pct-helpers
 #----------------------------------------------------------------------
 
 DFL_ID=${DFL_ID:=301}
-DFL_CTHOSTNAME=${CTHOSTNAME:=${DFL_CTHOSTNAME:=syncthing}}
+DFL_CTHOSTNAME=${DFL_CTHOSTNAME:=syncthing}
 
 DFL_RAM=${RAM:=${DFL_RAM:=1024}}
 DFL_SWAP=${SWAP:=${DFL_SWAP:=$RAM}}
