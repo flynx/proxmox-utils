@@ -21,8 +21,12 @@ source ../.pct-helpers
 
 #----------------------------------------------------------------------
 
-DFL_ID=${DFL_ID:=100}
-DFL_CTHOSTNAME=${NS_HOSTNAME:=${DFL_CTHOSTNAME:=ns}}
+DFL_ID=${DFL_ID:=301}
+DFL_CTHOSTNAME=${NS_HOSTNAME:=${DFL_CTHOSTNAME:=syncthing}}
+
+DFL_RAM=${RAM:=${DFL_RAM:=1024}}
+DFL_SWAP=${SWAP:=${DFL_SWAP:=$RAM}}
+DFL_DRIVE=${DRIVE:=${DFL_DRIVE:=8}}
 
 WAN_IP=-
 WAN_GATE=-
@@ -40,12 +44,12 @@ readVars
 
 OPTS_STAGE_1="\
 	--hostname $CTHOSTNAME \
-	--memory 512 \
-	--swap 512 \
+	--memory $RAM \
+	--swap $SWAP \
 	--net0 name=lan,bridge=vmbr0,firewall=1,ip=dhcp,type=veth \
 	--net1 name=admin,bridge=vmbr1,firewall=1,ip=dhcp,type=veth \
 	--storage local-lvm \
-	--rootfs local-lvm:0.5 \
+	--rootfs local-lvm:$DRIVE \
 	--unprivileged 1 \
 	${PCT_EXTRA} \
 "

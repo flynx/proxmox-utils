@@ -24,6 +24,10 @@ source ../.pct-helpers
 DFL_ID=${DFL_ID:=100}
 DFL_CTHOSTNAME=${NS_HOSTNAME:=${DFL_CTHOSTNAME:=ns}}
 
+RAM=128
+SWAP=$RAM
+DRIVE=0.5
+
 WAN_IP=-
 WAN_GATE=-
 DFL_ADMIN_IP=${DFL_ADMIN_IP:=10.0.0.1/24}
@@ -41,12 +45,12 @@ readVars
 
 OPTS_STAGE_1="\
 	--hostname $CTHOSTNAME \
-	--memory 128 \
-	--swap 128 \
+	--memory $RAM \
+	--swap $SWAP \
 	--net0 name=lan,bridge=vmbr0,firewall=1${LAN_GATE:+,gw=$LAN_GATE}${LAN_IP:+,ip=$LAN_IP},type=veth \
 	--net1 name=admin,bridge=vmbr1,firewall=1${ADMIN_IP:+,ip=$ADMIN_IP},type=veth \
 	--storage local-lvm \
-	--rootfs local-lvm:0.5 \
+	--rootfs local-lvm:$DRIVE \
 	--unprivileged 1 \
 	${PCT_EXTRA} \
 "

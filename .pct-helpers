@@ -213,6 +213,11 @@ readVars(){
 	xread "ID: " ID
 	xread "Hostname: " CTHOSTNAME
 
+	# hardware...
+	xread "RAM (MB): " RAM
+	xread "SWAP (MB): " SWAP
+	xread "DRIVE (GB): " DRIVE
+
 	# bridge config...
 	xread "WAN bridge: vmbr" WAN_BRIDGE
 	xread "LAN bridge: vmbr" LAN_BRIDGE
