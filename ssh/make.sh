@@ -67,14 +67,12 @@ echo "# Creating CT..."
 pctCreateDebian $ID "${OPTS_STAGE_1}" "$PASS"
 
 echo "# Installing dependencies..."
-@ lxc-attach $ID apt install vim htop iftop iotop tmux mc
-
-echo "# Setup: sshd..."
-@ lxc-attach $ID -- systemctl enable ssh.socket --now
+@ lxc-attach $ID apt install -y vim htop iftop iotop tmux mc
 
 echo "# Setup: user..."
-xread "ssh user name: " USER
-@ lxc-attach $ID adduser $USER
+xread "ssh user name: " SSH_USER
+[ -z $SSH_USER ] \
+	|| @ lxc-attach $ID adduser $SSH_USER
 
 echo "# Post config..."
 pctSet $ID "${OPTS_STAGE_2}" $REBOOT
