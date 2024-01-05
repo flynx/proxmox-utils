@@ -321,7 +321,7 @@ pctCreate(){
 }
 
 #
-#	pctCreate ID ARGS [PASS]
+#	pctCreate<distro> ID ARGS [PASS]
 #
 pctCreateAlpine(){
 	local TEMPLATE
@@ -329,8 +329,32 @@ pctCreateAlpine(){
 
 	pctCreate $1 "$TEMPLATE" "$2" "$3"
 
+	sleep ${TIMEOUT:=5}
+
 	@ lxc-attach $1 apk update
 	@ lxc-attach $1 apk upgrade
+}
+pctCreateDebian(){
+	local TEMPLATE
+	getLatestTemplate debian TEMPLATE
+
+	pctCreate $1 "$TEMPLATE" "$2" "$3"
+
+	sleep ${TIMEOUT:=5}
+
+	@ lxc-attach $1 apt update
+	@ lxc-attach $1 apt upgrade
+}
+pctCreateUbuntu(){
+	local TEMPLATE
+	getLatestTemplate ubuntu TEMPLATE
+
+	pctCreate $1 "$TEMPLATE" "$2" "$3"
+
+	sleep ${TIMEOUT:=5}
+
+	@ lxc-attach $1 apt update
+	@ lxc-attach $1 apt upgrade
 }
 
 
