@@ -24,9 +24,9 @@ source ../.pct-helpers
 DFL_ID=${DFL_ID:=301}
 DFL_CTHOSTNAME=${DFL_CTHOSTNAME:=syncthing}
 
-DFL_RAM=${RAM:=${DFL_RAM:=1024}}
-DFL_SWAP=${SWAP:=${DFL_SWAP:=$RAM}}
-DFL_DRIVE=${DRIVE:=${DFL_DRIVE:=8}}
+DFL_RAM=${DFL_RAM:=1024}
+DFL_SWAP=${DFL_SWAP:=$RAM}
+DFL_DRIVE=${DFL_DRIVE:=8}
 
 WAN_IP=-
 WAN_GATE=-
@@ -62,24 +62,18 @@ OPTS_STAGE_2="\
 
 #----------------------------------------------------------------------
 
-echo "# Building config..."
-buildAssets "$TEMPLATE_DIR" "$ASSETS_DIR"
-
 echo "# Creating CT..."
 pctCreateAlpine $ID "${OPTS_STAGE_1}" "$PASS"
 
 echo "# Installing dependencies..."
 @ lxc-attach $ID apk add bash syncthing
 
-echo "# Copying assets..."
-@ pct-push-r $ID ./assets /
-
 echo "# Setup: dnsmasq..."
 @ lxc-attach $ID rc-update add syncthing
-@ lxc-attach $ID "sed \
-		-e 's/127\.0\.0\.1:8384/0.0.0.0:8384/g' \
-		-i /var/lib/syncthing/.config/syncthing/config.xml"
 @ lxc-attach $ID rc-service syncthing start
+@ lxc-attach $ID -- sed \
+	-e "'s/127\.0\.0\.1:8384/0.0.0.0:8384/g'" \
+	-i /var/lib/syncthing/.config/syncthing/config.xml
 
 echo "# Post config..."
 pctSet $ID "${OPTS_STAGE_2}" $REBOOT
