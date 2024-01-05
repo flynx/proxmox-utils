@@ -350,7 +350,7 @@ pctCreateAlpine(){
 }
 pctCreateDebian(){
 	local TEMPLATE
-	getLatestTemplate debian TEMPLATE
+	getLatestTemplate 'debian-*-standard' TEMPLATE
 
 	pctCreate $1 "$TEMPLATE" "$2" "$3"
 

@@ -39,7 +39,6 @@ REBOOT=${REBOOT:=1}
 
 readVars
 
-xread "ssh user name: " USER
 
 
 #----------------------------------------------------------------------
@@ -74,6 +73,7 @@ echo "# Setup: sshd..."
 @ lxc-attach $ID -- systemctl enable ssh.socket --now
 
 echo "# Setup: user..."
+xread "ssh user name: " USER
 @ lxc-attach $ID adduser $USER
 
 echo "# Post config..."
