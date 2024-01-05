@@ -147,20 +147,19 @@ normpath(){
 # see:
 #	https://pve.proxmox.com/wiki/Linux_Container
 getLatestTemplate(){
-	IFS=$'\n'
+	#IFS=$'\n'
 	local pattern=$1
 	local templates=($(pveam available | grep -o ''${1}'.*$'))
 	local latest=${templates[-1]}
 
 	@ pveam download local ${latest}
 
-	#latest=$(pveam list local | grep -o "^.*$latest")
-	latest=/var/lib/vz/template/cache/$latest
+	latest=$(pveam list local | grep -o "^.*$latest")
+	#latest=($(ls /var/lib/vz/template/cache/${1}*))
 
 	[ -z $2 ] \
 		|| eval "$2=${latest}"
 }
-
 
 #
 #	xread [-n] MSG VAR
@@ -328,7 +327,7 @@ pctCreateAlpine(){
 	local TEMPLATE
 	getLatestTemplate alpine TEMPLATE
 
-	pctCreate $1 "${TEMPLATE}" "$2" "$3"
+	pctCreate $1 "$TEMPLATE" "$2" "$3"
 
 	@ lxc-attach $1 apk update
 	@ lxc-attach $1 apk upgrade
