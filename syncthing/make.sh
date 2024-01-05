@@ -22,7 +22,7 @@ source ../.pct-helpers
 #----------------------------------------------------------------------
 
 DFL_ID=${DFL_ID:=301}
-DFL_CTHOSTNAME=${NS_HOSTNAME:=${DFL_CTHOSTNAME:=syncthing}}
+DFL_CTHOSTNAME=${CTHOSTNAME:=${DFL_CTHOSTNAME:=syncthing}}
 
 DFL_RAM=${RAM:=${DFL_RAM:=1024}}
 DFL_SWAP=${SWAP:=${DFL_SWAP:=$RAM}}
@@ -32,8 +32,8 @@ WAN_IP=-
 WAN_GATE=-
 ADMIN_IP=-
 ADMIN_GATE=-
-DFL_LAN_IP=-
-DFL_LAN_GATE=-
+LAN_IP=-
+LAN_GATE=-
 
 REBOOT=${REBOOT:=1}
 
@@ -76,9 +76,9 @@ echo "# Copying assets..."
 
 echo "# Setup: dnsmasq..."
 @ lxc-attach $ID rc-update add syncthing
-@ lxc-attach $ID sed \
+@ lxc-attach $ID "sed \
 		-e 's/127\.0\.0\.1:8384/0.0.0.0:8384/g' \
-		-i /var/lib/syncthing/.config/syncthing/config.xml
+		-i /var/lib/syncthing/.config/syncthing/config.xml"
 @ lxc-attach $ID rc-service syncthing start
 
 echo "# Post config..."
