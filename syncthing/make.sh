@@ -46,8 +46,8 @@ OPTS_STAGE_1="\
 	--hostname $CTHOSTNAME \
 	--memory $RAM \
 	--swap $SWAP \
-	--net0 name=lan,bridge=vmbr0,firewall=1,ip=dhcp,type=veth \
-	--net1 name=admin,bridge=vmbr1,firewall=1,ip=dhcp,type=veth \
+	--net0 name=lan,bridge=vmbr${LAN_BRIDGE},firewall=1,ip=dhcp,type=veth \
+	--net1 name=admin,bridge=vmbr${ADMIN_BRIDGE},firewall=1,ip=dhcp,type=veth \
 	--storage local-lvm \
 	--rootfs local-lvm:$DRIVE \
 	--unprivileged 1 \
