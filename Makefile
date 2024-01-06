@@ -2,7 +2,7 @@
 
 
 config.global: config.global.example
-	vim "+0r config.global.example" $<
+	vim "+0r config.global.example" $@
 
 
 config: config.global
