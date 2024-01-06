@@ -21,13 +21,17 @@ ns:
 ssh: 
 	$@/make.sh
 
+.PHONY: wireguard
+wireguard: 
+	$@/make.sh
+
 .PHONY: syncthing
 syncthing: 
 	$@/make.sh
 
 
 .PHONY: all
-all: config gate ns ssh syncthing
+all: config gate ns ssh wireguard syncthing
 
 
 
