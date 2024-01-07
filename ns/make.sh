@@ -20,6 +20,7 @@ readConfig
 DFL_ID=${DFL_ID:=100}
 DFL_CTHOSTNAME=${NS_HOSTNAME:=${DFL_CTHOSTNAME:=ns}}
 
+CORES=1
 RAM=128
 SWAP=$RAM
 DRIVE=0.5
@@ -41,6 +42,7 @@ readVars
 
 OPTS_STAGE_1="\
 	--hostname $CTHOSTNAME \
+	--cores $CORES \
 	--memory $RAM \
 	--swap $SWAP \
 	--net0 name=lan,bridge=vmbr${LAN_BRIDGE},firewall=1${LAN_GATE:+,gw=$LAN_GATE}${LAN_IP:+,ip=$LAN_IP},type=veth \

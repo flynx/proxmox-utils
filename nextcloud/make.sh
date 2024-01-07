@@ -20,6 +20,7 @@ readConfig
 DFL_ID=${DFL_ID:=300}
 DFL_CTHOSTNAME=${DFL_CTHOSTNAME:=nextcloud}
 
+DFL_CORES=${DFL_CORES:=2}
 DFL_RAM=${DFL_RAM:=2048}
 DFL_SWAP=${DFL_SWAP:=${DFL_RAM:=2048}}
 DFL_DRIVE=${DFL_DRIVE:=40}
@@ -40,8 +41,8 @@ readVars
 
 # XXX  cores...
 OPTS_STAGE_1="\
-	--cores 2 \
 	--hostname $CTHOSTNAME \
+	--cores $CORES \
 	--memory $RAM \
 	--swap $SWAP \
 	--net0 name=lan,bridge=vmbr${LAN_BRIDGE},firewall=1,ip=dhcp,type=veth \
@@ -65,6 +66,7 @@ buildAssets "$TEMPLATE_DIR" "$ASSETS_DIR"
 echo "# Creating CT..."
 getLatestTemplate '.*-turnkey-nextcloud' TEMPLATE
 pctCreate $ID "$TEMPLATE" "$OPTS_STAGE_1" "$PASS"
+sleep ${TIMEOUT:=5}
 
 echo "# Starting TKL Setup (this may take a few minutes to start)..."
 @ lxc-attach $ID -- bash --login -c exit

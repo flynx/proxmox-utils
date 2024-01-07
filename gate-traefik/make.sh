@@ -20,6 +20,7 @@ readConfig
 DFL_ID=${DFL_ID:=101}
 DFL_CTHOSTNAME=${GATE_HOSTNAME:=${DFL_CTHOSTNAME:=gate}}
 
+CORES=1
 RAM=128
 SWAP=$RAM
 DRIVE=0.5
@@ -41,6 +42,7 @@ readVars
 
 OPTS_STAGE_1="\
 	--hostname $CTHOSTNAME \
+	--cores $CORES \
 	--memory $RAM \
 	--swap $SWAP \
 	--net0 name=wan,bridge=vmbr${WAN_BRIDGE},firewall=1${WAN_GATE:+,gw=${WAN_GATE}}${WAN_IP:+,ip=${WAN_IP}},type=veth \
