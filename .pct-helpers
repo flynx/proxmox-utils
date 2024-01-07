@@ -206,10 +206,10 @@ xreadpass(){
 
 
 #
-# 	tklWaitForSetup MSG
+# 	tklWaitForSetup
 #
 tklWaitForSetup(){
-	printf "$1"
+	printf "# TKL setup, this may take a while"
 	if [ -z $DRY_RUN ] ; then
 		while ! $(lxc-attach $ID -- test -e /etc/inithooks.conf) ; do
 			printf '.'

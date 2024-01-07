@@ -39,7 +39,7 @@ readVars
 
 #----------------------------------------------------------------------
 
-# XXX  cores...
+# NOTE: TKL gui will not function correctly without nesting enabled...
 OPTS_STAGE_1="\
 	--hostname $CTHOSTNAME \
 	--cores $CORES \
@@ -49,11 +49,11 @@ OPTS_STAGE_1="\
 	--storage local-lvm \
 	--rootfs local-lvm:$DRIVE \
 	--unprivileged 1 \
+	--features nesting=1
 	${PCT_EXTRA} \
 "
 
 OPTS_STAGE_2="\
-	--startup order=90,up=10 \
 	--onboot 1 \
 "
 
@@ -91,12 +91,10 @@ sleep ${TIMEOUT:=5}
 # for tkl inithooks doc see:
 # 	https://www.turnkeylinux.org/docs/inithooks
 
-tklWaitForSetup "# TKL setup, this may take a while"
-
-@ pct reboot $ID
+tklWaitForSetup
 
 echo "# Starting TKL UI..."
-@ lxc-attach $ID -- /usr/sbin/trunkey-init
+@ lxc-attach $ID -- /usr/sbin/turnkey-init
 
 
 exit

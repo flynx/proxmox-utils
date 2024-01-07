@@ -53,7 +53,6 @@ OPTS_STAGE_1="\
 "
 
 OPTS_STAGE_2="\
-	--startup order=90,up=10 \
 	--onboot 1 \
 "
 
