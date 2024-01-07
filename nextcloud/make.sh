@@ -94,7 +94,11 @@ sleep ${TIMEOUT:=5}
 tklWaitForSetup
 
 echo "# Starting TKL UI..."
-@ lxc-attach $ID -- /usr/sbin/turnkey-init
+@ lxc-attach $ID -- \
+	HUB_APIKEY=SKIP \
+	APP_DOMAIN=${DOMAIN:=${DFL_DOMAIN:=DEFAULT}} \
+	SEC_UPDATES=${EMAIL:=${DFL_EMAIL}} \
+		/usr/sbin/turnkey-init
 
 
 exit
