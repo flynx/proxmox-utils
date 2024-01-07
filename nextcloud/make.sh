@@ -91,8 +91,18 @@ sleep ${TIMEOUT:=5}
 # for tkl inithooks doc see:
 # 	https://www.turnkeylinux.org/docs/inithooks
 
-#echo "# Starting TKL Setup (this may take a few minutes to start)..."
-#@ lxc-attach $ID -- bash --login -i
+printf "# TKL setup, this may take a while"
+while ! $(lxc-attach $ID -- test -e /etc/inithooks.conf) ; do
+	printf '.'
+	sleep 2
+done
+echo
+
+echo "# Starting TKL Setup (this may take a few minutes to start)..."
+@ lxc-attach $ID -- bash --login -c 'exit'
+
+# XXX the CT will reboot -- wait...
+
 ##@ lxc-attach $ID -- /usr/sbin/trunkey-init
 #
 #echo "# Updating config..."
