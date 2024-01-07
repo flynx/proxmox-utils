@@ -69,8 +69,8 @@ pctCreate $ID "$TEMPLATE" "$OPTS_STAGE_1" "$PASS"
 sleep ${TIMEOUT:=5}
 
 echo "# Starting TKL Setup (this may take a few minutes to start)..."
-@ lxc-attach $ID -- bash --login -c exit
-@ lxc-attach $ID -- /usr/sbin/trunkey-init
+@ lxc-attach $ID -- bash --login -i
+#@ lxc-attach $ID -- /usr/sbin/trunkey-init
 
 echo "# Updating config..."
 # XXX update /var/www/nextcloud/config/config.php
