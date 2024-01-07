@@ -292,6 +292,10 @@ buildAssets(){
 	local ASSETS_DIR=$2
 	ASSETS_DIR=${ASSETS_DIR:=assets}
 
+	if ! [ -e $TEMPLATE_DIR ] ; then
+		return
+	fi
+
 	local TEMPLATES=($(find "$TEMPLATE_DIR" -type f))
 	for file in "${TEMPLATES[@]}" ; do
 		file=${file#${TEMPLATE_DIR}}
