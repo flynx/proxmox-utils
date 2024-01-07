@@ -148,7 +148,7 @@ normpath(){
 #	https://pve.proxmox.com/wiki/Linux_Container
 getLatestTemplate(){
 	#IFS=$'\n'
-	@ pveam update 
+	#@ pveam update 
 
 	local templates=($(pveam available | grep -o ''${1}'.*$'))
 	local latest=${templates[-1]}

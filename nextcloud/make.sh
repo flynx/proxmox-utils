@@ -68,18 +68,18 @@ getLatestTemplate '.*-turnkey-nextcloud' TEMPLATE
 pctCreate $ID "$TEMPLATE" "$OPTS_STAGE_1" "$PASS"
 sleep ${TIMEOUT:=5}
 
-echo "# Starting TKL Setup (this may take a few minutes to start)..."
-@ lxc-attach $ID -- bash --login -i
-#@ lxc-attach $ID -- /usr/sbin/trunkey-init
-
-echo "# Updating config..."
-# XXX update /var/www/nextcloud/config/config.php
-#	- trusted_domains
-#	- trusted_proxies
-@ lxc-attach $ID -- \
-	sed \
-		-e 's/^\(\s*\)\('\''trusted_domains\)/\1'\''trusted_proxies'\'' =>\n\1array (\n\1\1'${GATE_LAN_IP}'\/32\n\1)\n\1\2/' \
-		-i /var/www/nextcloud/config/config.php
+#echo "# Starting TKL Setup (this may take a few minutes to start)..."
+#@ lxc-attach $ID -- bash --login -i
+##@ lxc-attach $ID -- /usr/sbin/trunkey-init
+#
+#echo "# Updating config..."
+## XXX update /var/www/nextcloud/config/config.php
+##	- trusted_domains
+##	- trusted_proxies
+#@ lxc-attach $ID -- \
+#	sed \
+#		-e 's/^\(\s*\)\('\''trusted_domains\)/\1'\''trusted_proxies'\'' =>\n\1array (\n\1\1'${GATE_LAN_IP}'\/32\n\1)\n\1\2/' \
+#		-i /var/www/nextcloud/config/config.php
 
 echo "# Copying assets..."
 @ pct-push-r $ID ./assets /
