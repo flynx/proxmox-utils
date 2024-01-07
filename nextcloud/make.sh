@@ -68,6 +68,9 @@ getLatestTemplate '.*-turnkey-nextcloud' TEMPLATE
 pctCreate $ID "$TEMPLATE" "$OPTS_STAGE_1" "$PASS"
 sleep ${TIMEOUT:=5}
 
+# for tkl inithooks doc see:
+# 	https://www.turnkeylinux.org/docs/inithooks
+
 #echo "# Starting TKL Setup (this may take a few minutes to start)..."
 #@ lxc-attach $ID -- bash --login -i
 ##@ lxc-attach $ID -- /usr/sbin/trunkey-init
