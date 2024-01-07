@@ -92,7 +92,8 @@ sleep ${TIMEOUT:=5}
 # 	https://www.turnkeylinux.org/docs/inithooks
 
 printf "# TKL setup, this may take a while"
-while ! $(lxc-attach $ID -- test -e /etc/inithooks.conf) ; do
+while ! $(lxc-attach $ID -- test -e /etc/inithooks.conf) \
+		&& [[ $(lxc-attach $ID -- cat /etc/inithooks.conf | wc -c) > 2 ]] ; do
 	printf '.'
 	sleep 2
 done
@@ -100,6 +101,8 @@ echo
 
 echo "# Starting TKL Setup (this may take a few minutes to start)..."
 @ lxc-attach $ID -- bash --login -c 'exit'
+
+exit
 
 # XXX the CT will reboot -- wait...
 
