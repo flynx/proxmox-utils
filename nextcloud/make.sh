@@ -93,14 +93,16 @@ sleep ${TIMEOUT:=5}
 
 tklWaitForSetup "# TKL setup, this may take a while"
 
+@ pct reboot $ID
+
 echo "# Starting TKL UI..."
-#@ lxc-attach $ID -- bash --login -c 'exit'
+@ lxc-attach $ID -- /usr/sbin/trunkey-init
+
 
 exit
 
 # XXX the CT will reboot -- wait...
 
-##@ lxc-attach $ID -- /usr/sbin/trunkey-init
 #
 #echo "# Updating config..."
 ## XXX update /var/www/nextcloud/config/config.php

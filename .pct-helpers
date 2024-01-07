@@ -210,16 +210,20 @@ xreadpass(){
 #
 tklWaitForSetup(){
 	printf "$1"
-	while ! $(lxc-attach $ID -- test -e /etc/inithooks.conf) ; do
-		printf '.'
+	if [ -z $DRY_RUN ] ; then
+		while ! $(lxc-attach $ID -- test -e /etc/inithooks.conf) ; do
+			printf '.'
+			sleep 5
+		done
+		printf '+'
 		sleep 5
-	done
-	printf '+'
-	sleep 5
-	while ! [[ $(lxc-attach $ID -- cat /etc/inithooks.conf | wc -c) < 2 ]] ; do
-		printf '.'
-		sleep 5
-	done
+		while ! [[ $(lxc-attach $ID -- cat /etc/inithooks.conf | wc -c) < 2 ]] ; do
+			printf '.'
+			sleep 5
+		done
+	else
+		printf '.+..'
+	fi
 	printf 'ready.\n'
 	sleep 5
 }
