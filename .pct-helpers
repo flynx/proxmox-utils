@@ -148,7 +148,6 @@ normpath(){
 #	https://pve.proxmox.com/wiki/Linux_Container
 getLatestTemplate(){
 	#IFS=$'\n'
-	local pattern=$1
 	local templates=($(pveam available | grep -o ''${1}'.*$'))
 	local latest=${templates[-1]}
 
@@ -195,6 +194,18 @@ xreadpass(){
 			return 1
 		fi
 		eval ''$1'='${PASS1}''
+	fi
+}
+
+# 
+# 	readConfig
+# 
+readConfig(){
+	if [ -z $NO_DEFAULTS ] ; then
+		[ -e ../config.global ] \
+			&& source ../config.global
+		[ -e ./config ] \
+			&& source ./config
 	fi
 }
 

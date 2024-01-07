@@ -29,9 +29,17 @@ wireguard:
 syncthing: 
 	$@/make.sh
 
+.PHONY: nextcloud
+nextcloud: 
+	$@/make.sh
+
+.PHONY: gitea
+gitea: 
+	$@/make.sh
+
 
 .PHONY: all
-all: config gate ns ssh wireguard syncthing
+all: config gate ns ssh wireguard syncthing nextcloud gitea
 
 
 

@@ -1,0 +1,7 @@
+auto lo
+iface lo inet loopback
+
+auto lan
+iface lan inet dhcp
+	hostname $(hostname)
+
