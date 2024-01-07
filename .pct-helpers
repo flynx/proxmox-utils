@@ -186,17 +186,22 @@ xread(){
 xreadpass(){
 	local PASS1
 	local PASS2
-	read -sep "password (Enter to skip): " PASS1
-	echo
-	if [ $PASS1 ] ; then
+	for attempt in 1 2 3 ; do
+		read -sep "password (Enter to skip): " PASS1
+		echo
+		if [ -z $PASS1 ] ; then
+			return
+		fi
 		read -sep "retype password: " PASS2
 		echo
 		if [[ $PASS1 != $PASS2 ]] ; then
 			echo "ERR: passwords do not match."
-			return 1
+			continue
 		fi
 		eval ''$1'='${PASS1}''
-	fi
+		return
+	done
+	return 1
 }
 
 # 
