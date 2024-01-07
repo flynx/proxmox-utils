@@ -93,7 +93,7 @@ sleep ${TIMEOUT:=5}
 
 printf "# TKL setup, this may take a while"
 while ! $(lxc-attach $ID -- test -e /etc/inithooks.conf) \
-		&& [[ $(lxc-attach $ID -- cat /etc/inithooks.conf | wc -c) > 2 ]] ; do
+		|| ! [[ $(lxc-attach $ID -- cat /etc/inithooks.conf | wc -c) < 2 ]] ; do
 	printf '.'
 	sleep 2
 done
