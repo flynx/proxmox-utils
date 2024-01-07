@@ -91,21 +91,10 @@ sleep ${TIMEOUT:=5}
 # for tkl inithooks doc see:
 # 	https://www.turnkeylinux.org/docs/inithooks
 
-printf "# TKL setup, this may take a while"
-while ! $(lxc-attach $ID -- test -e /etc/inithooks.conf) ; do
-	printf '.'
-	sleep 5
-done
-printf '+'
-while ! [[ $(lxc-attach $ID -- cat /etc/inithooks.conf | wc -c) < 2 ]] ; do
-	printf '.'
-	sleep 5
-done
-printf 'ready.\n'
-sleep 5
+tklWaitForSetup "# TKL setup, this may take a while"
 
 echo "# Starting TKL UI..."
-@ lxc-attach $ID -- bash --login -c 'exit'
+#@ lxc-attach $ID -- bash --login -c 'exit'
 
 exit
 

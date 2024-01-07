@@ -204,6 +204,27 @@ xreadpass(){
 	return 1
 }
 
+
+#
+# 	tklWaitForSetup MSG
+#
+tklWaitForSetup(){
+	printf "$1"
+	while ! $(lxc-attach $ID -- test -e /etc/inithooks.conf) ; do
+		printf '.'
+		sleep 5
+	done
+	printf '+'
+	sleep 5
+	while ! [[ $(lxc-attach $ID -- cat /etc/inithooks.conf | wc -c) < 2 ]] ; do
+		printf '.'
+		sleep 5
+	done
+	printf 'ready.\n'
+	sleep 5
+}
+
+
 # 
 # 	readConfig
 # 
