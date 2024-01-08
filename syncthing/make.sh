@@ -49,6 +49,7 @@ OPTS_STAGE_1="\
 	--storage local-lvm \
 	--rootfs local-lvm:$DRIVE \
 	--unprivileged 1 \
+	--features nesting=1 \
 	${PCT_EXTRA} \
 "
 
