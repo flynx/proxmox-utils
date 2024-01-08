@@ -71,13 +71,13 @@ sleep ${TIMEOUT:=5}
 tklWaitForSetup
 
 echo "# Starting TKL UI..."
-@ lxc-attach $ID -- bash -c "HUB_APIKEY=SKIP SEC_UPDATES=SKIP /usr/sbin/turnkey-init"
+@ lxc-attach $ID -- bash -c 'HUB_APIKEY=SKIP SEC_UPDATES=SKIP /usr/sbin/turnkey-init'
 
 echo "# Updating config..."
 # add gate IP to trusted_proxies...
 @ lxc-attach $ID -- bash -c "\
 	sed -i \
-		-e \"/trusted_domains/i\  'trusted_proxies' =>\n  array (\n    '${GATE_LAN_IP}/32',\n  ),\" \
+		-e \"/trusted_domains/i\\  'trusted_proxies' =>\\n  array (\\n    '${GATE_LAN_IP/\/*}\\/32',\\n  ),\" \
 		/var/www/nextcloud/config/config.php"
 # add self IP to trusted_domains -- enable setup from local network...
 IP=${DRY_RUN:=$(lxc-attach $ID -- hostname -I)}
