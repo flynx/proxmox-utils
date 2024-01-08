@@ -70,8 +70,12 @@ sleep ${TIMEOUT:=5}
 
 tklWaitForSetup
 
+
+# XXX this breaks the rest of this script...
 echo "# Starting TKL UI..."
 @ lxc-attach $ID -- bash -c 'HUB_APIKEY=SKIP SEC_UPDATES=SKIP /usr/sbin/turnkey-init'
+sleep 5
+
 
 echo "# Updating config..."
 # add gate IP to trusted_proxies...
