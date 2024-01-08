@@ -32,6 +32,11 @@ ADMIN_GATE=-
 LAN_IP=-
 LAN_GATE=-
 
+# APP_DOMAIN
+# DB_PASS
+# APP_PASS
+# SEC_ALERTS
+
 REBOOT=${REBOOT:=1}
 
 readVars
@@ -71,7 +76,15 @@ sleep ${TIMEOUT:=5}
 tklWaitForSetup
 
 echo "# Starting TKL UI..."
-@ lxc-attach $ID -- bash -c "HUB_APIKEY=SKIP SEC_UPDATES=SKIP /usr/sbin/turnkey-init"
+# XXX might be a good idea to reaaad stuff from config...
+@ lxc-attach $ID -- bash -c "\
+	HUB_APIKEY=SKIP \
+	SEC_UPDATES=SKIP \
+	${APP_DOMAIN:+APP_DOMAIN=${APP_DOMAIN}} \
+	${DB_PASS:+DB_PASS=${DB_PASS}} \
+	${APP_PASS:+APP_PASS=${APP_PASS}} \
+	${SEC_ALERTS:+SEC_ALERTS=${SEC_ALERTS}} \
+		/usr/sbin/turnkey-init"
 
 echo "# Updating config..."
 # add gate IP to trusted_proxies...
