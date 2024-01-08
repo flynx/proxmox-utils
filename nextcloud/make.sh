@@ -83,7 +83,7 @@ echo "# Updating config..."
 IP=${DRY_RUN:=$(lxc-attach $ID -- hostname -I)}
 @ lxc-attach $ID -- bash -c "\
 	sed -z -i \
-		-e \"s/\(trusted_domains[^)]*\)/\1  2 => '${IP/ *}',\n  /\" \
+		-e \"s/\\(trusted_domains[^)]*\\)/\\1  2 => '${IP/ *}',\\n  /\" \
 		/var/www/nextcloud/config/config.php"
 
 echo "# Copying assets..."
@@ -96,7 +96,7 @@ echo "# Disabling fail2ban..."
 
 echo "# Updating system..."
 @ lxc-attach $ID apt update 
-@ lxc-attach $ID -- apt upgrade -y
+@ lxc-attach $ID apt upgrade
 
 echo "# Post config..."
 pctSet $ID "${OPTS_STAGE_2}" $REBOOT
