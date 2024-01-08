@@ -94,26 +94,21 @@ sleep ${TIMEOUT:=5}
 tklWaitForSetup
 
 echo "# Starting TKL UI..."
-@ lxc-attach $ID -- \
+@ lxc-attach $ID -- bash -c "\
 	HUB_APIKEY=SKIP \
-	APP_DOMAIN=${DOMAIN:=${DFL_DOMAIN:=DEFAULT}} \
-	SEC_UPDATES=${EMAIL:=${DFL_EMAIL}} \
-		/usr/sbin/turnkey-init
-
-
-exit
+	SEC_UPDATES=SKIP \
+		/usr/sbin/turnkey-init"
 
 # XXX the CT will reboot -- wait...
 
-#
-#echo "# Updating config..."
-## XXX update /var/www/nextcloud/config/config.php
-##	- trusted_domains
-##	- trusted_proxies
-#@ lxc-attach $ID -- \
-#	sed \
-#		-e 's/^\(\s*\)\('\''trusted_domains\)/\1'\''trusted_proxies'\'' =>\n\1array (\n\1\1'${GATE_LAN_IP}'\/32\n\1)\n\1\2/' \
-#		-i /var/www/nextcloud/config/config.php
+echo "# Updating config..."
+# XXX update /var/www/nextcloud/config/config.php
+#	- trusted_domains
+#	- trusted_proxies
+@ lxc-attach $ID -- bash -c "\
+	sed \
+		-e 's/^\(\s*\)\('\''trusted_domains\)/\1'\''trusted_proxies'\'' =>\n\1array (\n\1\1'${GATE_LAN_IP}'\/32\n\1)\n\1\2/' \
+		-i /var/www/nextcloud/config/config.php"
 
 echo "# Copying assets..."
 @ pct-push-r $ID ./assets /
@@ -122,6 +117,10 @@ echo "# Disabling fail2ban..."
 # NOTE: we do not need this as we'll be running from behind a reverse proxy...
 @ lxc-attach $ID systemctl stop fail2ban
 @ lxc-attach $ID systemctl disable fail2ban
+
+echo "# Updating system..."
+@ lxc-attach $ID apt update 
+@ lxc-attach $ID -- apt upgrade -y
 
 echo "# Post config..."
 pctSet $ID "${OPTS_STAGE_2}" $REBOOT
