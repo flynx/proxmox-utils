@@ -22,7 +22,7 @@ DFL_CTHOSTNAME=${DFL_CTHOSTNAME:=nextcloud}
 
 DFL_CORES=${DFL_CORES:=2}
 DFL_RAM=${DFL_RAM:=2048}
-DFL_SWAP=${DFL_SWAP:=${DFL_RAM:=2048}}
+DFL_SWAP=${DFL_SWAP:=${DFL_RAM}}
 DFL_DRIVE=${DFL_DRIVE:=40}
 
 WAN_IP=-
@@ -70,7 +70,6 @@ sleep ${TIMEOUT:=5}
 
 tklWaitForSetup
 
-# XXX this breaks the rest of this script...
 echo "# Starting TKL UI..."
 @ lxc-attach $ID -- bash -c "HUB_APIKEY=SKIP SEC_UPDATES=SKIP /usr/sbin/turnkey-init"
 
@@ -95,9 +94,9 @@ echo "# Disabling fail2ban..."
 @ lxc-attach $ID systemctl stop fail2ban
 @ lxc-attach $ID systemctl disable fail2ban
 
-#echo "# Updating system..."
-#@ lxc-attach $ID apt update 
-#@ lxc-attach $ID apt upgrade
+echo "# Updating system..."
+@ lxc-attach $ID apt update 
+@ lxc-attach $ID -- apt upgrade -y
 
 echo "# Post config..."
 pctSet $ID "${OPTS_STAGE_2}" $REBOOT

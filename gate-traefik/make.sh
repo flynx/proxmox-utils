@@ -18,6 +18,7 @@ readConfig
 #----------------------------------------------------------------------
 
 DFL_ID=${DFL_ID:=101}
+# XXX revise...
 DFL_CTHOSTNAME=${GATE_HOSTNAME:=${DFL_CTHOSTNAME:=gate}}
 
 CORES=1
@@ -28,8 +29,10 @@ DRIVE=0.5
 DFL_WAN_IP=${DFL_WAN_IP}
 DFL_WAN_GATE=${DFL_WAN_GATE}
 
+# XXX revise...
 DFL_ADMIN_IP=${GATE_ADMIN_IP:=${DFL_ADMIN_IP:=10.0.0.2/24}}
 ADMIN_GATE=-
+# XXX revise...
 DFL_LAN_IP=${GATE_LAN_IP:=${DFL_LAN_IP:=10.1.1.2/24}}
 LAN_GATE=-
 
