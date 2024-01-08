@@ -94,21 +94,17 @@ sleep ${TIMEOUT:=5}
 tklWaitForSetup
 
 echo "# Starting TKL UI..."
-@ lxc-attach $ID -- bash -c "\
-	HUB_APIKEY=SKIP \
-	SEC_UPDATES=SKIP \
-		/usr/sbin/turnkey-init"
-
-# XXX the CT will reboot -- wait...
+@ lxc-attach $ID -- bash -c "HUB_APIKEY=SKIP SEC_UPDATES=SKIP /usr/sbin/turnkey-init"
 
 echo "# Updating config..."
-# XXX update /var/www/nextcloud/config/config.php
-#	- trusted_domains
-#	- trusted_proxies
-@ lxc-attach $ID -- bash -c "\
-	sed \
-		-e 's/^\(\s*\)\('\''trusted_domains\)/\1'\''trusted_proxies'\'' =>\n\1array (\n\1\1'${GATE_LAN_IP}'\/32\n\1)\n\1\2/' \
-		-i /var/www/nextcloud/config/config.php"
+@ lxc-attach $ID -- sed -i \
+	-e "/trusted_domains/i\  'trusted_proxies' =>\n  array (\n    '${GATE_LAN_IP}/32',\n  )," \
+	-e "/trusted_domains[^(]*([^)]*)/i\  'trusted_proxies' =>\n  array (\n    '${GATE_LAN_IP}/32',\n  )," \
+	/var/www/nextcloud/config/config.php
+IP=${DRY_RUN:=$(lxc-attach $ID -- hostname -I)}
+@ lxc-attach $ID -- sed -z -i \
+	-e "s/\(trusted_domains[^)]*\)/\1  2 => '${IP/ *}',\n  /" \
+	/var/www/nextcloud/config/config.php
 
 echo "# Copying assets..."
 @ pct-push-r $ID ./assets /
