@@ -71,12 +71,6 @@ sleep ${TIMEOUT:=5}
 tklWaitForSetup
 
 
-# XXX this breaks the rest of this script...
-echo "# Starting TKL UI..."
-@ lxc-attach $ID -- bash -c 'HUB_APIKEY=SKIP SEC_UPDATES=SKIP /usr/sbin/turnkey-init'
-sleep 5
-
-
 echo "# Updating config..."
 # add gate IP to trusted_proxies...
 @ lxc-attach $ID -- bash -c "\
@@ -98,12 +92,19 @@ echo "# Disabling fail2ban..."
 @ lxc-attach $ID systemctl stop fail2ban
 @ lxc-attach $ID systemctl disable fail2ban
 
-echo "# Updating system..."
-@ lxc-attach $ID apt update 
-@ lxc-attach $ID apt upgrade
+#echo "# Updating system..."
+#@ lxc-attach $ID apt update 
+#@ lxc-attach $ID apt upgrade
 
 echo "# Post config..."
 pctSet $ID "${OPTS_STAGE_2}" $REBOOT
+
+
+# XXX this breaks the rest of this script...
+echo "# Starting TKL UI..."
+#@ lxc-attach $ID -- bash -c 'HUB_APIKEY=SKIP SEC_UPDATES=SKIP /usr/sbin/turnkey-init'
+@ lxc-attach $ID -- bash -c 'HUB_APIKEY=SKIP /usr/sbin/turnkey-init'
+
 
 echo "# Done."
 
