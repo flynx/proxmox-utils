@@ -12,7 +12,9 @@ CLIENT_TPL := templates/client.conf
 CLIENT_DIR := $(SERVER_DIR)/clients/
 
 ENDPOINT_PORT := 51820
-ENDPOINT := 
+ENDPOINT := 1.2.3.4
+# XXX need to generate this...
+CLIENT_IP := 10.42.0.1/32
 CLIENT_IPS := 10.42.0.0/16
 DNS := 10.1.1.1
 ALLOWED_IPS := 0.0.0.0/0
@@ -32,7 +34,7 @@ $(SERVER_CONF): $(SERVER_TPL) $(SERVER_KEY)
 		| sed \
 			-e 's/\$${ENDPOINT_PORT}/$(ENDPOINT_PORT)/g' \
 			-e 's/\$${CLIENT_IPS}/$(subst /,\/,$(CLIENT_IPS))/g' \
-			-e 's/\$${SERVER_PRIVATE_KEY}/'$$(cat "$(SERVER_KEY)" | sed -e 's/\//\\\//')'/g' \
+			-e 's/\$${SERVER_PRIVATE_KEY}/'$$(cat "$(SERVER_KEY)" | sed -e 's/\//\\\//g')'/g' \
 		> "$@"
 
 %.client: $(CLIENT_TPL) $(SERVER_CLIENT_TPL) \
@@ -46,16 +48,16 @@ $(SERVER_CONF): $(SERVER_TPL) $(SERVER_KEY)
 			-e 's/\$${ENDPOINT_PORT}/$(ENDPOINT_PORT)/g' \
 			-e 's/\$${ALLOWED_IPS}/$(subst /,\/,$(ALLOWED_IPS))/g' \
 			-e 's/\$${CLIENT_IP}/$(subst /,\/,$(CLIENT_IP))/g' \
-			-e 's/\$${CLIENT_PRIVATE_KEY}/'$$(cat "$(CLIENT_DIR)/$*_id" | sed -e 's/\//\\\//')'/g' \
-			-e 's/\$${SERVER_PUBLIC_KEY}/'$$(cat "$(SERVER_PUBLIC_KEY)" | sed -e 's/\//\\\//')'/g' \
+			-e 's/\$${CLIENT_PRIVATE_KEY}/'$$(cat "$(CLIENT_DIR)/$*_id" | sed -e 's/\//\\\//g')'/g' \
+			-e 's/\$${SERVER_PUBLIC_KEY}/'$$(cat "$(SERVER_PUBLIC_KEY)" | sed -e 's/\//\\\//g')'/g' \
 		> "$(CLIENT_DIR)/$*.conf"
 	cat "$(SERVER_CLIENT_TPL)" \
 		| sed \
 			-e 's/\$${CLIENT_IP}/$(subst /,\/,$(CLIENT_IP))/g' \
 			-e 's/\$${ENDPOINT}/$(ENDPOINT)/g' \
 			-e 's/\$${ENDPOINT_PORT}/$(ENDPOINT_PORT)/g' \
-			-e 's/\$${CLIENT_PUBLIC_KEY}/'$$(cat "$(CLIENT_DIR)/$*_id.pub" | sed -e 's/\//\\\//')'/g' \
-			-e 's/\$${SERVER_PUBLIC_KEY}/'$$(cat "$(SERVER_PUBLIC_KEY)" | sed -e 's/\//\\\//')'/g' \
+			-e 's/\$${CLIENT_PUBLIC_KEY}/'$$(cat "$(CLIENT_DIR)/$*_id.pub" | sed -e 's/\//\\\//g')'/g' \
+			-e 's/\$${SERVER_PUBLIC_KEY}/'$$(cat "$(SERVER_PUBLIC_KEY)" | sed -e 's/\//\\\//')g'/g' \
 		>> "$(SERVER_CONF)"
 
 
