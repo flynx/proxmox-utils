@@ -35,6 +35,9 @@ LAN_GATE=-
 
 REBOOT=${REBOOT:=1}
 
+DFL_ENDPOINT=${DFL_ENDPOINT:=${DOMAIN}}
+xread "Wireguard endpoint: " ENDPOINT
+
 readVars
 
 
@@ -80,7 +83,7 @@ echo "# Copying assets..."
 echo "# Setup: wireguard default profile..."
 @ lxc-attach $ID -- bash -c "cd /root && \
 	ENDPOINT_PORT=51820
-	ENDPOINT=${DOMAIN}
+	ENDPOINT=${ENDPOINT}
 	CLIENT_IP=10.42.0.1/32
 	DNS=${NS_LAN_IP}
 	ALLOWED_IPS=0.0.0.0/0
