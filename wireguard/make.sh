@@ -69,26 +69,32 @@ echo "# Creating CT..."
 pctCreateAlpine $ID "${OPTS_STAGE_1}" "$PASS"
 
 echo "# Installing dependencies..."
-@ lxc-attach $ID apk add iptables wireguard-tools-wg-quick
+@ lxc-attach $ID apk add iptables wireguard-tools-wg-quick make
 
 echo "# Copying assets..."
 @ pct-push-r $ID ./assets /
 
 #echo "# Setup: wireguard server..."
-#@ lxc-attach $ID -- bash -c 'wg genkey | tee server.privatekey | wg pubkey > server.publickey' 
+@ lxc-attach $ID -- make server 
 
-# XXX move this into a script on the CT side...
-echo "# Setup: wireguard user..."
-xread "profile name: " WG_PROFILE
-xread "allowed ips: " ALLOWED_IPs
+echo "# Setup: wireguard default profile..."
+@ lxc-attach $ID -- bash -c "\
+	ENDPOINT_PORT=51820
+	ENDPOINT=${DOMAIN}
+	CLIENT_IP=10.42.0.1/32
+	DNS=${NS_LAN_IP}
+	ALLOWED_IPS=0.0.0.0/0
+		make default.client" 
 
-# XXX client:
-# 	- generate keys
-# 	- add to wg0.conf
-# 	- add to $WG_PROFILE.conf
+echo "# client config:"
+@ mkdir -p clients
+@ lxc pull $ID /etc/wireguard/clients/default.conf clients/default.conf
+echo "# ---"
+@ lxc-attach $ID -- cat /etc/wireguard/client/default.conf
+echo "# ---"
 
 #echo "# Setup: bridge device..."
-#@ lxc-attach $ID wg up wg0 
+@ lxc-attach $ID wg-quick up wg0 
 
 echo "# Post config..."
 pctSet $ID "${OPTS_STAGE_2}" $REBOOT

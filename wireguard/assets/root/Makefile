@@ -11,13 +11,14 @@ SERVER_PUBLIC_KEY := $(SERVER_DIR)/server_id.pub
 CLIENT_TPL := templates/client.conf
 CLIENT_DIR := $(SERVER_DIR)/clients/
 
-ENDPOINT_PORT := 51820
-ENDPOINT := 1.2.3.4
+CLIENT_IPS ?= 10.42.0.0/16
+ENDPOINT_PORT ?= 51820
+ENDPOINT ?= 1.2.3.4
+
 # XXX need to generate this...
-CLIENT_IP := 10.42.0.1/32
-CLIENT_IPS := 10.42.0.0/16
-DNS := 10.1.1.1
-ALLOWED_IPS := 0.0.0.0/0
+CLIENT_IP ?= 10.42.0.1/32
+DNS ?= 10.1.1.1
+ALLOWED_IPS ?= 0.0.0.0/0
 
 
 %_id:
