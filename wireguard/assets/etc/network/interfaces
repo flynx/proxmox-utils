@@ -1,0 +1,18 @@
+auto lo
+iface lo inet loopback
+iface lo inet6 loopback
+
+auto admin
+iface admin inet dhcp
+	hostname $(hostname)
+
+auto lan
+iface lan inet dhcp
+	hostname $(hostname)
+
+auto wg0
+iface wg0 inet static
+	pre-up echo 1 > /proc/sys/net/ipv4/ip_forward
+	pre-up wg-quick up wg0
+	hostname $(hostname)
+	post-down wg-quick down wg0

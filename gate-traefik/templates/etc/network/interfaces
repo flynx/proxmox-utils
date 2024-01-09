@@ -19,7 +19,7 @@ iface wan inet static
 	hostname $(hostname)
 
 auto br0
-iface br0 inet stattic
+iface br0 inet static
 	pre-up echo 1 > /proc/sys/net/ipv4/ip_forward
 	pre-up brctl addbr br0
 
