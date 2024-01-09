@@ -75,10 +75,10 @@ echo "# Copying assets..."
 @ pct-push-r $ID ./assets /
 
 #echo "# Setup: wireguard server..."
-@ lxc-attach $ID -- make server 
+@ lxc-attach $ID -- bash -c 'cd /root && make server'
 
 echo "# Setup: wireguard default profile..."
-@ lxc-attach $ID -- bash -c "\
+@ lxc-attach $ID -- bash -c "cd /root && \
 	ENDPOINT_PORT=51820
 	ENDPOINT=${DOMAIN}
 	CLIENT_IP=10.42.0.1/32
