@@ -85,6 +85,7 @@ echo "# Setup: wireguard default profile..."
 	DNS=${NS_LAN_IP}
 	ALLOWED_IPS=0.0.0.0/0
 		make default.client" 
+@ lxc-attach $ID -- chmod 600 /etc/wireguard/wg0.conf
 
 echo "# client config:"
 @ mkdir -p clients
