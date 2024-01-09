@@ -1,14 +1,15 @@
 
 
 
+SERVER_DIR := /etc/wireguard/
 SERVER_TPL := templates/wg0.conf
 SERVER_CLIENT_TPL := templates/wg0-client.conf
-SERVER_CONF := /etc/wireguard/wg0.conf
-SERVER_KEY := /etc/wireguard/server_id
-SERVER_PUBLIC_KEY := /etc/wireguard/server_id.pub
+SERVER_CONF := $(SERVER_DIR)/wg0.conf
+SERVER_KEY := $(SERVER_DIR)/server_id
+SERVER_PUBLIC_KEY := $(SERVER_DIR)/server_id.pub
 
 CLIENT_TPL := templates/client.conf
-CLIENT_DIR := /etc/wireguard/clients/
+CLIENT_DIR := $(SERVER_DIR)/clients/
 
 ENDPOINT_PORT := 51820
 ENDPOINT := 
@@ -17,6 +18,7 @@ DNS := 10.1.1.1
 
 
 %_id:
+	@ mkdir -p $$(dirname $@)
 	wg genkey > $@
 
 %_id.pub: %_id
@@ -34,6 +36,7 @@ $(SERVER_CONF): $(SERVER_TPL) $(SERVER_KEY)
 $(CLIENT_DIR)/%.conf: $(CLIENT_TPL) $(SERVER_CLIENT_TPL) \
 		$(CLIENT_DIR)/%_id $(CLIENT_DIR)/%_id.pub \
 		$(SERVER_CONF) $(SERVER_PUBLIC_KEY)
+	@ mkdir -p $$(dirname $@)
 	cat "$<" \
 		| sed \
 			-e 's/$${DNS}/$(DNS)/g' \
