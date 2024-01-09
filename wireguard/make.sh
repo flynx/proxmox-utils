@@ -74,8 +74,8 @@ echo "# Installing dependencies..."
 echo "# Copying assets..."
 @ pct-push-r $ID ./assets /
 
-echo "# Setup: wireguard server..."
-@ lxc-attach $ID -- bash -c 'wg genkey | tee server.privatekey | wg pubkey > server.publickey' 
+#echo "# Setup: wireguard server..."
+#@ lxc-attach $ID -- bash -c 'wg genkey | tee server.privatekey | wg pubkey > server.publickey' 
 
 # XXX move this into a script on the CT side...
 echo "# Setup: wireguard user..."
