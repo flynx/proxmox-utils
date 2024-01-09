@@ -58,7 +58,7 @@ $(SERVER_CONF): $(SERVER_TPL) $(SERVER_KEY)
 			-e 's/\$${ENDPOINT}/$(ENDPOINT)/g' \
 			-e 's/\$${ENDPOINT_PORT}/$(ENDPOINT_PORT)/g' \
 			-e 's/\$${CLIENT_PUBLIC_KEY}/'$$(cat "$(CLIENT_DIR)/$*_id.pub" | sed -e 's/\//\\\//g')'/g' \
-			-e 's/\$${SERVER_PUBLIC_KEY}/'$$(cat "$(SERVER_PUBLIC_KEY)" | sed -e 's/\//\\\//')g'/g' \
+			-e 's/\$${SERVER_PUBLIC_KEY}/'$$(cat "$(SERVER_PUBLIC_KEY)" | sed -e 's/\//\\\//g')'/g' \
 		>> "$(SERVER_CONF)"
 
 
