@@ -90,7 +90,7 @@ echo "# Setup: iptables..."
 
 echo "# Setup: iptables update script..."
 @ lxc-attach $ID rc-update add local
-@ lxc-attach $ID ln -s /root/routing.sh /etc/local.d/iptables-update.start
+@ lxc-attach $ID -- ln -s /root/routing.sh /etc/local.d/iptables-update.start
 
 echo "# Post config..."
 pctSet $ID "${OPTS_STAGE_2}" $REBOOT

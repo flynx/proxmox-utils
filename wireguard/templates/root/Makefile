@@ -30,6 +30,8 @@ CLIENT_IP ?= 10.42.0.1/32
 	cat $< | wg pubkey > $@
 
 
+# NOTE: the first letter of each pattern is quoted to prevent it from 
+# 	being substituted when generating this Makefile from template.
 $(SERVER_CONF): $(SERVER_TPL) $(SERVER_KEY)
 	cat $< \
 		| sed \
