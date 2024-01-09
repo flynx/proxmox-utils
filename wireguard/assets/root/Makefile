@@ -44,7 +44,7 @@ $(SERVER_CONF): $(SERVER_TPL) $(SERVER_KEY)
 	@ mkdir -p $(CLIENT_DIR)
 	cat "$<" \
 		| sed \
-			-e 's/\$${DNS}/$(patsubst /%,,$(DNS))/g' \
+			-e 's/\$${DNS}/$(DNS)/g' \
 			-e 's/\$${ENDPOINT}/$(ENDPOINT)/g' \
 			-e 's/\$${ENDPOINT_PORT}/$(ENDPOINT_PORT)/g' \
 			-e 's/\$${ALLOWED_IPS}/$(subst /,\/,$(ALLOWED_IPS))/g' \

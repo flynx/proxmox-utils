@@ -85,7 +85,7 @@ echo "# Setup: wireguard default profile..."
 	ENDPOINT_PORT=51820 \
 	ENDPOINT=${ENDPOINT} \
 	CLIENT_IP=10.42.0.1/32 \
-	DNS=${NS_LAN_IP} \
+	DNS=${NS_LAN_IP/\/*} \
 	ALLOWED_IPS=0.0.0.0/0 \
 		make default.client" 
 @ lxc-attach $ID -- chmod 600 /etc/wireguard/wg0.conf
