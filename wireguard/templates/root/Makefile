@@ -15,7 +15,7 @@ CLIENT_IPS ?= 10.42.0.0/16
 ENDPOINT_PORT ?= 51820
 ENDPOINT ?= ${DOMAIN}
 
-DNS ?= ${NS_LAN_IP}
+DNS ?= ${NS_LAN_IPn}
 ALLOWED_IPS ?= 0.0.0.0/0
 # XXX need to generate this...
 CLIENT_IP ?= 10.42.0.1/32
@@ -33,9 +33,9 @@ CLIENT_IP ?= 10.42.0.1/32
 $(SERVER_CONF): $(SERVER_TPL) $(SERVER_KEY)
 	cat $< \
 		| sed \
-			-e 's/\$${ENDPOINT_PORT}/$(ENDPOINT_PORT)/g' \
-			-e 's/\$${CLIENT_IPS}/$(subst /,\/,$(CLIENT_IPS))/g' \
-			-e 's/\$${SERVER_PRIVATE_KEY}/'$$(sed -e 's/\//\\\//g' "$(SERVER_KEY)")'/g' \
+			-e 's/\$${\ENDPOINT_PORT}/$(ENDPOINT_PORT)/g' \
+			-e 's/\$${\CLIENT_IPS}/$(subst /,\/,$(CLIENT_IPS))/g' \
+			-e 's/\$${\SERVER_PRIVATE_KEY}/'$$(sed -e 's/\//\\\//g' "$(SERVER_KEY)")'/g' \
 		> "$@"
 
 %.client: $(CLIENT_TPL) $(SERVER_CLIENT_TPL) \
@@ -44,21 +44,21 @@ $(SERVER_CONF): $(SERVER_TPL) $(SERVER_KEY)
 	@ mkdir -p $(CLIENT_DIR)
 	cat "$<" \
 		| sed \
-			-e 's/\$${DNS}/$(DNS)/g' \
-			-e 's/\$${ENDPOINT}/$(ENDPOINT)/g' \
-			-e 's/\$${ENDPOINT_PORT}/$(ENDPOINT_PORT)/g' \
-			-e 's/\$${ALLOWED_IPS}/$(subst /,\/,$(ALLOWED_IPS))/g' \
-			-e 's/\$${CLIENT_IP}/$(subst /,\/,$(CLIENT_IP))/g' \
-			-e 's/\$${CLIENT_PRIVATE_KEY}/'$$(sed -e 's/\//\\\//g' "$(CLIENT_DIR)/$*_id")'/g' \
-			-e 's/\$${SERVER_PUBLIC_KEY}/'$$(sed -e 's/\//\\\//g' "$(SERVER_PUBLIC_KEY)")'/g' \
+			-e 's/\$${\DNS}/$(DNS)/g' \
+			-e 's/\$${\ENDPOINT}/$(ENDPOINT)/g' \
+			-e 's/\$${\ENDPOINT_PORT}/$(ENDPOINT_PORT)/g' \
+			-e 's/\$${\ALLOWED_IPS}/$(subst /,\/,$(ALLOWED_IPS))/g' \
+			-e 's/\$${\CLIENT_IP}/$(subst /,\/,$(CLIENT_IP))/g' \
+			-e 's/\$${\CLIENT_PRIVATE_KEY}/'$$(sed -e 's/\//\\\//g' "$(CLIENT_DIR)/$*_id")'/g' \
+			-e 's/\$${\SERVER_PUBLIC_KEY}/'$$(sed -e 's/\//\\\//g' "$(SERVER_PUBLIC_KEY)")'/g' \
 		> "$(CLIENT_DIR)/$*.conf"
 	cat "$(SERVER_CLIENT_TPL)" \
 		| sed \
-			-e 's/\$${CLIENT_IP}/$(subst /,\/,$(CLIENT_IP))/g' \
-			-e 's/\$${ENDPOINT}/$(ENDPOINT)/g' \
-			-e 's/\$${ENDPOINT_PORT}/$(ENDPOINT_PORT)/g' \
-			-e 's/\$${CLIENT_PUBLIC_KEY}/'$$(sed -e 's/\//\\\//g' "$(CLIENT_DIR)/$*_id.pub")'/g' \
-			-e 's/\$${SERVER_PUBLIC_KEY}/'$$(sed -e 's/\//\\\//g' "$(SERVER_PUBLIC_KEY)")'/g' \
+			-e 's/\$${\CLIENT_IP}/$(subst /,\/,$(CLIENT_IP))/g' \
+			-e 's/\$${\ENDPOINT}/$(ENDPOINT)/g' \
+			-e 's/\$${\ENDPOINT_PORT}/$(ENDPOINT_PORT)/g' \
+			-e 's/\$${\CLIENT_PUBLIC_KEY}/'$$(sed -e 's/\//\\\//g' "$(CLIENT_DIR)/$*_id.pub")'/g' \
+			-e 's/\$${\SERVER_PUBLIC_KEY}/'$$(sed -e 's/\//\\\//g' "$(SERVER_PUBLIC_KEY)")'/g' \
 		>> "$(SERVER_CONF)"
 
 
