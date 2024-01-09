@@ -13,12 +13,12 @@ CLIENT_DIR := $(SERVER_DIR)/clients/
 
 CLIENT_IPS ?= 10.42.0.0/16
 ENDPOINT_PORT ?= 51820
-ENDPOINT ?= 1.2.3.4
+ENDPOINT ?= ${DOMAIN}
 
+DNS ?= ${NS_LAN_IP}
+ALLOWED_IPS ?= 0.0.0.0/0
 # XXX need to generate this...
 CLIENT_IP ?= 10.42.0.1/32
-DNS ?= 10.1.1.1
-ALLOWED_IPS ?= 0.0.0.0/0
 
 
 %_id:
