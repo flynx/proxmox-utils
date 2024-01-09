@@ -88,7 +88,7 @@ echo "# Setup: wireguard default profile..."
 
 echo "# client config:"
 @ mkdir -p clients
-@ lxc pull $ID /etc/wireguard/clients/default.conf clients/default.conf
+@ pct pull $ID /etc/wireguard/clients/default.conf clients/default.conf
 echo "# ---"
 @ lxc-attach $ID -- cat /etc/wireguard/client/default.conf
 echo "# ---"
