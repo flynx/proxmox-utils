@@ -91,7 +91,7 @@ echo "# client config:"
 @ mkdir -p clients
 @ pct pull $ID /etc/wireguard/clients/default.conf clients/default.conf
 echo "# ---"
-@ lxc-attach $ID -- cat /etc/wireguard/client/default.conf
+@ lxc-attach $ID -- cat /etc/wireguard/clients/default.conf
 echo "# ---"
 
 #echo "# Setup: bridge device..."
