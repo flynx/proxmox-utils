@@ -87,8 +87,8 @@ xread "allowed ips: " ALLOWED_IPs
 # 	- add to wg0.conf
 # 	- add to $WG_PROFILE.conf
 
-echo "# Setup: bridge device..."
-@ lxc-attach $ID wg up wg0 
+#echo "# Setup: bridge device..."
+#@ lxc-attach $ID wg up wg0 
 
 echo "# Post config..."
 pctSet $ID "${OPTS_STAGE_2}" $REBOOT
