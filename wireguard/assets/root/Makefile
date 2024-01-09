@@ -42,14 +42,9 @@ $(SERVER_CONF): $(SERVER_TPL) $(SERVER_KEY)
 		$(CLIENT_DIR)/%_id $(CLIENT_DIR)/%_id.pub \
 		$(SERVER_CONF) $(SERVER_PUBLIC_KEY)
 	@ mkdir -p $(CLIENT_DIR)
-	echo
-	echo "--- $$(sed -e 's/\//\\\//g' "$(CLIENT_DIR)/$*_id")"
-	echo "--- $$(sed -e 's/\//\\\//g' "$(CLIENT_DIR)/$*_id.pub")"
-	echo "--- $$(sed -e 's/\//\\\//g' "$(SERVER_PUBLIC_KEY)")"
-	echo
 	cat "$<" \
 		| sed \
-			-e 's/\$${DNS}/$(DNS)/g' \
+			-e 's/\$${DNS}/$(subst /*,,$(DNS))/g' \
 			-e 's/\$${ENDPOINT}/$(ENDPOINT)/g' \
 			-e 's/\$${ENDPOINT_PORT}/$(ENDPOINT_PORT)/g' \
 			-e 's/\$${ALLOWED_IPS}/$(subst /,\/,$(ALLOWED_IPS))/g' \
