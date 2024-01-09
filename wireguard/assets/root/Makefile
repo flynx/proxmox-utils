@@ -35,13 +35,18 @@ $(SERVER_CONF): $(SERVER_TPL) $(SERVER_KEY)
 		| sed \
 			-e 's/\$${ENDPOINT_PORT}/$(ENDPOINT_PORT)/g' \
 			-e 's/\$${CLIENT_IPS}/$(subst /,\/,$(CLIENT_IPS))/g' \
-			-e 's/\$${SERVER_PRIVATE_KEY}/'$$(cat "$(SERVER_KEY)" | sed -e 's/\//\\\//g')'/g' \
+			-e 's/\$${SERVER_PRIVATE_KEY}/'$$(sed -e 's/\//\\\//g' "$(SERVER_KEY)")'/g' \
 		> "$@"
 
 %.client: $(CLIENT_TPL) $(SERVER_CLIENT_TPL) \
 		$(CLIENT_DIR)/%_id $(CLIENT_DIR)/%_id.pub \
 		$(SERVER_CONF) $(SERVER_PUBLIC_KEY)
 	@ mkdir -p $(CLIENT_DIR)
+	echo
+	echo "--- $$(sed -e 's/\//\\\//g' "$(CLIENT_DIR)/$*_id")"
+	echo "--- $$(sed -e 's/\//\\\//g' "$(CLIENT_DIR)/$*_id.pub")"
+	echo "--- $$(sed -e 's/\//\\\//g' "$(SERVER_PUBLIC_KEY)")"
+	echo
 	cat "$<" \
 		| sed \
 			-e 's/\$${DNS}/$(DNS)/g' \
@@ -49,16 +54,16 @@ $(SERVER_CONF): $(SERVER_TPL) $(SERVER_KEY)
 			-e 's/\$${ENDPOINT_PORT}/$(ENDPOINT_PORT)/g' \
 			-e 's/\$${ALLOWED_IPS}/$(subst /,\/,$(ALLOWED_IPS))/g' \
 			-e 's/\$${CLIENT_IP}/$(subst /,\/,$(CLIENT_IP))/g' \
-			-e 's/\$${CLIENT_PRIVATE_KEY}/'$$(cat "$(CLIENT_DIR)/$*_id" | sed -e 's/\//\\\//g')'/g' \
-			-e 's/\$${SERVER_PUBLIC_KEY}/'$$(cat "$(SERVER_PUBLIC_KEY)" | sed -e 's/\//\\\//g')'/g' \
+			-e 's/\$${CLIENT_PRIVATE_KEY}/'$$(sed -e 's/\//\\\//g' "$(CLIENT_DIR)/$*_id")'/g' \
+			-e 's/\$${SERVER_PUBLIC_KEY}/'$$(sed -e 's/\//\\\//g' "$(SERVER_PUBLIC_KEY)")'/g' \
 		> "$(CLIENT_DIR)/$*.conf"
 	cat "$(SERVER_CLIENT_TPL)" \
 		| sed \
 			-e 's/\$${CLIENT_IP}/$(subst /,\/,$(CLIENT_IP))/g' \
 			-e 's/\$${ENDPOINT}/$(ENDPOINT)/g' \
 			-e 's/\$${ENDPOINT_PORT}/$(ENDPOINT_PORT)/g' \
-			-e 's/\$${CLIENT_PUBLIC_KEY}/'$$(cat "$(CLIENT_DIR)/$*_id.pub" | sed -e 's/\//\\\//g')'/g' \
-			-e 's/\$${SERVER_PUBLIC_KEY}/'$$(cat "$(SERVER_PUBLIC_KEY)" | sed -e 's/\//\\\//g')'/g' \
+			-e 's/\$${CLIENT_PUBLIC_KEY}/'$$(sed -e 's/\//\\\//g' "$(CLIENT_DIR)/$*_id.pub")'/g' \
+			-e 's/\$${SERVER_PUBLIC_KEY}/'$$(sed -e 's/\//\\\//g' "$(SERVER_PUBLIC_KEY)")'/g' \
 		>> "$(SERVER_CONF)"
 
 
