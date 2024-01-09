@@ -1,0 +1,64 @@
+
+
+
+SERVER_TPL := templates/wg0.conf
+SERVER_CLIENT_TPL := templates/wg0-client.conf
+SERVER_CONF := /etc/wireguard/wg0.conf
+SERVER_KEY := /etc/wireguard/server_id
+SERVER_PUBLIC_KEY := /etc/wireguard/server_id.pub
+
+CLIENT_TPL := templates/client.conf
+CLIENT_DIR := /etc/wireguard/clients/
+
+ENDPOINT_PORT := 51820
+ENDPOINT := 
+CLIENT_IPS := 10.42.0.0/16
+DNS := 10.1.1.1
+
+
+%_id:
+	wg genkey > $@
+
+%_id.pub: %_id
+	cat $< | wg pubkey > $@
+
+
+$(SERVER_CONF): $(SERVER_TPL) $(SERVER_KEY)
+	cat $< \
+		| sed \
+			-e 's/$${SERVER_PORT}/$(SERVER_PORT)/g' \
+			-e 's/$${CLIENT_IPS}/$(CLIENT_IPS)/g' \
+			-e 's/$${SERVER_PRIVATE_KEY}/'$$(cat "$(SERVER_KEY)")'/g' \
+		> "$@"
+
+$(CLIENT_DIR)/%.conf: $(CLIENT_TPL) $(SERVER_CLIENT_TPL) \
+		$(CLIENT_DIR)/%_id $(CLIENT_DIR)/%_id.pub \
+		$(SERVER_CONF) $(SERVER_PUBLIC_KEY)
+	cat "$<" \
+		| sed \
+			-e 's/$${DNS}/$(DNS)/g' \
+			-e 's/$${ENDPOINT}/$(ENDPOINT)/g' \
+			-e 's/$${ENDPOINT_PORT}/$(ENDPOINT_PORT)/g' \
+			-e 's/$${ALLOWED_IPS}/$(ALLOWED_IPS)/g' \
+			-e 's/$${CLIENT_IP}/$(CLIENT_IP)/g' \
+			-e 's/$${CLIENT_PRIVATE_KEY}/'$$(cat "$(CLIENT_DIR)/$%_id")'/g' \
+			-e 's/$${SERVER_PUBLIC_KEY}/'$$(cat "$(SERVER_PUBLIC_KEY)")'/g' \
+		> "$@"
+	cat "$(SERVER_CLIENT_TPL)" \
+		| sed \
+			-e 's/$${CLIENT_IP}/$(CLIENT_IP)/g' \
+			-e 's/$${ENDPOINT}/$(ENDPOINT)/g' \
+			-e 's/$${ENDPOINT_PORT}/$(ENDPOINT_PORT)/g' \
+			-e 's/$${CLIENT_PUBLIC_KEY}/'$$(cat "$(CLIENT_DIR)/$%_id.pub")'/g' \
+			-e 's/$${SERVER_PUBLIC_KEY}/'$$(cat "$(SERVER_PUBLIC_KEY)")'/g' \
+		>> "$(SERVER_CONF)"
+
+
+
+server: $(SERVER_CONF)
+
+
+clients:
+
+
+
