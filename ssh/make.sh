@@ -65,7 +65,7 @@ echo "# Creating CT..."
 pctCreateDebian $ID "${OPTS_STAGE_1}" "$PASS"
 
 echo "# Installing dependencies..."
-@ lxc-attach $ID apt install vim htop iftop iotop tmux mc sudo
+@ lxc-attach $ID -- bash -c 'yes | apt install vim htop iftop iotop tmux mc sudo'
 
 echo "# Setup: users..."
 while true ; do
