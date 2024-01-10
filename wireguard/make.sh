@@ -14,7 +14,7 @@ source ../.pct-helpers
 #----------------------------------------------------------------------
 
 # check dependencies...
-would-like dig qrencode
+would-like dig #qrencode
 
 
 #----------------------------------------------------------------------
@@ -91,7 +91,7 @@ echo "# Creating CT..."
 pctCreateAlpine $ID "${OPTS_STAGE_1}" "$PASS"
 
 echo "# Installing dependencies..."
-@ lxc-attach $ID apk add iptables wireguard-tools-wg-quick make bind-tools #libqrencode-tools
+@ lxc-attach $ID apk add iptables wireguard-tools-wg-quick make bind-tools libqrencode
 
 echo "# Copying assets..."
 @ pct-push-r $ID ./assets /
@@ -110,9 +110,9 @@ echo "# client config:"
 # show the profile as a qrcode...
 if [ "$QRCODE" ] \
 		&& which qrencode > /dev/null 2>&1 ; then
-	echo "# default progile:"
-	qrencode -t UTF8 -r clients/default.conf
-	#@ lxc-attach $ID -- qrencode -t UTF8 -r /etc/wireguard/clients/default.conf
+	echo "# default profile:"
+	#qrencode -t UTF8 -r clients/default.conf
+	@ lxc-attach $ID -- qrencode -t UTF8 -r /etc/wireguard/clients/default.conf
 fi
 
 #echo "# Setup: bridge device..."
