@@ -1,6 +1,6 @@
 
 [Peer]
 PublicKey = ${CLIENT_PUBLIC_KEY} 
-AllowedIPs = ${CLIENT_IP}
+AllowedIPs = ${ALLOWED_IPS}
 Endpoint = ${ENDPOINT}:${ENDPOINT_PORT}
 
