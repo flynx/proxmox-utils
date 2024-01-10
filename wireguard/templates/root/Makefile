@@ -11,6 +11,7 @@ SERVER_PUBLIC_KEY := $(SERVER_DIR)/server_id.pub
 CLIENT_TPL := templates/client.conf
 CLIENT_DIR := $(SERVER_DIR)/clients/
 
+QRCODE ?= 1
 
 ENDPOINT ?= ${ENDPOINT}
 ENDPOINT_PORT ?= ${ENDPOINT_PORT}
@@ -61,7 +62,8 @@ $(SERVER_CONF): $(SERVER_TPL) $(SERVER_KEY)
 			-e 's/\$${\CLIENT_PUBLIC_KEY}/'$$(sed -e 's/\//\\\//g' "$(CLIENT_DIR)/$*_id.pub")'/g' \
 			-e 's/\$${\SERVER_PUBLIC_KEY}/'$$(sed -e 's/\//\\\//g' "$(SERVER_PUBLIC_KEY)")'/g' \
 		>> "$(SERVER_CONF)"
-
+	[ -z "$$QRCODE" ] \
+		|| qrencode -t UTF8 -r "$(CLIENT_DIR)/$*.conf"
 
 
 server: $(SERVER_CONF)

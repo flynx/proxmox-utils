@@ -98,20 +98,21 @@ echo "# Copying assets..."
 @ lxc-attach $ID -- chmod +x /root/getFreeClientIP
 
 #echo "# Setup: wireguard server..."
-@ lxc-attach $ID -- bash -c 'cd /root && make server'
+@ lxc-attach $ID -- bash -c "cd /root && make server"
 
 echo "# Setup: wireguard default profile..."
-@ lxc-attach $ID -- bash -c "cd /root && make default.client" 
+@ lxc-attach $ID -- bash -c "cd /root \
+	&& QRCODE=${QRCODE} make default.client" 
 @ lxc-attach $ID -- chmod 600 /etc/wireguard/wg0.conf
 
 echo "# client config:"
 @ mkdir -p clients
 @ pct pull $ID /etc/wireguard/clients/default.conf clients/default.conf
 # show the profile as a qrcode...
-if [ "$QRCODE" ] ; then
-	echo "# default profile:"
-	@ lxc-attach $ID -- qrencode -t UTF8 -r /etc/wireguard/clients/default.conf
-fi
+#if [ "$QRCODE" ] ; then
+#	echo "# default profile:"
+#	@ lxc-attach $ID -- qrencode -t UTF8 -r /etc/wireguard/clients/default.conf
+#fi
 
 #echo "# Setup: bridge device..."
 @ lxc-attach $ID wg-quick up wg0 
