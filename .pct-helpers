@@ -28,6 +28,28 @@ ECHO_PREFIX="### "
 
 
 #----------------------------------------------------------------------
+
+#
+#	check MSG COMMAND ..
+#
+check(){
+	local MSG=$1
+	shift
+	for cmd in "$@" ; do
+		which $cmd > /dev/null 2>&1 \
+			|| eval "echo \"$MSG\"" >&2
+	done
+}
+
+need(){
+	check 'ERROR: "$cmd": needed by this script but not in path.' "$@"
+}
+would-like(){
+	check 'WARNING: "$cmd": is not in path.' "$@"
+}
+
+
+#----------------------------------------------------------------------
 # Fill section...
 #
 # XXX this is quite generic -- move to a more logical place...
@@ -172,11 +194,16 @@ getLatestTemplate(){
 #	xread [-n] MSG VAR
 #
 # This saves all user input variables to the $XREAD_VARS array.
+#
+# XXX add support for keywords like SKIP and DISABLE
 xread(){
 	local non_empty=
 	if [[ $1 == '-n' ]] ; then
 		shift
 		local non_empty=1
+	fi
+	if [[ "${!2}" == "SKIP" ]] ; then
+		return
 	fi
 	if [ -z ${!2} ] ; then
 		eval 'read -ep "'$1'" -i "$DFL_'$2'" '${2}''
@@ -184,6 +211,40 @@ xread(){
 	fi
 	if [ -z $non_empty ] ; then
 		eval ''$2'=${'$2':=$DFL_'$2'}'
+	fi
+	[ $SCRIPTING ] \
+		&& echo "$2=${!2}"
+}
+
+#
+#	xreadYes MSG VAR
+#
+xreadYes(){
+	if [[ "${!2}" == "SKIP" ]] ; then
+		return
+	fi
+	if [ -z ${!2} ] ; then
+		if [ -z $(eval "echo \$DFL_${2}") ] ; then
+			local yes=y
+			local no=N
+			local dfl=
+		else
+			local yes=Y
+			local no=n
+			local dfl=1
+		fi
+		eval 'read -ep "'$1' ('$yes'/'$no') " '${2}''
+		XREAD_VARS+=(${2})
+		# normalize...
+		eval "${2}=${!2,,}"
+		if [[ "${!2}" == 'y' ]] ; then
+			eval "${2}=1"
+		elif [[ ${!2} == 'n' ]] ; then
+			eval "${2}="
+		# set default if empty...
+		else
+			eval "${2}=\${${2}:-$dfl}"
+		fi
 	fi
 	[ $SCRIPTING ] \
 		&& echo "$2=${!2}"

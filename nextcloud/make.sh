@@ -72,12 +72,6 @@ buildAssets
 echo "# Creating CT..."
 pctCreateTurnkey 'nextcloud' $ID "$OPTS_STAGE_1" "$PASS"
 
-#getLatestTemplate '.*-turnkey-nextcloud' TEMPLATE
-#pctCreate $ID "$TEMPLATE" "$OPTS_STAGE_1" "$PASS"
-#sleep ${TIMEOUT:=5}
-#
-#tklWaitForSetup $ID
-
 echo "# Starting TKL UI..."
 # XXX might be a good idea to reaaad stuff from config...
 @ lxc-attach $ID -- bash -c "\

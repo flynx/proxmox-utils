@@ -18,13 +18,9 @@
 # 	- the rest of the CT's are created in order of importance, strting 
 # 	  from CT's needed for access and ending with services.
 CTs := \
-       gate \
-       ns \
-       ssh \
-       wireguard \
-       syncthing \
-       nextcloud \
-       gitea
+       gate ns \
+       ssh wireguard syncthing \
+       nextcloud gitea
 
 
 

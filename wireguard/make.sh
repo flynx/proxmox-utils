@@ -13,10 +13,13 @@ source ../.pct-helpers
 
 #----------------------------------------------------------------------
 
-readConfig
+# check dependencies...
+would-like dig qrencode
 
 
 #----------------------------------------------------------------------
+
+readConfig
 
 DFL_ID=${DFL_ID:=103}
 DFL_CTHOSTNAME=${DFL_CTHOSTNAME:=wireguard}
@@ -36,7 +39,11 @@ LAN_GATE=-
 REBOOT=${REBOOT:=1}
 
 # Wireguard config...
-DFL_ENDPOINT=${DFL_ENDPOINT:=$(dig +short ${DOMAIN:-$DFL_DOMAIN} | tail -1)}
+DFL_ENDPOINT=${DFL_ENDPOINT:=$(\
+	which dig > /dev/null 2>&1 \
+		&& (dig +short ${DOMAIN:-$DFL_DOMAIN} \
+			| tail -1) \
+		|| echo "${DOMAIN:-$DFL_DOMAIN}")}
 xread "Wireguard endpoint: " ENDPOINT
 
 DFL_ENDPOINT_PORT=${DFL_ENDPOINT_PORT:=51820}
@@ -45,6 +52,7 @@ xread "Wireguard endpoint port: " ENDPOINT_PORT
 CLIENT_IPS=${CLIENT_IPS:-10.42.0.0/16}
 ALLOWED_IPS=${ALLOWED_IPS:-0.0.0.0/0,${CLIENT_IPS}}
 
+xreadYes "Show profile as QRcode when done?" QRCODE
 
 readVars
 
@@ -99,6 +107,13 @@ echo "# Setup: wireguard default profile..."
 echo "# client config:"
 @ mkdir -p clients
 @ pct pull $ID /etc/wireguard/clients/default.conf clients/default.conf
+# show the profile as a qrcode...
+if [ "$QRCODE" ] \
+		&& which qrencode > /dev/null 2>&1 ; then
+	echo "# default progile:"
+	cat clients/default.conf \
+		| qrencode -f UTF8
+fi
 
 #echo "# Setup: bridge device..."
 @ lxc-attach $ID wg-quick up wg0 
