@@ -147,6 +147,12 @@ normpath(){
 # see:
 #	https://pve.proxmox.com/wiki/Linux_Container
 getLatestTemplate(){
+	if [ $DRY_RUN ] ; then
+		[ -z $2 ] \
+			|| eval "$2=${CT_TEMPLATE:-\\\$CT_TEMPLATE}"
+		return
+	fi
+
 	#IFS=$'\n'
 	#@ pveam update 
 

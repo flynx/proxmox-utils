@@ -1,5 +1,8 @@
 
 
+%.srv:
+	$*/make.sh
+
 
 config.global: config.global.example
 	vim "+0r config.global.example" $@
@@ -14,28 +17,22 @@ gate: ./gate-traefik
 
 
 .PHONY: ns
-ns: 
-	$@/make.sh
+ns: ns.srv
 
 .PHONY: ssh
-ssh: 
-	$@/make.sh
+ssh: ssh.srv 
 
 .PHONY: wireguard
-wireguard: 
-	$@/make.sh
+wireguard: wireguard.srv 
 
 .PHONY: syncthing
-syncthing: 
-	$@/make.sh
+syncthing: syncthing.srv 
 
 .PHONY: nextcloud
-nextcloud: 
-	$@/make.sh
+nextcloud: nextcloud.srv 
 
 .PHONY: gitea
-gitea: 
-	$@/make.sh
+gitea: gitea.srv
 
 
 .PHONY: all
