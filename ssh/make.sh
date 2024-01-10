@@ -72,7 +72,7 @@ while true ; do
 	xread "user name for ssh: " SSH_USER
 	[ -z $SSH_USER ] \
 		|| @ lxc-attach $ID -- adduser $SSH_USER
-	read -ep "Add another user? [y/N]: " MORE
+	read -ep "Add another user? [y/N] " MORE
 	if [[ $MORE == 'y' ]] ; then
 		continue
 	fi

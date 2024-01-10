@@ -72,7 +72,7 @@ echo "# Creating CT..."
 pctCreateAlpine $ID "${OPTS_STAGE_1}" "$PASS"
 
 echo "# Installing dependencies..."
-@ lxc-attach $ID apk add iptables wireguard-tools-wg-quick make
+@ lxc-attach $ID apk add iptables wireguard-tools-wg-quick make bind-tools
 
 echo "# Copying assets..."
 @ pct-push-r $ID ./assets /

@@ -329,6 +329,44 @@ buildAssets(){
 		return
 	fi
 
+	PATTERNS=()
+	DFL_VARS=(
+		EMAIL
+		DOMAIN
+		CTHOSTNAME
+		GATE_HOSTNAME
+		NS_HOSTNAME
+		GATE_LAN_IP
+		GATE_ADMIN_IP
+		NS_LAN_IP
+		NS_ADMIN_IP
+		WAN_IP
+		WAN_GATE
+		LAN_IP
+		LAN_GATE
+		ADMIN_IP
+		ADMIN_GATE
+	)
+	for var in ${DFL_VARS} ; do
+		PATTERNS+=("-e 's/\\\${${var}}/'\${${var}/\\//\\\\/}'/g'")
+	done
+	IP_VARS=(
+		GATE_LAN_IPn
+		GATE_ADMIN_IPn
+		NS_LAN_IPn
+		NS_ADMIN_IPn
+		WAN_IPn
+		LAN_IPn
+		ADMIN_IPn
+	)
+	for var in ${IP_VARS} ; do
+		PATTERNS+=("-e 's/\\\${${var}}/'\${${var}/\\/*}'/g'")
+	done
+	# args...
+	for var in $@ ; do
+		PATTERNS+=("-e 's/\\\${${var}}/'\${${var}/\\//\\\\/}'/g'")
+	done
+
 	local TEMPLATES=($(find "$TEMPLATE_DIR" -type f))
 	for file in "${TEMPLATES[@]}" ; do
 		file=${file#${TEMPLATE_DIR}}
@@ -339,28 +377,7 @@ buildAssets(){
 		mkdir -p "$(dirname "${ASSETS_DIR}/${file}")"
 		cat "${TEMPLATE_DIR}/${file}" \
 			| sed \
-				-e 's/\${EMAIL}/'${EMAIL/\//\\/}'/g' \
-				-e 's/\${DOMAIN}/'${DOMAIN/\//\\/}'/g' \
-				-e 's/\${CTHOSTNAME}/'${CTHOSTNAME/\//\\/}'/g' \
-				-e 's/\${GATE_HOSTNAME}/'${GATE_HOSTNAME/\//\\/}'/g' \
-				-e 's/\${NS_HOSTNAME}/'${NS_HOSTNAME/\//\\/}'/g' \
-				-e 's/\${GATE_LAN_IP}/'${GATE_LAN_IP/\//\\/}'/g' \
-				-e 's/\${GATE_LAN_IPn}/'${GATE_LAN_IP/\/*}'/g' \
-				-e 's/\${GATE_ADMIN_IP}/'${GATE_ADMIN_IP/\//\\/}'/g' \
-				-e 's/\${GATE_ADMIN_IPn}/'${GATE_ADMIN_IP/\/*}'/g' \
-				-e 's/\${NS_LAN_IP}/'${NS_LAN_IP/\//\\/}'/g' \
-				-e 's/\${NS_LAN_IPn}/'${NS_LAN_IP/\/*}'/g' \
-				-e 's/\${NS_ADMIN_IP}/'${NS_ADMIN_IP/\//\\/}'/g' \
-				-e 's/\${NS_ADMIN_IPn}/'${NS_ADMIN_IP/\/*}'/g' \
-				-e 's/\${WAN_IP}/'${WAN_IP/\//\\/}'/g' \
-				-e 's/\${WAN_IPn}/'${WAN_IP/\/*}'/g' \
-				-e 's/\${WAN_GATE}/'${WAN_GATE/\//\\/}'/g' \
-				-e 's/\${LAN_IP}/'${LAN_IP/\//\\/}'/g' \
-				-e 's/\${LAN_IPn}/'${LAN_IP/\/*}'/g' \
-				-e 's/\${LAN_GATE}/'${LAN_GATE/\//\\/}'/' \
-				-e 's/\${ADMIN_IP}/'${ADMIN_IP/\//\\/}'/g' \
-				-e 's/\${ADMIN_IPn}/'${ADMIN_IP/\/*}'/g' \
-				-e 's/\${ADMIN_GATE}/'${ADMIN_GATE/\//\\/}'/g' \
+				${PATTERNS[@]} \
 			> "${ASSETS_DIR}/${file}"
 	done
 }
