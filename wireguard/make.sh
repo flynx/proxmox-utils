@@ -108,10 +108,8 @@ echo "# client config:"
 @ mkdir -p clients
 @ pct pull $ID /etc/wireguard/clients/default.conf clients/default.conf
 # show the profile as a qrcode...
-if [ "$QRCODE" ] \
-		&& which qrencode > /dev/null 2>&1 ; then
+if [ "$QRCODE" ] ; then
 	echo "# default profile:"
-	#qrencode -t UTF8 -r clients/default.conf
 	@ lxc-attach $ID -- qrencode -t UTF8 -r /etc/wireguard/clients/default.conf
 fi
 
