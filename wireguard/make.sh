@@ -41,6 +41,8 @@ xread "Wireguard endpoint: " ENDPOINT
 DFL_ENDPOINT_PORT=${DFL_ENDPOINT_PORT:=51820}
 xread "Wireguard endpoint port: " ENDPOINT_PORT
 
+CLIENT_IPS=10.42.1.0/16
+
 
 readVars
 
@@ -73,7 +75,7 @@ OPTS_STAGE_2="\
 #----------------------------------------------------------------------
 
 echo "# Building config..."
-buildAssets ENDPOINT ENDPOINT_PORT DNS
+buildAssets ENDPOINT ENDPOINT_PORT DNS CLIENT_IPS
 
 echo "# Creating CT..."
 pctCreateAlpine $ID "${OPTS_STAGE_1}" "$PASS"
@@ -83,6 +85,7 @@ echo "# Installing dependencies..."
 
 echo "# Copying assets..."
 @ pct-push-r $ID ./assets /
+@ lxc-attach $ID -- chmod +x /root/getFreeClientIP
 
 #echo "# Setup: wireguard server..."
 @ lxc-attach $ID -- bash -c 'cd /root && make server'
