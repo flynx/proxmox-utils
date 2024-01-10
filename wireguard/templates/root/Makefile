@@ -13,8 +13,7 @@ CLIENT_DIR := $(SERVER_DIR)/clients/
 
 CLIENT_IPS ?= 10.42.0.0/16
 ENDPOINT_PORT ?= 51820
-#ENDPOINT ?= ${DOMAIN}
-ENDPOINT ?= $(shell dig +short ${DOMAIN} | tail -1)
+ENDPOINT ?= ${ENDPOINT}
 
 DNS ?= ${NS_LAN_IPn}
 ALLOWED_IPS ?= 0.0.0.0/0

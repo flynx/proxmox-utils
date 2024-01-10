@@ -67,7 +67,7 @@ OPTS_STAGE_2="\
 #----------------------------------------------------------------------
 
 echo "# Building config..."
-buildAssets "$TEMPLATE_DIR" "$ASSETS_DIR"
+buildAssets
 
 echo "# Creating CT..."
 getLatestTemplate '.*-turnkey-nextcloud' TEMPLATE

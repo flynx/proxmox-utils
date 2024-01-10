@@ -317,20 +317,18 @@ readVars(){
 
 
 #
-#	buildAssets [TEMPLATES [ASSETS]]
+#	buildAssets [VAR ..]
 #
 buildAssets(){
-	local TEMPLATE_DIR=$1
-	TEMPLATE_DIR=${TEMPLATE_DIR:=templates}
-	local ASSETS_DIR=$2
-	ASSETS_DIR=${ASSETS_DIR:=assets}
+	local template_dir=${TEMPLATE_DIR:-templates}
+	local assets_dir=${ASSETS_DIR:-assets}
 
-	if ! [ -e $TEMPLATE_DIR ] ; then
+	if ! [ -e $template_dir ] ; then
 		return
 	fi
 
-	PATTERNS=()
-	DFL_VARS=(
+	local PATTERNS=()
+	local DFL_VARS=(
 		EMAIL
 		DOMAIN
 		CTHOSTNAME
@@ -347,10 +345,11 @@ buildAssets(){
 		ADMIN_IP
 		ADMIN_GATE
 	)
-	for var in ${DFL_VARS} ; do
-		PATTERNS+=("-e 's/\\\${${var}}/'\${${var}/\\//\\\\/}'/g'")
+	for var in ${DFL_VARS[@]} ; do
+		local val=${!var}
+		PATTERNS+=("-e 's/\\\${${var}}/${val/\\//\\\\/}/g'")
 	done
-	IP_VARS=(
+	local IP_VARS=(
 		GATE_LAN_IPn
 		GATE_ADMIN_IPn
 		NS_LAN_IPn
@@ -359,26 +358,27 @@ buildAssets(){
 		LAN_IPn
 		ADMIN_IPn
 	)
-	for var in ${IP_VARS} ; do
-		PATTERNS+=("-e 's/\\\${${var}}/'\${${var}/\\/*}'/g'")
+	for var in ${IP_VARS[@]} ; do
+		local val=${!var}
+		PATTERNS+=("-e 's/\\\${${var}}/${val/\\/*}/g'")
 	done
 	# args...
 	for var in $@ ; do
-		PATTERNS+=("-e 's/\\\${${var}}/'\${${var}/\\//\\\\/}'/g'")
+		local val=${!var}
+		PATTERNS+=("-e 's/\\\${${var}}/${val/\\//\\\\/}/g'")
 	done
 
-	local TEMPLATES=($(find "$TEMPLATE_DIR" -type f))
+	local TEMPLATES=($(find "$template_dir" -type f))
 	for file in "${TEMPLATES[@]}" ; do
-		file=${file#${TEMPLATE_DIR}}
+		file=${file#${template_dir}}
 		echo Generating: ${file}...
 		[ $DRY_RUN ] \
 			&& continue
 		# ensure the directory exists...
-		mkdir -p "$(dirname "${ASSETS_DIR}/${file}")"
-		cat "${TEMPLATE_DIR}/${file}" \
-			| sed \
-				${PATTERNS[@]} \
-			> "${ASSETS_DIR}/${file}"
+		mkdir -p "$(dirname "${assets_dir}/${file}")"
+		cat "${template_dir}/${file}" \
+			| eval "sed ${PATTERNS[@]}" \
+			> "${assets_dir}/${file}"
 	done
 }
 
