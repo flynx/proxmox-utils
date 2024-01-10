@@ -62,8 +62,10 @@ $(SERVER_CONF): $(SERVER_TPL) $(SERVER_KEY)
 			-e 's/\$${\CLIENT_PUBLIC_KEY}/'$$(sed -e 's/\//\\\//g' "$(CLIENT_DIR)/$*_id.pub")'/g' \
 			-e 's/\$${\SERVER_PUBLIC_KEY}/'$$(sed -e 's/\//\\\//g' "$(SERVER_PUBLIC_KEY)")'/g' \
 		>> "$(SERVER_CONF)"
-	[ -z "$$QRCODE" ] \
-		|| qrencode -t UTF8 -r "$(CLIENT_DIR)/$*.conf"
+	@if [ -z "$$QRCODE" ] ; then \
+		echo "# Profile: $*:" \
+		qrencode -t UTF8 -r "$(CLIENT_DIR)/$*.conf" \
+	fi
 
 
 server: $(SERVER_CONF)
