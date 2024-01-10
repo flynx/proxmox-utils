@@ -4,22 +4,23 @@ A set of scripts for automating setup and tasks in proxmox.
 
 ## TODO
 - revise defaults
-
-## Goals
-- support the basic CT lifecicle:
-  - setup/build/update
-  - run
-  - destroy
+- separate templates/assets into distribution and user directories
+  ...this is needed to allow the user to change the configs without the 
+  fear of them being overwritten by git (similar to how config is handlerd)
+- automate:
+  - create/destory -- DONE
+  - updates
+  - backup/restore
 - basic infrastructure CT's
-  - ns
-  - gate / reverse proxy
+  - ns -- DONE
+  - gate / reverse proxy -- DONE
 - basic service CT's
-  - syncthing
-  - git
-  - nextcloud
-  - vpn
-  - ssh
-  - mail (???)
+  - syncthing -- DONE
+  - git -- DONE
+  - nextcloud -- DONE
+  - vpn -- DONE
+  - ssh -- DONE
+  - mail
 - basic recurent tasks
   - backups
   - archiving
