@@ -325,28 +325,49 @@ readConfig(){
 }
 
 #
-#	saveConfig [-d] CONFIG VAR ..
+#	saveConfig [-d|-a] CONFIG VAR ..
 #
 saveConfig(){
 	local prefix=
-	if [ $1 == '-d' ] ; then
-		prefix=DFL_
-		shift
-	fi
+	local append=
+	while true ; do
+		case $1 in
+			-d|--default)
+				prefix=DFL_
+				shift
+				;;
+			-a|--append)
+				append=1
+				shift
+				;;
+			*)
+				break
+				;;
+		esac
+	done
 	local cfg=$1
 	shift
 
+	if [ -z $append ] ; then
+		printf '' > "$cfg"
+	fi
 	{
 		for var in $@ ; do
 			echo "${prefix}${var}=${!var}"
 		done
-	} > $cfg
+		echo
+	} >> "$cfg"
 }
 
-
 saveLastRunConfig(){
+	local cfg=config.last-run
 	echo "# Saving config to: config.last-run"
-	saveConfig -d config.last-run ${XREAD_VARS[@]}
+	{
+		echo "#"
+		echo "# This file is auto-generated, any changes here will be overwritten." 
+		echo "#"
+	} > "$cfg"
+	saveConfig -d -a "$cfg" ${XREAD_VARS[@]}
 }
 
 #
