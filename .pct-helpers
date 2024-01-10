@@ -171,14 +171,17 @@ getLatestTemplate(){
 #
 #	xread [-n] MSG VAR
 #
+# This saves all user input variables to the $XREAD_VARS array.
 xread(){
 	local non_empty=
 	if [[ $1 == '-n' ]] ; then
 		shift
 		local non_empty=1
 	fi
-	[ -z ${!2} ] \
-		&& eval 'read -ep "'$1'" -i "$DFL_'$2'" '${2}''
+	if [ -z ${!2} ] ; then
+		eval 'read -ep "'$1'" -i "$DFL_'$2'" '${2}''
+		XREAD_VARS+=(${2})
+	fi
 	if [ -z $non_empty ] ; then
 		eval ''$2'=${'$2':=$DFL_'$2'}'
 	fi
@@ -240,14 +243,49 @@ tklWaitForSetup(){
 
 # 
 # 	readConfig
-# 
+#
+# Envioronment variables:
+#	CLEAN_RUN	- if set ignore ./config.last-run
+#	CONFIG		- config file to load last
+#
 readConfig(){
 	if [ -z $NO_DEFAULTS ] ; then
 		[ -e ../config.global ] \
 			&& source ../config.global
 		[ -e ./config ] \
 			&& source ./config
+		# XXX is this the right priority for this???
+		[ -e ./config.last-run ] \
+			&& [ -z $CLEAN_RUN ] \
+			&& source ./config.last-run
+		[ -e "$CONFIG" ] \
+			&& source $CONFIG
 	fi
+}
+
+#
+#	saveConfig [-d] CONFIG VAR ..
+#
+saveConfig(){
+	local prefix=
+	if [ $1 == '-d' ] ; then
+		prefix=DFL_
+		shift
+	fi
+	local cfg=$1
+	shift
+
+	{
+		for var in $@ ; do
+			echo "${prefix}${var}=${!var}"
+		done
+	} > $cfg
+}
+
+
+saveLastRunConfig(){
+	echo "# Saving config to: config.last-run"
+	saveConfig -d config.last-run ${XREAD_VARS[@]}
 }
 
 #

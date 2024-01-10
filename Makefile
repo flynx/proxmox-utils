@@ -1,42 +1,66 @@
+#----------------------------------------------------------------------
+#
+#
+# TODO:
+# - cleanup/destroy
+# - update
+# - backup
+# - pull config
+#
+#----------------------------------------------------------------------
+
+# NOTE: The order here is important: 
+# 	- to avoid bootstrapping network connections gate must be the 
+# 	  first CT to get built to route the rest of CT's to the WAN 
+# 	  connection during the build process.
+# 	- ns should be the second to be built to provide the rest of the
+# 	  CT's with DHCP network configuration.
+# 	- the rest of the CT's are created in order of importance, strting 
+# 	  from CT's needed for access and ending with services.
+CTs := \
+       gate \
+       ns \
+       ssh \
+       wireguard \
+       syncthing \
+       nextcloud \
+       gitea
 
 
-%.srv:
-	$*/make.sh
+
+#----------------------------------------------------------------------
+
+.PHONY: FORCE
+FORCE:
+
+
+%: %/make.sh FORCE
+	$<
 
 
 config.global: config.global.example
 	vim "+0r config.global.example" $@
 
 
+
+#----------------------------------------------------------------------
+# Shorthands...
+
+.PHONY: config
 config: config.global
 
 
 .PHONY: gate
-gate: ./gate-traefik
-	$</make.sh
+gate: gate-traefik
 
 
-.PHONY: ns
-ns: ns.srv
 
-.PHONY: ssh
-ssh: ssh.srv 
-
-.PHONY: wireguard
-wireguard: wireguard.srv 
-
-.PHONY: syncthing
-syncthing: syncthing.srv 
-
-.PHONY: nextcloud
-nextcloud: nextcloud.srv 
-
-.PHONY: gitea
-gitea: gitea.srv
-
+#----------------------------------------------------------------------
 
 .PHONY: all
-all: config gate ns ssh wireguard syncthing nextcloud gitea
+all: config $(CTs) 
 
 
 
+
+#----------------------------------------------------------------------
