@@ -35,7 +35,7 @@ LAN_GATE=-
 
 REBOOT=${REBOOT:=1}
 
-DFL_ENDPOINT=${DFL_ENDPOINT:=$(dig +short DOMAIN | tail -1)}
+DFL_ENDPOINT=${DFL_ENDPOINT:=$(dig +short ${DOMAIN:-$DFL_DOMAIN} | tail -1)}
 xread "Wireguard endpoint: " ENDPOINT
 
 DFL_ENDPOINT_PORT=${DFL_ENDPOINT_PORT:=51820}
