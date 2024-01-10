@@ -216,20 +216,20 @@ xreadpass(){
 
 # Wait for /etc/inithooks.conf to be generated then cleared
 #
-# 	tklWaitForSetup
+# 	tklWaitForSetup ID
 #
 # for tkl inithooks doc see:
 # 	https://www.turnkeylinux.org/docs/inithooks
 tklWaitForSetup(){
 	printf "# TKL setup, this may take a while"
 	if [ -z $DRY_RUN ] ; then
-		while ! $(lxc-attach $ID -- test -e /etc/inithooks.conf) ; do
+		while ! $(lxc-attach $1 -- test -e /etc/inithooks.conf) ; do
 			printf '.'
 			sleep ${TIMEOUT:=5}
 		done
 		printf '+'
 		sleep ${TIMEOUT:=5}
-		while ! [[ $(lxc-attach $ID -- cat /etc/inithooks.conf | wc -c) < 2 ]] ; do
+		while ! [[ $(lxc-attach $1 -- cat /etc/inithooks.conf | wc -c) < 2 ]] ; do
 			printf '.'
 			sleep ${TIMEOUT:=5}
 		done
@@ -479,6 +479,29 @@ pctCreateUbuntu(){
 
 	sleep ${TIMEOUT:=5}
 
+	@ lxc-attach $1 apt update
+	@ lxc-attach $1 -- apt upgrade -y
+}
+
+#
+#	pctCreateTurnkey APP ID ARGS [PASS]
+#
+pctCreateTurnkey(){
+	local app=$1
+	shift
+	local TEMPLATE
+	getLatestTemplate '*-turnkey-'$app TEMPLATE
+
+	pctCreate $1 "$TEMPLATE" "$2" "$3"
+
+	tklWaitForSetup $1
+
+	sleep ${TIMEOUT:=5}
+}
+#
+#	pctUpdateTurnkey ID
+#
+pctUpdateTurnkey(){
 	@ lxc-attach $1 apt update
 	@ lxc-attach $1 -- apt upgrade -y
 }

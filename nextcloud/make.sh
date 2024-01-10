@@ -70,11 +70,13 @@ echo "# Building config..."
 buildAssets
 
 echo "# Creating CT..."
-getLatestTemplate '.*-turnkey-nextcloud' TEMPLATE
-pctCreate $ID "$TEMPLATE" "$OPTS_STAGE_1" "$PASS"
-sleep ${TIMEOUT:=5}
+pctCreateTurnkey 'nextcloud' $ID "$OPTS_STAGE_1" "$PASS"
 
-tklWaitForSetup
+#getLatestTemplate '.*-turnkey-nextcloud' TEMPLATE
+#pctCreate $ID "$TEMPLATE" "$OPTS_STAGE_1" "$PASS"
+#sleep ${TIMEOUT:=5}
+#
+#tklWaitForSetup $ID
 
 echo "# Starting TKL UI..."
 # XXX might be a good idea to reaaad stuff from config...
@@ -109,8 +111,7 @@ echo "# Disabling fail2ban..."
 @ lxc-attach $ID systemctl disable fail2ban
 
 echo "# Updating system..."
-@ lxc-attach $ID apt update 
-@ lxc-attach $ID -- apt upgrade -y
+pctUpdateTurnkey $ID
 
 echo "# Post config..."
 pctSet $ID "${OPTS_STAGE_2}" $REBOOT
