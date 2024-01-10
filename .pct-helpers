@@ -347,7 +347,7 @@ buildAssets(){
 	)
 	for var in ${DFL_VARS[@]} ; do
 		local val=${!var}
-		PATTERNS+=("-e 's/\\\${${var}}/${val/\//\\/}/g'")
+		PATTERNS+=("-e 's/\\\${${var}}/${val//\//\\/}/g'")
 	done
 	local IP_VARS=(
 		GATE_LAN_IPn
@@ -365,7 +365,7 @@ buildAssets(){
 	# args...
 	for var in $@ ; do
 		local val=${!var}
-		PATTERNS+=("-e 's/\\\${${var}}/${val/\//\\/}/g'")
+		PATTERNS+=("-e 's/\\\${${var}}/${val//\//\\/}/g'")
 	done
 
 	local TEMPLATES=($(find "$template_dir" -type f))
