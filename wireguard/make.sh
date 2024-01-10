@@ -73,7 +73,7 @@ OPTS_STAGE_2="\
 #----------------------------------------------------------------------
 
 echo "# Building config..."
-buildAssets ENDPOINT ENDPOINT_PORT
+buildAssets ENDPOINT ENDPOINT_PORT DNS
 
 echo "# Creating CT..."
 pctCreateAlpine $ID "${OPTS_STAGE_1}" "$PASS"
@@ -89,7 +89,6 @@ echo "# Copying assets..."
 
 echo "# Setup: wireguard default profile..."
 @ lxc-attach $ID -- bash -c "cd /root && \
-	ENDPOINT_PORT=51820 \
 	CLIENT_IP=10.42.0.1/32 \
 	ALLOWED_IPS=0.0.0.0/0 \
 		make default.client" 

@@ -1,8 +1,0 @@
-#!/usr/bin/bash
-
-SERVER_TEMPLATE=
-CLIENT_TEMPLATE=
-
-PRIVATE_KEY=
-PUBLIC_KEY=
-
