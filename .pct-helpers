@@ -490,7 +490,7 @@ pctCreateTurnkey(){
 	local app=$1
 	shift
 	local TEMPLATE
-	getLatestTemplate '*-turnkey-'$app TEMPLATE
+	getLatestTemplate '.*-turnkey-'$app TEMPLATE
 
 	pctCreate $1 "$TEMPLATE" "$2" "$3"
 
