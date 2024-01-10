@@ -35,6 +35,7 @@ LAN_GATE=-
 
 REBOOT=${REBOOT:=1}
 
+# Wireguard config...
 DFL_ENDPOINT=${DFL_ENDPOINT:=$(dig +short ${DOMAIN:-$DFL_DOMAIN} | tail -1)}
 xread "Wireguard endpoint: " ENDPOINT
 
@@ -42,6 +43,7 @@ DFL_ENDPOINT_PORT=${DFL_ENDPOINT_PORT:=51820}
 xread "Wireguard endpoint port: " ENDPOINT_PORT
 
 CLIENT_IPS=${CLIENT_IPS:-10.42.0.0/16}
+ALLOWED_IPS=${ALLOWED_IPS:-0.0.0.0/0,${CLIENT_IPS}}
 
 
 readVars
@@ -75,7 +77,7 @@ OPTS_STAGE_2="\
 #----------------------------------------------------------------------
 
 echo "# Building config..."
-buildAssets ENDPOINT ENDPOINT_PORT DNS CLIENT_IPS
+buildAssets ENDPOINT ENDPOINT_PORT DNS CLIENT_IPS ALLOWED_IPS
 
 echo "# Creating CT..."
 pctCreateAlpine $ID "${OPTS_STAGE_1}" "$PASS"
