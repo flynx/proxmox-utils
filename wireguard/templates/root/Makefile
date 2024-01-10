@@ -21,6 +21,10 @@ ALLOWED_IPS ?= 0.0.0.0/0
 CLIENT_IP ?= 10.42.0.1/32
 
 
+test:
+	$(call newIP)
+
+
 %_id:
 	@ mkdir -p $$(dirname $@)
 	wg genkey 2> /dev/null > $@

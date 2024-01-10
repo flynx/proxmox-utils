@@ -1,0 +1,19 @@
+#!/usr/bin/bash
+
+CLIENT_IPS=${CLIENT_IPS}
+
+BASE_IP=${CLIENT_IPS/0\/*}
+IPs=($(cat /etc/wireguard/clients/* \
+	| grep Address \
+	| cut -d'.' -f 4 \
+	| cut -d '/' -f 1 \
+	| sort))
+IPs=${IPs[@]}
+
+i=1
+while [ "$( echo $IPs | fgrep -w $i )" ] ; do
+	i=$(( i + 1 ))
+done
+
+echo $BASE_IP.$i
+
