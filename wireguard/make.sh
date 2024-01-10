@@ -41,7 +41,11 @@ xread "Wireguard endpoint: " ENDPOINT
 DFL_ENDPOINT_PORT=${DFL_ENDPOINT_PORT:=51820}
 xread "Wireguard endpoint port: " ENDPOINT_PORT
 
+
 readVars
+
+
+DNS=${NS_LAN_IP/\/*}
 
 
 

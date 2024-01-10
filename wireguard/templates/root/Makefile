@@ -12,10 +12,10 @@ CLIENT_TPL := templates/client.conf
 CLIENT_DIR := $(SERVER_DIR)/clients/
 
 CLIENT_IPS ?= 10.42.0.0/16
-ENDPOINT_PORT ?= 51820
+ENDPOINT_PORT ?= ${ENDPOINT_PORT}
 ENDPOINT ?= ${ENDPOINT}
 
-DNS ?= ${NS_LAN_IPn}
+DNS ?= ${DNS}
 ALLOWED_IPS ?= 0.0.0.0/0
 # XXX need to generate this...
 CLIENT_IP ?= 10.42.0.1/32
