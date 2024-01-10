@@ -93,10 +93,7 @@ echo "# Copying assets..."
 @ lxc-attach $ID -- bash -c 'cd /root && make server'
 
 echo "# Setup: wireguard default profile..."
-@ lxc-attach $ID -- bash -c "cd /root && \
-	CLIENT_IP=10.42.0.1/32 \
-	ALLOWED_IPS=0.0.0.0/0 \
-		make default.client" 
+@ lxc-attach $ID -- bash -c "cd /root && make default.client" 
 @ lxc-attach $ID -- chmod 600 /etc/wireguard/wg0.conf
 
 echo "# client config:"
