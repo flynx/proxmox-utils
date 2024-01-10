@@ -2,8 +2,8 @@
 
 CLIENT_IPS=${CLIENT_IPS}
 
-BASE_IP=${CLIENT_IPS/0\/*}
-IPs=($(cat /etc/wireguard/clients/* \
+BASE_IP=${CLIENT_IPS/.0\/*}
+IPs=($(cat /etc/wireguard/clients/* 2> /dev/null \
 	| grep Address \
 	| cut -d'.' -f 4 \
 	| cut -d '/' -f 1 \

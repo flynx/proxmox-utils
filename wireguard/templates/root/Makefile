@@ -54,13 +54,13 @@ $(SERVER_CONF): $(SERVER_TPL) $(SERVER_KEY)
 			-e 's/\$${\ENDPOINT}/$(ENDPOINT)/g' \
 			-e 's/\$${\ENDPOINT_PORT}/$(ENDPOINT_PORT)/g' \
 			-e 's/\$${\ALLOWED_IPS}/$(subst /,\/,$(ALLOWED_IPS))/g' \
-			-e 's/\$${\CLIENT_IP}/$(subst /,\/,$(CLIENT_IP))/g' \
+			-e 's/\$${\CLIENT_IP}/$(shell ./getFreeClientIP)\/$(patsubst %/,,$(CLIENT_IP))/g' \
 			-e 's/\$${\CLIENT_PRIVATE_KEY}/'$$(sed -e 's/\//\\\//g' "$(CLIENT_DIR)/$*_id")'/g' \
 			-e 's/\$${\SERVER_PUBLIC_KEY}/'$$(sed -e 's/\//\\\//g' "$(SERVER_PUBLIC_KEY)")'/g' \
 		> "$(CLIENT_DIR)/$*.conf"
 	cat "$(SERVER_CLIENT_TPL)" \
 		| sed \
-			-e 's/\$${\CLIENT_IP}/$(subst /,\/,$(CLIENT_IP))/g' \
+			-e 's/\$${\CLIENT_IP}/$(shell ./getFreeClientIP)\/$(patsubst %/,,$(CLIENT_IP))/g' \
 			-e 's/\$${\ENDPOINT}/$(ENDPOINT)/g' \
 			-e 's/\$${\ENDPOINT_PORT}/$(ENDPOINT_PORT)/g' \
 			-e 's/\$${\CLIENT_PUBLIC_KEY}/'$$(sed -e 's/\//\\\//g' "$(CLIENT_DIR)/$*_id.pub")'/g' \

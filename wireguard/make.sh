@@ -41,7 +41,7 @@ xread "Wireguard endpoint: " ENDPOINT
 DFL_ENDPOINT_PORT=${DFL_ENDPOINT_PORT:=51820}
 xread "Wireguard endpoint port: " ENDPOINT_PORT
 
-CLIENT_IPS=10.42.1.0/16
+CLIENT_IPS=${CLIENT_IPS:-10.42.0.0/16}
 
 
 readVars
