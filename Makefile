@@ -20,7 +20,7 @@
 CTs := \
        gate ns \
        ssh wireguard syncthing \
-       nextcloud gitea
+       nextcloud #gitea
 
 
 
