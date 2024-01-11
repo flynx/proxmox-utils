@@ -492,11 +492,12 @@ buildAssets(){
 		ADMIN_IPn
 	)
 	for var in ${IP_VARS[@]} ; do
+		var=${var%n}
 		local val=${!var}
 		if [[ $val == SKIP ]] ; then
 			val=
 		fi
-		PATTERNS+=("-e 's/\\\${${var}}/${val/\/*}/g'")
+		PATTERNS+=("-e 's/\\\${${var}n}/${val/\/*}/g'")
 	done
 	# args...
 	for var in $@ ; do
