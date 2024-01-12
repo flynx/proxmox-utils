@@ -23,6 +23,25 @@ CTs := \
        nextcloud #gitea
 
 
+DEPENDENCIES = make git pct
+
+
+
+#----------------------------------------------------------------------
+# dependency checking...
+
+require(%):
+	@printf "%-20s %s\n" \
+		"$*" \
+		"`which $* &> /dev/null && echo '- OK' || echo '- FAIL'`"
+
+.PHONY: check-message
+check-message:
+
+.PHONY: check
+check: check-message $(foreach dep,$(DEPENDENCIES),require($(dep)))
+
+
 
 #----------------------------------------------------------------------
 
@@ -35,7 +54,10 @@ FORCE:
 
 
 config.global: config.global.example
-	vim "+0r config.global.example" $@
+	@ [ ! -e "$@" ] \
+		&& cat "$<" > "$@" \
+		&& $(EDITOR) "$@" \
+	|| true
 
 
 
