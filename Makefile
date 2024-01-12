@@ -23,7 +23,7 @@ CTs := \
        nextcloud #gitea
 
 
-DEPENDENCIES = make git pct
+DEPENDENCIES = make git dig pct
 
 
 
