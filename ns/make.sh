@@ -72,7 +72,7 @@ echo "# Creating CT..."
 pctCreateAlpine $ID "${OPTS_STAGE_1}" "$PASS"
 
 echo "# Installing dependencies..."
-@ lxc-attach $ID apk add bash dnsmasq
+@ lxc-attach $ID apk add bash dnsmasq logrotate
 
 echo "# Copying assets..."
 @ pct-push-r $ID ./assets /

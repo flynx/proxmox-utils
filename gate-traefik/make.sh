@@ -73,7 +73,7 @@ echo "# Creating CT..."
 pctCreateAlpine $ID "${OPTS_STAGE_1}" "$PASS"
 
 echo "# Installing dependencies..."
-@ lxc-attach $ID apk add bash bridge iptables traefik
+@ lxc-attach $ID apk add bash bridge iptables traefik logrotate
 
 echo "# Copying assets..."
 @ pct-push-r $ID ./assets /

@@ -64,7 +64,7 @@ echo "# Creating CT..."
 pctCreateAlpine $ID "${OPTS_STAGE_1}" "$PASS"
 
 echo "# Installing dependencies..."
-@ lxc-attach $ID apk add bash syncthing
+@ lxc-attach $ID apk add bash syncthing logrotate
 
 echo "# Setup: syncthing..."
 @ lxc-attach $ID rc-update add syncthing
