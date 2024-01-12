@@ -28,4 +28,46 @@ A set of scripts for automating setup and tasks in proxmox.
   - ...
 
 
+## Prerequisites
+
+### Proxmox
+
+```shell
+sudo apt update && sudo apt upgrade
+```
+
+```shell
+sudo apt install git make 
+```
+
+
+### Network Bridges
+
+`proxmox-utils` expects there to be at least three bridges:
+- WAN - connected to the port that faces the external network (either 
+  directly of via a router)
+- LAN - a virtual bridge, not connected to any physical interfaces
+- ADMIN - connected to a second physical interface used for 
+  administrative purposes.
+
+Note their numbers (i.e. the number in `vmbr#`), this will be needed for 
+setup.
+
+
+### DNS
+
+Add `10.1.1.1` to the DNS on the Proxmox host node after the `127.0.0.1`
+but before whatever external DNS you are using.
+
+
+## Setup
+
+```shell
+sudo make all
+```
+
+
+## Architecture
+
+
 

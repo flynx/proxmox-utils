@@ -17,10 +17,14 @@
 # 	  CT's with DHCP network configuration.
 # 	- the rest of the CT's are created in order of importance, strting 
 # 	  from CT's needed for access and ending with services.
-CTs := \
-       gate ns \
-       ssh wireguard syncthing \
-       nextcloud #gitea
+CORE_CTs := \
+	gate ns
+MINIMAL_CTs := \
+	ssh wireguard 
+APP_CTs := \
+	syncthing nextcloud #gitea
+DEV_CTs := \
+	gitea
 
 
 DEPENDENCIES = make git dig pct
@@ -53,6 +57,9 @@ FORCE:
 	$<
 
 
+%.config: %/config.example
+
+
 config.global: config.global.example
 	@ [ ! -e "$@" ] \
 		&& cat "$<" > "$@" \
@@ -75,8 +82,21 @@ gate: gate-traefik
 
 #----------------------------------------------------------------------
 
+
+.PHONY: core
+core: config $CORE_CTs)
+
+
+.PHONY: minimal
+minimal: core $(BASE_CTs)
+
+
+.PHONY: dev
+dev: minimal $(DEV_CTs) 
+
+
 .PHONY: all
-all: config $(CTs) 
+all: minimal $(APP_CTs)
 
 
 
