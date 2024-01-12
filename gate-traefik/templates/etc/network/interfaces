@@ -2,6 +2,12 @@ auto lo
 iface lo inet loopback
 iface lo inet6 loopback
 
+auto wan
+iface wan inet static
+	address ${WAN_IP}
+	gateway ${WAN_GATE} 
+	hostname $(hostname)
+
 auto admin
 iface admin inet static
 	address ${ADMIN_IP}
@@ -10,12 +16,6 @@ iface admin inet static
 auto lan
 iface lan inet static
 	address ${LAN_IP}
-	hostname $(hostname)
-
-auto wan
-iface wan inet static
-	address ${WAN_IP}
-	gateway ${WAN_GATE} 
 	hostname $(hostname)
 
 auto br0
