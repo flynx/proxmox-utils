@@ -40,7 +40,7 @@ $(SERVER_CONF): $(SERVER_TPL) $(SERVER_KEY)
 			-e 's/\$${\SERVER_PRIVATE_KEY}/'$$(sed -e 's/\//\\\//g' "$(SERVER_KEY)")'/g' \
 		> "$@"
 
-%.client: $(CLIENT_TPL) $(SERVER_CLIENT_TPL) \
+$(CLIENT_DIR)/%.conf: $(CLIENT_TPL) $(SERVER_CLIENT_TPL) \
 		$(CLIENT_DIR)/%_id $(CLIENT_DIR)/%_id.pub \
 		$(SERVER_CONF) $(SERVER_PUBLIC_KEY)
 	@ mkdir -p $(CLIENT_DIR)
@@ -65,6 +65,14 @@ $(SERVER_CONF): $(SERVER_TPL) $(SERVER_KEY)
 	@ [ -z "$$QRCODE" ] \
 		|| ( echo "# Profile: $*" \
 			&& qrencode -t UTF8 -r "$(CLIENT_DIR)/$*.conf" )
+
+
+%.client: $(CLIENT_DIR)/%.conf
+
+
+%.qr: %.client
+	@ ( echo "# Profile: $*" \
+		&& qrencode -t UTF8 -r "$(CLIENT_DIR)/$*.conf" )
 
 
 server: $(SERVER_CONF)
