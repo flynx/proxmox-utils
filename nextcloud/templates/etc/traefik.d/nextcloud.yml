@@ -4,7 +4,7 @@ http:
       entryPoints:
         - https
       service: nextcloud
-      rule: "Host(`nc.${DOMAIN}`)"
+      rule: "Host(`${DOMAIN}`)"
       tls:
         certResolver: letsEncrypt
 

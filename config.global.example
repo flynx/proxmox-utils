@@ -18,9 +18,9 @@
 #
 #------------------------------------------------------------------------
 
-DFL_EMAIL=user@example.com
+EMAIL=user@example.com
 
-DFL_DOMAIN=example.com
+DOMAIN=example.com
 
 DFL_WAN_IP=192.168.1.101/24
 DFL_WAN_GATE=192.168.1.252
@@ -39,6 +39,24 @@ DFL_WAN_GATE=192.168.1.252
 WAN_BRIDGE=
 LAN_BRIDGE=
 ADMIN_BRIDGE=
+
+
+# Web app/service domain configuration
+#
+# Here two optional variables are provided per service:
+# - <SERVICE>_DOMAIN=...
+# 	Overrides the $DOMAIN option above for <SERVICE>
+# - <SERVICE>_SUBDOMAIN=...
+# 	Sets the subdomain of $DOMAIN (or $<SERVICE>_DOMAIN) for <SERVICE>
+#
+
+# Nextcloud
+#NEXTCLOUD_DOMAIN=
+NEXTCLOUD_SUBDOMAIN=nc.
+
+# Gitea
+#GITEA_DOMAIN=
+#GITEA_SUBDOMAIN=
 
 
 # Extra options passed to each CT created.

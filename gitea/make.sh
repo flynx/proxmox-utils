@@ -17,6 +17,8 @@ readConfig
 
 #----------------------------------------------------------------------
 
+webAppConfig gitea
+
 DFL_ID=${DFL_ID:=300}
 DFL_CTHOSTNAME=${DFL_CTHOSTNAME:=gitea}
 

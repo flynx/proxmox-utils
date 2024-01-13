@@ -17,6 +17,8 @@ readConfig
 
 #----------------------------------------------------------------------
 
+webAppConfig Nextcloud
+
 DFL_ID=${DFL_ID:=300}
 DFL_CTHOSTNAME=${DFL_CTHOSTNAME:=nextcloud}
 
@@ -41,6 +43,9 @@ LAN_GATE=SKIP
 REBOOT=${REBOOT:=1}
 
 readVars
+
+# Nextcloud-specific configuration...
+APP_DOMAIN=$DOMAIN
 
 
 #----------------------------------------------------------------------

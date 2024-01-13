@@ -202,7 +202,9 @@ xread(){
 		shift
 		local non_empty=1
 	fi
+	# XXX check DFL_..???
 	if [[ "${!2}" == "SKIP" ]] ; then
+		eval "$2="
 		return
 	fi
 	if [ -z ${!2} ] ; then
@@ -220,7 +222,9 @@ xread(){
 #	xreadYes MSG VAR
 #
 xreadYes(){
+	# XXX check DFL_..???
 	if [[ "${!2}" == "SKIP" ]] ; then
+		eval "$2="
 		return
 	fi
 	if [ -z ${!2} ] ; then
@@ -312,8 +316,12 @@ tklWaitForSetup(){
 #	CLEAN_RUN	- if set ignore ./config.last-run
 #	CONFIG		- config file to load last
 #
+# XXX need this not to make this behave with explicitly set vars...
 readConfig(){
 	if [ -z $NO_DEFAULTS ] ; then
+		local IFS=$'\n'
+		#__ENV=($( (set -o posix ; set | grep -v 'BASHOPTS=') ))
+		#__ENV=($( (declare -xp) ))
 		[ -e ../config.global ] \
 			&& source ../config.global
 		[ -e ./config ] \
@@ -324,6 +332,8 @@ readConfig(){
 			&& source ./config.last-run
 		[ -e "$CONFIG" ] \
 			&& source $CONFIG
+		#eval "${__ENV[@]}"
+		#__ENV=
 	fi
 }
 
@@ -371,6 +381,22 @@ saveLastRunConfig(){
 		echo "#"
 	} > "$cfg"
 	saveConfig -d -a "$cfg" ${XREAD_VARS[@]}
+}
+
+#	webAppConfig NAME
+webAppConfig(){
+	local name=${1^^}
+	eval "${name}_SUBDOMAIN=\${${name}_SUBDOMAIN:=\${DFL_SUB${name}_DOMAIN}}
+		${name}_SUBDOMAIN=\${${name}_SUBDOMAIN:+\${${name}_SUBDOMAIN%.}.}
+		${name}_DOMAIN=\${${name}_DOMAIN:=\${DFL_${name}_DOMAIN}}
+		# prioretize \${name}_*
+		DFL_DOMAIN=\${DFL_DOMAIN:+\${${name}_SUBDOMAIN}\${DFL_DOMAIN}}
+		DFL_DOMAIN=\${DOMAIN:+\${${name}_SUBDOMAIN}\${DOMAIN}}
+		if [ \$${name}_DOMAIN ] ; then
+			DFL_DOMAIN=\${${name}_SUBDOMAIN}\${${name}_DOMAIN}
+		fi"
+	# force check of domain...
+	DOMAIN=
 }
 
 #
