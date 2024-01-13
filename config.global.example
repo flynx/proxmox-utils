@@ -18,14 +18,6 @@
 #
 #------------------------------------------------------------------------
 
-EMAIL=user@example.com
-
-DOMAIN=example.com
-
-DFL_WAN_IP=192.168.1.101/24
-DFL_WAN_GATE=192.168.1.252
-
-
 # CT interface bridge configuration.
 #
 # These are set to the bridge number (the number in 'vmbr#') used for 
@@ -39,6 +31,17 @@ DFL_WAN_GATE=192.168.1.252
 WAN_BRIDGE=
 LAN_BRIDGE=
 ADMIN_BRIDGE=
+
+
+DFL_WAN_IP=192.168.1.101/24
+DFL_WAN_GATE=192.168.1.252
+
+
+# Doman and email configuration
+#
+EMAIL=user@example.com
+
+DOMAIN=example.com
 
 
 # Web app/service domain configuration
@@ -56,7 +59,7 @@ NEXTCLOUD_SUBDOMAIN=nc.
 
 # Gitea
 #GITEA_DOMAIN=
-#GITEA_SUBDOMAIN=
+#GITEA_SUBDOMAIN=git.
 
 
 # Extra options passed to each CT created.
@@ -65,6 +68,9 @@ NEXTCLOUD_SUBDOMAIN=nc.
 #
 # see: 
 # 	man pct
+#
+# Example:
+# 	DFL_PCT_EXTRA="--ssh-public-keys /path/to/autohrized_keys"
 #
 DFL_PCT_EXTRA=SKIP
 

@@ -451,12 +451,25 @@ readVars(){
 	# Gateways can be:
 	#	<empty>
 	#	<IP>
+	# XXX these are the same...
 	xread "WAN ip: " WAN_IP
-	xread "WAN gateway: " WAN_GATE
+	if [[ $WAN_IP != "dhcp" ]] ; then
+		xread "WAN gateway: " WAN_GATE
+	else
+		WAN_GATE=
+	fi
 	xread "LAN ip: " LAN_IP
-	xread "LAN gateway: " LAN_GATE
+	if [[ $LAN_IP != "dhcp" ]] ; then
+		xread "LAN gateway: " LAN_GATE
+	else
+		LAN_GATE=
+	fi
 	xread "ADMIN ip: " ADMIN_IP
-	xread "ADMIN gateway: " ADMIN_GATE
+	if [[ $ADMIN_IP != "dhcp" ]] ; then
+		xread "ADMIN gateway: " ADMIN_GATE
+	else
+		ADMIN_GATE=
+	fi
 
 	# root password...
 	if [ -z $ROOTPASS ] ; then
