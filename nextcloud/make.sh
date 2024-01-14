@@ -100,6 +100,14 @@ IP=$([ -z $DRY_RUN ] && lxc-attach $ID -- hostname -I)
 	sed -z -i \
 		-e \"s/\\(trusted_domains[^)]*\\)/\\1  2 => '${IP/ *}',\\n  /\" \
 		/var/www/nextcloud/config/config.php"
+# remove /index.php from urls...
+# for more info see:
+#	https://docs.nextcloud.com/server/stable/admin_manual/installation/source_installation.html#pretty-urls
+@ lxc-attach $ID -- bash -c "\
+	sed -z -i \
+		-e \"s/\\(trusted_proxies[^)]*\\)/  'htaccess.RewriteBase' => '/',\\n  \\1/\" \
+		/var/www/nextcloud/config/config.php"
+@ lxc-attach $ID -- turnkey-occ maintenance:update:htaccess
 
 echo "# Copying assets..."
 @ pct-push-r $ID ./assets /
