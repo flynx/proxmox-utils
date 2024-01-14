@@ -28,6 +28,29 @@ A set of scripts for automating setup and tasks in proxmox.
   - ...
 
 
+## Architecture
+
+XXX service structure
+
+XXX network
+
+In general `proxmox-utils` splits the configuration into two levels:
+
+
+### CT level  
+
+This level is handled by the `Makefile` and is almost completely automated
+
+
+### Host level
+
+This level depends on the host setup and is currently done manually 
+depending on existing host configuration.
+
+XXX clean setup scripts...
+  
+
+
 ## Prerequisites
 
 ### Proxmox
@@ -44,10 +67,10 @@ sudo apt install git make
 ### Network Bridges
 
 `proxmox-utils` expects there to be at least three bridges:
-- WAN - connected to the port that faces the external network (either 
+- `WAN` - connected to the port that faces the external network (either 
   directly of via a router)
-- LAN - a virtual bridge, not connected to any physical interfaces
-- ADMIN - connected to a second physical interface used for 
+- `LAN` - a virtual bridge, not connected to any physical interfaces
+- `ADMIN` - connected to a second physical interface used for 
   administrative purposes.
 
 Note their numbers (i.e. the number in `vmbr#`), this will be needed for 
@@ -60,14 +83,22 @@ Add `10.1.1.1` to the DNS on the Proxmox host node after the `127.0.0.1`
 but before whatever external DNS you are using.
 
 
+### Firewall
+
+Make sure to allow at least `ssh` access to the host node from the `ADMIN` 
+interface to allow admin CT's access to the host if needed, this is mostly
+needed to allow VPN/ssh administration from outside.
+
+For Proxmox firewall configuration see:
+https://pve.proxmox.com/wiki/Firewall
+
+
 ## Setup
 
 ```shell
 sudo make all
 ```
 
-
-## Architecture
 
 
 
