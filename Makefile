@@ -53,8 +53,8 @@ check: check-message $(foreach dep,$(DEPENDENCIES),require($(dep)))
 FORCE:
 
 
-%: %/make.sh FORCE
-	$<
+%: config %/make.sh FORCE
+	$*/make.sh
 
 
 %.config: %/config.example
