@@ -105,7 +105,7 @@ IP=$([ -z $DRY_RUN ] && lxc-attach $ID -- hostname -I)
 #	https://docs.nextcloud.com/server/stable/admin_manual/installation/source_installation.html#pretty-urls
 @ lxc-attach $ID -- bash -c "\
 	sed -z -i \
-		-e \"s/\\(trusted_proxies[^)]*\\)/  'htaccess.RewriteBase' => '/',\\n  \\1/\" \
+		-e \"s/\\(trusted_proxies[^)]*\\)/  'htaccess.RewriteBase' => '\\/',\\n  \\1/\" \
 		/var/www/nextcloud/config/config.php"
 @ lxc-attach $ID -- turnkey-occ maintenance:update:htaccess
 
