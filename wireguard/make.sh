@@ -106,7 +106,6 @@ echo "# Copying assets..."
 echo "# Setup: wireguard default profile..."
 @ lxc-attach $ID -- bash -c "cd /root \
 	&& QRCODE=${QRCODE} make default.client" 
-@ lxc-attach $ID -- chmod 600 /etc/wireguard/wg0.conf
 
 echo "# client config:"
 @ mkdir -p clients

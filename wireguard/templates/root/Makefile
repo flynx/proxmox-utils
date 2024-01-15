@@ -39,6 +39,7 @@ $(SERVER_CONF): $(SERVER_TPL) $(SERVER_KEY)
 			-e 's/\$${\CLIENT_IPS}/$(subst /,\/,$(CLIENT_IPS))/g' \
 			-e 's/\$${\SERVER_PRIVATE_KEY}/'$$(sed -e 's/\//\\\//g' "$(SERVER_KEY)")'/g' \
 		> "$@"
+	chmod 600 $@
 
 # XXX need to figure out a way to link this to the .config file without 
 # 	conflicting with the server's wg0.conf
