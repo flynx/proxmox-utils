@@ -46,7 +46,7 @@ $(SERVER_CONF): $(SERVER_TPL) $(SERVER_KEY)
 
 # XXX need to figure out a way to link this to the .config file without 
 # 	conflicting with the server's wg0.conf
-%.conf: $(CLIENT_TPL) $(SERVER_CLIENT_TPL) \
+%.client: $(CLIENT_TPL) $(SERVER_CLIENT_TPL) \
 		$(CLIENT_DIR)/%_id $(CLIENT_DIR)/%_id.pub \
 		$(SERVER_CONF) $(SERVER_PUBLIC_KEY)
 	@ mkdir -p $(CLIENT_DIR)
@@ -60,7 +60,7 @@ $(SERVER_CONF): $(SERVER_TPL) $(SERVER_KEY)
 			-e 's/\$${\CLIENT_PRIVATE_KEY}/'$$(sed -e 's/\//\\\//g' "$(CLIENT_DIR)/$*_id")'/g' \
 			-e 's/\$${\SERVER_PUBLIC_KEY}/'$$(sed -e 's/\//\\\//g' "$(SERVER_PUBLIC_KEY)")'/g' \
 		> "$(CLIENT_DIR)/$*.conf"
-	ln -s "$(CLIENT_DIR)/$*.conf"
+	ln -s "$(CLIENT_DIR)/$*.conf" $*.client
 	cat "$(SERVER_CLIENT_TPL)" \
 		| sed \
 			-e 's/\$${\CLIENT_IP}/$(shell ./getFreeClientIP)\/32/g' \
