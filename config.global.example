@@ -36,6 +36,8 @@ ADMIN_BRIDGE=
 DFL_WAN_IP=192.168.1.101/24
 DFL_WAN_GATE=192.168.1.252
 
+DFL_WAN_SSH_IP:192.168.1.102/24
+
 
 # Doman and email configuration
 #

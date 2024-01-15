@@ -34,6 +34,9 @@ LAN_GATE=SKIP
 
 REBOOT=${REBOOT:=1}
 
+DFL_WAN_SSH_IP=${DFL_WAN_SSH_IP:=}
+xread "WAN ssh ip:" WAN_SSH_IP
+
 readVars
 
 
@@ -47,6 +50,7 @@ OPTS_STAGE_1="\
 	--swap $SWAP \
 	--net0 name=lan,bridge=vmbr${LAN_BRIDGE},firewall=1,ip=dhcp,type=veth \
 	--net1 name=admin,bridge=vmbr${ADMIN_BRIDGE},firewall=1,ip=dhcp,type=veth \
+	--net2 name=wan,bridge=vmbr${WAN_BRIDGE},firewall=1${WAN_SSH_IP:+,ip=${WAN_SSH_IP}},type=veth \
 	--storage local-lvm \
 	--rootfs local-lvm:$DRIVE \
 	--unprivileged 1 \
