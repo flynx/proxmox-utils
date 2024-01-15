@@ -52,12 +52,14 @@ xread "Wireguard endpoint port: " ENDPOINT_PORT
 CLIENT_IPS=${CLIENT_IPS:-10.42.0.0/16}
 ALLOWED_IPS=${ALLOWED_IPS:-0.0.0.0/0,${CLIENT_IPS}}
 
+DNS=${DNS:-${NS_LAN_IP:-${DFL_NS_LAN_IP}}}
+DNS=${DNS/\/*}
+xread "Local network DNS:" DNS
+
 xreadYes "Show profile as QRcode when done?" QRCODE
 
 readVars
 
-
-DNS=${NS_LAN_IP/\/*}
 
 
 

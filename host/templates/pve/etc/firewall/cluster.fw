@@ -7,7 +7,7 @@ enable: 1
 
 [RULES]
 
-IN ACCEPT -i vmbr3 -log nolog # STUB
+IN ACCEPT -i vmbr3 -log nolog # ADMIN
 IN REJECT -i vmbr0 -p udp -dport 68 -sport 68 -log nolog # dhcp
 IN REJECT -i vmbr0 -p udp -dport 67 -sport 67 -log nolog # dhcp
 OUT REJECT -i vmbr0 -p udp -dport 68 -sport 68 -log nolog # dhcp
@@ -17,6 +17,8 @@ OUT DHCPfwd(REJECT) -i vmbr0 -log nolog
 IN DNS(ACCEPT) -i vmbr0 -log nolog
 IN Ping(ACCEPT) -i vmbr0 -log nolog
 IN SSH(ACCEPT) -i vmbr0 -log nolog
+IN ACCEPT -i vmbr0 -p udp -dport 51820 -log nolog # Wireguard
+IN ACCEPT -i vmbr0 -p udp -dport 51821 -log nolog # Wireguard (alt)
 |IN OpenVPN(ACCEPT) -i vmbr0 -log nolog
 IN Web(ACCEPT) -i vmbr0 -log nolog
 IN ACCEPT -i vmbr0 -p udp -dport 22027 -log nolog # syncthing
