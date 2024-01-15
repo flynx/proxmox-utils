@@ -26,6 +26,7 @@ ALLOWED_IPS ?= ${ALLOWED_IPS}
 	wg genkey 2> /dev/null > $@
 	chmod 600 $@
 
+
 %_id.pub: %_id
 	cat $< | wg pubkey > $@
 
@@ -41,6 +42,7 @@ $(SERVER_CONF): $(SERVER_TPL) $(SERVER_KEY)
 		> "$@"
 	chmod 600 $@
 	wg-quick up wg0 
+
 
 # XXX need to figure out a way to link this to the .config file without 
 # 	conflicting with the server's wg0.conf
@@ -70,9 +72,8 @@ $(SERVER_CONF): $(SERVER_TPL) $(SERVER_KEY)
 	@ [ "$(QRCODE)" == "1" ] \
 		&& ( echo "# Profile: $*" \
 			&& qrencode -t UTF8 -r "$(CLIENT_DIR)/$*.conf" )
-	@ echo '---'
-	@ echo "$(CLIENT_DIR)/$*.conf"
-	@ echo '---'
+	@ cat "$(CLIENT_DIR)/$*.conf"
+	@ echo 
 
 
 
@@ -81,11 +82,11 @@ $(SERVER_CONF): $(SERVER_TPL) $(SERVER_KEY)
 		&& qrencode -t UTF8 -r "$*.conf" )
 
 
-server: $(SERVER_CONF)
-
-
 update:
 	wg syncconf $(INTERFACE) <(wg-quick strip $(INTERFACE))
+
+
+server: $(SERVER_CONF)
 
 
 
