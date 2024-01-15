@@ -57,6 +57,7 @@ DNS=${DNS/\/*}
 xread "Local network DNS:" DNS
 
 xreadYes "Show profile as QRcode when done?" QRCODE
+QRCODE=${QRCODE:-0}
 
 readVars
 

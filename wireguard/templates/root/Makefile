@@ -1,10 +1,10 @@
 
-
+INTERFACE := wg0
 
 SERVER_DIR := /etc/wireguard/
-SERVER_TPL := templates/wg0.conf
-SERVER_CLIENT_TPL := templates/wg0-client.tpl
-SERVER_CONF := $(SERVER_DIR)/wg0.conf
+SERVER_TPL := templates/server.conf
+SERVER_CLIENT_TPL := templates/client.tpl
+SERVER_CONF := $(SERVER_DIR)/$(INTERFACE).conf
 SERVER_KEY := $(SERVER_DIR)/server_id
 SERVER_PUBLIC_KEY := $(SERVER_DIR)/server_id.pub
 
@@ -64,8 +64,9 @@ $(SERVER_CONF): $(SERVER_TPL) $(SERVER_KEY)
 			-e 's/\$${\CLIENT_PUBLIC_KEY}/'$$(sed -e 's/\//\\\//g' "$(CLIENT_DIR)/$*_id.pub")'/g' \
 			-e 's/\$${\SERVER_PUBLIC_KEY}/'$$(sed -e 's/\//\\\//g' "$(SERVER_PUBLIC_KEY)")'/g' \
 		>> "$(SERVER_CONF)"
-	@ [ -z "$$QRCODE" ] \
-		|| ( echo "# Profile: $*" \
+	make update
+	@ [ "$(QRCODE)" == "1" ] \
+		&& ( echo "# Profile: $*" \
 			&& qrencode -t UTF8 -r "$(CLIENT_DIR)/$*.conf" )
 
 
@@ -76,6 +77,10 @@ $(SERVER_CONF): $(SERVER_TPL) $(SERVER_KEY)
 
 
 server: $(SERVER_CONF)
+
+
+update:
+	wg syncconf $(INTERFACE) <(wg-quick strip $(INTERFACE))
 
 
 
