@@ -40,6 +40,7 @@ $(SERVER_CONF): $(SERVER_TPL) $(SERVER_KEY)
 			-e 's/\$${\SERVER_PRIVATE_KEY}/'$$(sed -e 's/\//\\\//g' "$(SERVER_KEY)")'/g' \
 		> "$@"
 	chmod 600 $@
+	wg-quick up wg0 
 
 # XXX need to figure out a way to link this to the .config file without 
 # 	conflicting with the server's wg0.conf

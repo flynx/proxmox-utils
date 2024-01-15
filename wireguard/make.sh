@@ -110,14 +110,6 @@ echo "# Setup: wireguard default profile..."
 echo "# client config:"
 @ mkdir -p clients
 @ pct pull $ID /etc/wireguard/clients/default.conf clients/default.conf
-# show the profile as a qrcode...
-#if [ "$QRCODE" ] ; then
-#	echo "# default profile:"
-#	@ lxc-attach $ID -- qrencode -t UTF8 -r /etc/wireguard/clients/default.conf
-#fi
-
-#echo "# Setup: bridge device..."
-@ lxc-attach $ID wg-quick up wg0 
 
 echo "# Post config..."
 pctSet $ID "${OPTS_STAGE_2}" $REBOOT
