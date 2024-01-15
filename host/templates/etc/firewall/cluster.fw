@@ -1,0 +1,30 @@
+[OPTIONS]
+
+enable: 1
+
+[IPSET management]
+
+
+[RULES]
+
+IN ACCEPT -i vmbr3 -log nolog # STUB
+IN REJECT -i vmbr0 -p udp -dport 68 -sport 68 -log nolog # dhcp
+IN REJECT -i vmbr0 -p udp -dport 67 -sport 67 -log nolog # dhcp
+OUT REJECT -i vmbr0 -p udp -dport 68 -sport 68 -log nolog # dhcp
+OUT REJECT -i vmbr0 -p udp -dport 67 -sport 67 -log nolog # dhcp
+IN DHCPfwd(REJECT) -i vmbr0 -log nolog
+OUT DHCPfwd(REJECT) -i vmbr0 -log nolog
+IN DNS(ACCEPT) -i vmbr0 -log nolog
+IN Ping(ACCEPT) -i vmbr0 -log nolog
+IN SSH(ACCEPT) -i vmbr0 -log nolog
+IN OpenVPN(ACCEPT) -i vmbr0 -log nolog
+IN Web(ACCEPT) -i vmbr0 -log nolog
+IN ACCEPT -i vmbr0 -p udp -dport 22027 -log nolog # syncthing
+IN ACCEPT -i vmbr0 -p udp -dport 22000 -log nolog # syncthing
+IN ACCEPT -i vmbr0 -p tcp -dport 22000 -log nolog # syncthing
+IN SMB(ACCEPT) -i vmbr0 -log nolog
+IN Git(ACCEPT) -i vmbr0 -log nolog
+|IN Rsync(ACCEPT) -i vmbr0 -log nolog
+|IN REJECT -i vmbr0 -log nolog # ALL
+
+[group landings]

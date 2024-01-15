@@ -221,6 +221,7 @@ xread(){
 #
 #	xreadYes MSG VAR
 #
+# XXX make VAR optional...
 xreadYes(){
 	# XXX check DFL_..???
 	if [[ "${!2}" == "SKIP" ]] ; then
@@ -252,6 +253,10 @@ xreadYes(){
 	fi
 	[ $SCRIPTING ] \
 		&& echo "$2=${!2}"
+
+	if [ -z ${!2} ] ; then
+		return 1
+	fi
 }
 
 #

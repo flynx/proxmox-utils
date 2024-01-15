@@ -94,12 +94,15 @@ echo "# Updating config..."
 	sed -i \
 		-e \"/trusted_domains/i\\  'trusted_proxies' =>\\n  array (\\n    '${GATE_LAN_IP/\/*}\\/32',\\n  ),\" \
 		/var/www/nextcloud/config/config.php"
+
 # add self IP to trusted_domains -- enable setup from local network...
-IP=$([ -z $DRY_RUN ] && lxc-attach $ID -- hostname -I)
-@ lxc-attach $ID -- bash -c "\
-	sed -z -i \
-		-e \"s/\\(trusted_domains[^)]*\\)/\\1  2 => '${IP/ *}',\\n  /\" \
-		/var/www/nextcloud/config/config.php"
+# XXX is this actually needed???
+#IP=$([ -z $DRY_RUN ] && lxc-attach $ID -- hostname -I)
+#@ lxc-attach $ID -- bash -c "\
+#	sed -z -i \
+#		-e \"s/\\(trusted_domains[^)]*\\)/\\1  2 => '${IP/ *}',\\n  /\" \
+#		/var/www/nextcloud/config/config.php"
+
 # remove /index.php from urls...
 # for more info see:
 #	https://docs.nextcloud.com/server/stable/admin_manual/installation/source_installation.html#pretty-urls
