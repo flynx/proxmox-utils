@@ -68,6 +68,9 @@ $(SERVER_CONF): $(SERVER_TPL) $(SERVER_KEY)
 	@ [ "$(QRCODE)" == "1" ] \
 		&& ( echo "# Profile: $*" \
 			&& qrencode -t UTF8 -r "$(CLIENT_DIR)/$*.conf" )
+	@ echo '---'
+	@ echo "$(CLIENT_DIR)/$*.conf"
+	@ echo '---'
 
 
 
