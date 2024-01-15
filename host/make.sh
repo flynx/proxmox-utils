@@ -41,9 +41,8 @@ if xreadYes "# Create bridges?" BRIDGES ; then
 fi
 
 # Firewall
-# XXX this should be done after the setup process...
-if xreadYes "# Update firewall rules?" BRIDGES ; then
-	echo
+if xreadYes "# Update firewall rules?" FIREWALL ; then
+	@ cp --backup -i templates/etc/pve/firewall/cluster.fw /etc/pve/firewall/
 fi
 
 

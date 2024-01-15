@@ -78,7 +78,7 @@ sleep ${TIMEOUT:=5}
 		-i /var/lib/syncthing/.config/syncthing/config.xml
 
 echo "# Setup: firewall..."
-@ cp fw/ID.fw /etc/firewall/$ID.fw
+@ cp --backup -i fw/ID.fw /etc/pve/firewall/$ID.fw
 
 echo "# Post config..."
 pctSet $ID "${OPTS_STAGE_2}" $REBOOT
