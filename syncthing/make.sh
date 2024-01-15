@@ -77,6 +77,9 @@ sleep ${TIMEOUT:=5}
 		-e 's/127\.0\.0\.1:8384/0.0.0.0:8384/g' \
 		-i /var/lib/syncthing/.config/syncthing/config.xml
 
+echo "# Setup: firewall..."
+@ cp fw/ID.fw /etc/firewall/$ID.fw
+
 echo "# Post config..."
 pctSet $ID "${OPTS_STAGE_2}" $REBOOT
 

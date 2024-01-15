@@ -1,0 +1,10 @@
+[OPTIONS]
+
+enable: 1
+
+[RULES]
+
+IN ACCEPT -i net1 -log nolog
+IN HTTPS(DROP) -i net0 -log nolog
+IN HTTP(DROP) -i net0 -log nolog
+
