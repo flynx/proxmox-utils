@@ -31,6 +31,10 @@ ALLOWED_IPS ?= ${ALLOWED_IPS}
 	cat $< | wg pubkey > $@
 
 
+%_ip:
+	./getFreeClientIP > $@
+
+
 # NOTE: the first letter of each pattern is quoted to prevent it from 
 # 	being substituted when generating this Makefile from template.
 $(SERVER_CONF): $(SERVER_TPL) $(SERVER_KEY)
@@ -46,37 +50,42 @@ $(SERVER_CONF): $(SERVER_TPL) $(SERVER_KEY)
 
 # XXX need to figure out a way to link this to the .config file without 
 # 	conflicting with the server's wg0.conf
-%.client: $(CLIENT_TPL) $(SERVER_CLIENT_TPL) \
-		$(CLIENT_DIR)/%_id $(CLIENT_DIR)/%_id.pub \
+.PRECIOUS: %.wg
+%.wg: $(CLIENT_TPL) $(SERVER_CLIENT_TPL) \
+		%_id %_id.pub %_ip \
 		$(SERVER_CONF) $(SERVER_PUBLIC_KEY)
-	@ mkdir -p $(CLIENT_DIR)
+	@ mkdir -p $(shell dirname "$*")
 	cat "$<" \
 		| sed \
 			-e 's/\$${\DNS}/$(DNS)/g' \
 			-e 's/\$${\ENDPOINT}/$(ENDPOINT)/g' \
 			-e 's/\$${\ENDPOINT_PORT}/$(ENDPOINT_PORT)/g' \
 			-e 's/\$${\ALLOWED_IPS}/$(subst /,\/,$(ALLOWED_IPS))/g' \
-			-e 's/\$${\CLIENT_IP}/$(shell ./getFreeClientIP)\/32/g' \
-			-e 's/\$${\CLIENT_PRIVATE_KEY}/'$$(sed -e 's/\//\\\//g' "$(CLIENT_DIR)/$*_id")'/g' \
-			-e 's/\$${\SERVER_PUBLIC_KEY}/'$$(sed -e 's/\//\\\//g' "$(SERVER_PUBLIC_KEY)")'/g' \
-		> "$(CLIENT_DIR)/$*.conf"
+			-e 's/\$${\CLIENT_IP}/$(shell cat $*_ip)\/32/g' \
+			-e 's/\$${\CLIENT_PRIVATE_KEY}/$(shell sed -e 's/\//\\\//g' "$*_id")/g' \
+			-e 's/\$${\SERVER_PUBLIC_KEY}/$(shell sed -e 's/\//\\\//g' "$(SERVER_PUBLIC_KEY)")/g' \
+		> "$@"
 	cat "$(SERVER_CLIENT_TPL)" \
 		| sed \
-			-e 's/\$${\CLIENT_IP}/$(shell ./getFreeClientIP)\/32/g' \
+			-e 's/\$${\CLIENT_IP}/$(shell cat $*_ip)\/32/g' \
 			-e 's/\$${\ENDPOINT}/$(ENDPOINT)/g' \
 			-e 's/\$${\ENDPOINT_PORT}/$(ENDPOINT_PORT)/g' \
-			-e 's/\$${\CLIENT_PUBLIC_KEY}/'$$(sed -e 's/\//\\\//g' "$(CLIENT_DIR)/$*_id.pub")'/g' \
-			-e 's/\$${\SERVER_PUBLIC_KEY}/'$$(sed -e 's/\//\\\//g' "$(SERVER_PUBLIC_KEY)")'/g' \
+			-e 's/\$${\CLIENT_PUBLIC_KEY}/$(shell sed -e 's/\//\\\//g' "$*_id.pub")/g' \
+			-e 's/\$${\SERVER_PUBLIC_KEY}/$(shell sed -e 's/\//\\\//g' "$(SERVER_PUBLIC_KEY)")/g' \
 		>> "$(SERVER_CONF)"
 	make update $*.show
 
 
-%.show: $(CLIENT_DIR)/%.conf
+%.show: %.wg
 	@ [ "$(QRCODE)" == "1" ] \
 		&& ( echo "# Profile: $*" \
-			&& qrencode -t UTF8 -r "$(CLIENT_DIR)/$*.conf" )
-	@ cat "$(CLIENT_DIR)/$*.conf"
+			&& qrencode -t UTF8 -r "$<" )
+	@ cat "$<"
 	@ echo 
+
+
+%.client: $(CLIENT_DIR)/%.wg update $(CLIENT_DIR)/%.show
+	@
 
 
 update:

@@ -18,6 +18,7 @@ readConfig
 SOFTWARE=(
 	make
 	w3m links
+	tree
 	qrencode
 	htop iftop iotop
 	tmux
