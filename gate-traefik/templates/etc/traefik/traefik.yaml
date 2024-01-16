@@ -34,7 +34,7 @@ entryPoints:
     address: ':443'
 
   traefik:
-    address: ':8080'
+    address: '${GATE_ADMIN_IPn}:8080'
 
 
 api:

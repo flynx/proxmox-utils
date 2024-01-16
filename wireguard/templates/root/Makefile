@@ -42,6 +42,7 @@ ALLOWED_IPS ?= ${ALLOWED_IPS}
 
 # NOTE: the first letter of each pattern is quoted to prevent it from 
 # 	being substituted when generating this Makefile from template.
+# XXX build this from client files...
 $(SERVER_CONF): $(SERVER_TPL) $(SERVER_KEY)
 	cat $< \
 		| sed \

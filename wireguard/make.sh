@@ -38,6 +38,7 @@ LAN_GATE=SKIP
 
 REBOOT=${REBOOT:=1}
 
+
 # Wireguard config...
 DFL_ENDPOINT=${DFL_ENDPOINT:=$(\
 	which dig > /dev/null 2>&1 \
@@ -58,6 +59,7 @@ xread "Local network DNS:" DNS
 
 xreadYes "Show profile as QRcode when done?" QRCODE
 QRCODE=${QRCODE:-0}
+
 
 readVars
 
@@ -94,7 +96,8 @@ echo "# Creating CT..."
 pctCreateAlpine $ID "${OPTS_STAGE_1}" "$PASS"
 
 echo "# Installing dependencies..."
-@ lxc-attach $ID apk add iptables wireguard-tools-wg-quick make bind-tools libqrencode logrotate
+@ lxc-attach $ID apk add \
+	iptables wireguard-tools-wg-quick make bind-tools libqrencode logrotate
 
 echo "# Copying assets..."
 @ pct-push-r $ID ./assets /
@@ -103,10 +106,6 @@ echo "# Copying assets..."
 echo "# Setup: wireguard server and client profile..."
 @ lxc-attach $ID -- bash -c "cd /root \
 	&& QRCODE=${QRCODE} make server default.client" 
-
-#echo "# client config:"
-#@ mkdir -p clients
-#@ pct pull $ID /etc/wireguard/clients/default.wg clients/default.conf
 
 echo "# Post config..."
 pctSet $ID "${OPTS_STAGE_2}" $REBOOT
