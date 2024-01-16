@@ -1,3 +1,6 @@
+#----------------------------------------------------------------------
+#
+#----------------------------------------------------------------------
 
 INTERFACE := wg0
 
@@ -20,6 +23,8 @@ CLIENT_IPS ?= ${CLIENT_IPS}
 ALLOWED_IPS ?= ${ALLOWED_IPS}
 
 
+
+#----------------------------------------------------------------------
 
 %_id:
 	@ mkdir -p $$(dirname $@)
@@ -48,8 +53,6 @@ $(SERVER_CONF): $(SERVER_TPL) $(SERVER_KEY)
 	wg-quick up $(INTERFACE) 
 
 
-# XXX need to figure out a way to link this to the .config file without 
-# 	conflicting with the server's wg0.conf
 .PRECIOUS: %.wg
 %.wg: $(CLIENT_TPL) $(SERVER_CLIENT_TPL) \
 		%_id %_id.pub %_ip \
@@ -73,9 +76,9 @@ $(SERVER_CONF): $(SERVER_TPL) $(SERVER_KEY)
 			-e 's/\$${\CLIENT_PUBLIC_KEY}/$(shell sed -e 's/\//\\\//g' "$*_id.pub")/g' \
 			-e 's/\$${\SERVER_PUBLIC_KEY}/$(shell sed -e 's/\//\\\//g' "$(SERVER_PUBLIC_KEY)")/g' \
 		>> "$(SERVER_CONF)"
-	make update $*.show
 
 
+.PHONY: %.show
 %.show: %.wg
 	@ [ "$(QRCODE)" == "1" ] \
 		&& ( echo "# Profile: $*" \
@@ -84,15 +87,21 @@ $(SERVER_CONF): $(SERVER_TPL) $(SERVER_KEY)
 	@ echo 
 
 
+.PHONY: %.client
 %.client: $(CLIENT_DIR)/%.wg update $(CLIENT_DIR)/%.show
 	@
 
 
+#----------------------------------------------------------------------
+
+.PHONY: update
 update:
 	wg syncconf $(INTERFACE) <(wg-quick strip $(INTERFACE))
 
 
+.PHONY: server
 server: $(SERVER_CONF)
 
 
 
+#----------------------------------------------------------------------
