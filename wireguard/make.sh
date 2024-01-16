@@ -100,16 +100,13 @@ echo "# Copying assets..."
 @ pct-push-r $ID ./assets /
 @ lxc-attach $ID -- chmod +x /root/getFreeClientIP
 
-#echo "# Setup: wireguard server..."
-@ lxc-attach $ID -- bash -c "cd /root && make server"
-
-echo "# Setup: wireguard default profile..."
+echo "# Setup: wireguard server and client profile..."
 @ lxc-attach $ID -- bash -c "cd /root \
-	&& QRCODE=${QRCODE} make default.client" 
+	&& QRCODE=${QRCODE} make server default.client" 
 
-echo "# client config:"
-@ mkdir -p clients
-@ pct pull $ID /etc/wireguard/clients/default.conf clients/default.conf
+#echo "# client config:"
+#@ mkdir -p clients
+#@ pct pull $ID /etc/wireguard/clients/default.wg clients/default.conf
 
 echo "# Post config..."
 pctSet $ID "${OPTS_STAGE_2}" $REBOOT
