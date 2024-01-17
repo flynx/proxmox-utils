@@ -96,12 +96,31 @@ echo "# Updating config..."
 		/var/www/nextcloud/config/config.php"
 
 # add self IP to trusted_domains -- enable setup from local network...
-# XXX is this actually needed???
-#IP=$([ -z $DRY_RUN ] && lxc-attach $ID -- hostname -I)
-#@ lxc-attach $ID -- bash -c "\
-#	sed -z -i \
-#		-e \"s/\\(trusted_domains[^)]*\\)/\\1  2 => '${IP/ *}',\\n  /\" \
-#		/var/www/nextcloud/config/config.php"
+# XXX the gate stuff might not be needed...
+# XXX is the IP actually needed???
+IP=$([ -z $DRY_RUN ] && lxc-attach $ID -- hostname -I)
+TRUSTED_DOMAINS = (
+	"${IP/ *}"
+	"$CTHOSTNAME"
+	"${CTHOSTNAME}.srv"
+	"${GATE_LAN_IPn}"
+	"$(GATE_HOSTNAME)"
+	"$(GATE_HOSTNAME).srv"
+	"${WAN_IPn}"
+)
+ADDRS=
+i=2
+for addr in "${TRUSTED_DOMAINS[@]}" ; do
+	if [ -z "$addr" ] ; then
+		continue
+	fi
+	ADDRS="${ADDTS}  $i => '${addr//\//\\/}',\\n"
+	i=$(( i + 1 ))
+done
+@ lxc-attach $ID -- bash -c "\
+	sed -z -i \
+		-e \"s/\\(trusted_domains[^)]*\\)/\\1${ADDRS}/\" \
+		/var/www/nextcloud/config/config.php"
 
 # remove /index.php from urls...
 # for more info see:
