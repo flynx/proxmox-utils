@@ -76,6 +76,9 @@ sudo apt install git make
 Note their numbers (i.e. the number in `vmbr#`), this will be needed for 
 setup.
 
+Note, if the device has more that two ports it is recommended to assign 
+first/last ports to wan/admin respectively and clearly mark them as such.
+
 
 ### DNS
 
@@ -91,6 +94,14 @@ needed to allow VPN/ssh administration from outside.
 
 For Proxmox firewall configuration see:
 https://pve.proxmox.com/wiki/Firewall
+
+
+### Recovery strategies
+
+ns/gate as separate nodes for redundancy
+
+ssh facing lan to avoid a single point of failure with gate
+
 
 
 ## Setup
