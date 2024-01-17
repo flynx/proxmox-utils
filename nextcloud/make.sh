@@ -99,13 +99,13 @@ echo "# Updating config..."
 # XXX the gate stuff might not be needed...
 # XXX is the IP actually needed???
 IP=$([ -z $DRY_RUN ] && lxc-attach $ID -- hostname -I)
-TRUSTED_DOMAINS = (
+TRUSTED_DOMAINS=(
 	"${IP/ *}"
 	"$CTHOSTNAME"
 	"${CTHOSTNAME}.srv"
 	"${GATE_LAN_IPn}"
-	"$(GATE_HOSTNAME)"
-	"$(GATE_HOSTNAME).srv"
+	"${GATE_HOSTNAME}"
+	"${GATE_HOSTNAME}.srv"
 	"${WAN_IPn}"
 )
 ADDRS=
