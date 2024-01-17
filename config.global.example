@@ -86,14 +86,21 @@ DFL_PCT_EXTRA=SKIP
 
 # Nameserver
 NS_HOSTNAME=ns
+NS_ID=100
 NS_ADMIN_IP=10.0.0.1/24
 NS_LAN_IP=10.1.1.1/24
 
+RESERVE_NS_ID=101
+TEMPLATE_NS_ID=200
+
 # Gateway / Reverse proxy
 GATE_HOSTNAME=gate
+GATE_ID=110
 GATE_ADMIN_IP=10.0.0.2/24
 GATE_LAN_IP=10.1.1.2/24
 
+RESERVE_GATE_ID=111
+TEMPLATE_GATE_ID=210
 
 
 #------------------------------------------------------------------------

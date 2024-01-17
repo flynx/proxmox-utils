@@ -17,8 +17,8 @@ readConfig
 
 #----------------------------------------------------------------------
 
-DFL_ID=${DFL_ID:=100}
-DFL_CTHOSTNAME=${NS_HOSTNAME:=${DFL_CTHOSTNAME:=ns}}
+DFL_ID=${NS_ID:=${DFL_ID:-100}}
+DFL_CTHOSTNAME=${NS_HOSTNAME:-${DFL_CTHOSTNAME:-ns}}
 
 CORES=1
 RAM=128

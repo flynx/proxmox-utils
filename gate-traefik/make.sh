@@ -17,9 +17,8 @@ readConfig
 
 #----------------------------------------------------------------------
 
-DFL_ID=${DFL_ID:=101}
-# XXX revise...
-DFL_CTHOSTNAME=${GATE_HOSTNAME:=${DFL_CTHOSTNAME:=gate}}
+DFL_ID=${GATE_ID:=${DFL_ID:-102}}
+DFL_CTHOSTNAME=${GATE_HOSTNAME:-${DFL_CTHOSTNAME:-gate}}
 
 CORES=1
 RAM=128
