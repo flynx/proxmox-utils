@@ -114,7 +114,7 @@ for addr in "${TRUSTED_DOMAINS[@]}" ; do
 	if [ -z "$addr" ] ; then
 		continue
 	fi
-	ADDRS="${ADDTS}  $i => '${addr//\//\\/}',\\n"
+	ADDRS="${ADDRS}\ \ $i => '${addr//\//\\/}',\\n"
 	i=$(( i + 1 ))
 done
 @ lxc-attach $ID -- bash -c "\
