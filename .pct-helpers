@@ -493,7 +493,7 @@ readVars(){
 #	buildAssets [VAR ..]
 #
 # XXX revise: SKIP handling...
-README=README.md
+NOTES=NOTES.md
 buildAssets(){
 	local template_dir=${TEMPLATE_DIR:-templates}
 	local assets_dir=${ASSETS_DIR:-assets}
@@ -565,10 +565,10 @@ buildAssets(){
 			| eval "sed ${PATTERNS[@]}" \
 			> "${assets_dir}/${file}"
 	done
-	# special case: README.md...
-	if [ -z "$DESCRIPTION" ] && [ -e "$README" ] ; then
+	# special case: NOTES.md...
+	if [ -z "$DESCRIPTION" ] && [ -e "$NOTES" ] ; then
 		DESCRIPTION="$(\
-			cat ${README} \
+			cat ${NOTES} \
 				| eval "sed ${PATTERNS[@]}")"
 	fi
 }
