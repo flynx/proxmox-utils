@@ -669,7 +669,7 @@ pctSet(){
 #	pctSetNotes ID
 #
 pctSetNotes(){
-	[ "$DESCRIPTION" ]
+	[ "$DESCRIPTION" ] \
 		&& @ pct set $1 \
 			"${DESCRIPTION:+--description \""${DESCRIPTION}"\"}"
 }
