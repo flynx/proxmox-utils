@@ -1,4 +1,4 @@
-# Nextcloud
+# Gitea
 
 https://${CTHOSTNAME}.srv
 

@@ -1,4 +1,4 @@
-# Nextcloud
+# Syncthing
 
 https://${CTHOSTNAME}.srv
 
