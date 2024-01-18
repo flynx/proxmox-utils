@@ -84,7 +84,7 @@ gate: gate-traefik
 
 
 .PHONY: core
-core: config $CORE_CTs)
+core: config $(CORE_CTs)
 
 
 .PHONY: minimal
