@@ -666,10 +666,10 @@ pctSet(){
 }
 
 #
-#	pctSetNotes ID DESCRIPTION
+#	pctSetNotes ID [DESCRIPTION]
 #
-# XXX BUG: this deos not work yet...
 pctSetNotes(){
+	# XXX for some reason this complains quote alot...
 	#[ "$DESCRIPTION" ] \
 	#	&& @ pct set $1 \
 	#		"${DESCRIPTION:+--description \""${DESCRIPTION}"\"}"
@@ -682,9 +682,10 @@ pctSetNotes(){
 "${NOTES}"
 "${CONF}"
 "
-
 	if [ "$DRY_RUN" ] ; then
+		echo "--- ${CT_DIR}/${ID}.conf ---"
 		echo -e "${TEXT}"
+		echo "--- ${CT_DIR}/${ID}.conf ---"
 	else
 		echo -e "${TEXT}" > "${CT_DIR}/${ID}.conf"
 	fi
