@@ -52,13 +52,24 @@ APP_DOMAIN=$DOMAIN
 
 #----------------------------------------------------------------------
 
+INTERFACES=(
+	"name=lan,bridge=vmbr${LAN_BRIDGE},firewall=1,ip=dhcp,type=veth"
+)
+
+# XXX move this to .pct-helpers
+INTERFACES_ARGS=()
+i=0
+for interface in "${INTERFACES[@]}" ; do
+	INTERFACES_ARGS+=("--net${i} "${interface}"")
+	i=$(( i + 1 ))
+done
 # NOTE: TKL gui will not function correctly without nesting enabled...
 OPTS_STAGE_1="\
 	--hostname $CTHOSTNAME \
 	--cores $CORES \
 	--memory $RAM \
 	--swap $SWAP \
-	--net0 name=lan,bridge=vmbr${LAN_BRIDGE},firewall=1,ip=dhcp,type=veth \
+	"${INTERFACES_ARGS[@]}" \
 	--storage local-lvm \
 	--rootfs local-lvm:$DRIVE \
 	--unprivileged 1 \

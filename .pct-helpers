@@ -685,7 +685,7 @@ pctSetNotes(){
 	if [ "$DRY_RUN" ] ; then
 		echo "--- ${CT_DIR}/${ID}.conf ---"
 		echo -e "${TEXT}"
-		echo "--- ${CT_DIR}/${ID}.conf ---"
+		echo "---"
 	else
 		echo -e "${TEXT}" > "${CT_DIR}/${ID}.conf"
 	fi
