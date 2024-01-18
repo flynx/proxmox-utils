@@ -17,10 +17,10 @@ ECHO_PREFIX="### "
 @(){
 	if [ -z $DRY_RUN ] ; then
 		! [ $QUIET ] \
-			&& echo "${ECHO_PREFIX}$@"
+			&& echo -e "${ECHO_PREFIX}$@"
 		"$@"
 	else
-		echo $@
+		echo -e $@
 	fi
 	return $?
 }
@@ -674,7 +674,9 @@ pctSetNotes(){
 	#	&& @ pct set $1 \
 	#		"${DESCRIPTION:+--description \""${DESCRIPTION}"\"}"
 	local ID=$1
-	local NOTES="${2:-${DESCRIPTION}}"
+	local NOTES="$(\
+		echo -e "${2:-${DESCRIPTION}}" \
+			| sed -e 's/^/#/')"
 	local CONF="$(cat "${CT_DIR}/${ID}.conf")"
 	local TEXT="\
 "${NOTES}"
