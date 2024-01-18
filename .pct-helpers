@@ -660,7 +660,7 @@ pctUpdateTurnkey(){
 pctSet(){
 	[ "$2" ] \
 		&& @ pct set $1 \
-			${2} \
+			${2}
 	[ "$3" ] \
 		&& @ pct reboot $1
 }
