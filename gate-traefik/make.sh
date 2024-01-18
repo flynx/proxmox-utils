@@ -93,6 +93,7 @@ echo "# Setup: iptables update script..."
 
 echo "# Post config..."
 pctSet $ID "${OPTS_STAGE_2}" $REBOOT
+pctSetNotes $ID
 
 saveLastRunConfig
 

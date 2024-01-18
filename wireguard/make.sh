@@ -109,6 +109,7 @@ echo "# Setup: wireguard server and client profile..."
 
 echo "# Post config..."
 pctSet $ID "${OPTS_STAGE_2}" $REBOOT
+pctSetNotes $ID
 
 saveLastRunConfig
 

@@ -661,11 +661,18 @@ pctSet(){
 	[ "$2" ] \
 		&& @ pct set $1 \
 			${2} \
-			"${DESCRIPTION:+--description \""${DESCRIPTION}"\"}"
 	[ "$3" ] \
 		&& @ pct reboot $1
 }
 
+#
+#	pctSetNotes ID
+#
+pctSetNotes(){
+	[ "$DESCRIPTION" ]
+		&& @ pct set $1 \
+			"${DESCRIPTION:+--description \""${DESCRIPTION}"\"}"
+}
 
 
 #----------------------------------------------------------------------
