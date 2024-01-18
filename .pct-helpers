@@ -668,6 +668,7 @@ pctSet(){
 #
 #	pctSetNotes ID
 #
+# XXX BUG: this deos not work yet...
 pctSetNotes(){
 	[ "$DESCRIPTION" ] \
 		&& @ pct set $1 \
