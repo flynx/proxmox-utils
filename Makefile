@@ -88,7 +88,7 @@ core: config $(CORE_CTs)
 
 
 .PHONY: minimal
-minimal: core $(BASE_CTs)
+minimal: core $(MINIMAL_CTs)
 
 
 .PHONY: dev
