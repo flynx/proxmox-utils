@@ -27,13 +27,12 @@ DFL_RAM=${DFL_RAM:=2048}
 DFL_SWAP=${DFL_SWAP:=${DFL_RAM}}
 DFL_DRIVE=${DFL_DRIVE:=40}
 
-# Nextcloud-specific configuration...
-#APP_DOMAIN=nc.$DOMAIN
-#DB_PASS=
-#APP_PASS=
-#SEC_ALERTS=SKIP
+# XXX do we request these???
+GATE_LAN_IP=${GATE_LAN_IP:-${DFL_GATE_LAN_IP}}
+GATE_HOSTNAME=${GATE_HOSTNAME:-${DFL_GATE_HOSTNAME}}
+WAN_IP=${WAN_IP:-${DFL_WAN_IP}}
 
-WAN_IP=SKIP
+#WAN_IP=SKIP
 WAN_GATE=SKIP
 ADMIN_IP=SKIP
 ADMIN_GATE=SKIP
@@ -46,6 +45,9 @@ readVars
 
 # Nextcloud-specific configuration...
 APP_DOMAIN=$DOMAIN
+#DB_PASS=
+#APP_PASS=
+#SEC_ALERTS=SKIP
 
 
 #----------------------------------------------------------------------
@@ -92,26 +94,26 @@ echo "# Updating config..."
 # add gate IP to trusted_proxies...
 @ lxc-attach $ID -- bash -c "\
 	sed -i \
-		-e \"/trusted_domains/i\\  'trusted_proxies' =>\\n  array (\\n    '${GATE_LAN_IP/\/*}\\/32',\\n  ),\" \
+		-e \"/trusted_domains/i\\  'trusted_proxies' =>\\n  array (\\n   0 => '${GATE_LAN_IP/\/*}\\/32',\\n  ),\" \
 		/var/www/nextcloud/config/config.php"
 
 # add self IP to trusted_domains -- enable setup from local network...
-# XXX the gate stuff might not be needed...
 # XXX is the IP actually needed???
 IP=$([ -z $DRY_RUN ] && lxc-attach $ID -- hostname -I)
+# XXX the gate stuff might not be needed...
 TRUSTED_DOMAINS=(
 	"${IP/ *}"
 	"$CTHOSTNAME"
 	"${CTHOSTNAME}.srv"
-	"${GATE_LAN_IPn}"
+	"${GATE_LAN_IP/\/*}"
 	"${GATE_HOSTNAME}"
 	"${GATE_HOSTNAME}.srv"
-	"${WAN_IPn}"
+	"${WAN_IP/\/*}"
 )
 ADDRS=
 i=2
 for addr in "${TRUSTED_DOMAINS[@]}" ; do
-	if [ -z "$addr" ] ; then
+	if [ -z "$addr" ] || [[ "$addr" == ".srv" ]] ; then
 		continue
 	fi
 	ADDRS="${ADDRS}\ \ $i => '${addr//\//\\/}',\\n"

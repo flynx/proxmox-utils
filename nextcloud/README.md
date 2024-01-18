@@ -1,0 +1,5 @@
+# Nextcloud
+
+Hostname: `${CTHOSTNAME}`
+
+
