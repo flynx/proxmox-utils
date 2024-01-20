@@ -557,7 +557,7 @@ buildAssets(){
 	local PCT_TEMPLATE_PATTERNS=($(makePCTTemplateSEDPatterns "$@"))
 
 	# assets...
-	cp -R "${assets_dir}" "${staging_dir}"
+	cp -R "${assets_dir}"/* "${staging_dir}"/
 	# template dir...
 	local TEMPLATES=($(find "$template_dir" -type f))
 	for file in "${TEMPLATES[@]}" ; do
