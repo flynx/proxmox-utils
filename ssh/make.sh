@@ -70,11 +70,14 @@ pctPushAssets $ID
 
 echo "# Setup: users..."
 while true ; do
-	xread "user name for ssh: " SSH_USER
-	[ -z $SSH_USER ] \
-		|| @ lxc-attach $ID -- adduser $SSH_USER
-	read -ep "Add another user? [y/N] " MORE
-	if [[ $MORE == 'y' ]] ; then
+	xread "User name for ssh (empty to skip): " SSH_USER
+	if ! [ -z "$SSH_USER" ] ; then
+		break
+	fi
+
+	@ lxc-attach $ID -- adduser $SSH_USER
+
+	if xreadYes "Add another user?" ; then
 		continue
 	fi
 	break

@@ -196,17 +196,23 @@ xread(){
 }
 
 #
-#	xreadYes MSG VAR
+#	xreadYes MSG [VAR]
 #
-# XXX make VAR optional...
 xreadYes(){
+	if [ -z ${2} ] ; then
+		local var=__X
+		local __X
+	else
+		local var=${2}
+		local mode=
+	fi
 	# XXX check DFL_..???
-	if [[ "${!2}" == "SKIP" ]] ; then
-		eval "$2="
+	if [[ "${!var}" == "SKIP" ]] ; then
+		eval "$var="
 		return
 	fi
-	if [ -z ${!2} ] ; then
-		if [ -z $(eval "echo \$DFL_${2}") ] ; then
+	if [ -z ${!var} ] ; then
+		if [ -z $(eval "echo \$DFL_${var}") ] ; then
 			local yes=y
 			local no=N
 			local dfl=
@@ -215,23 +221,23 @@ xreadYes(){
 			local no=n
 			local dfl=1
 		fi
-		eval 'read -ep "'$1' ('$yes'/'$no') " '${2}''
-		XREAD_VARS+=(${2})
+		eval 'read -ep "'$1' ('$yes'/'$no') " '${var}''
+		XREAD_VARS+=(${var})
 		# normalize...
-		eval "${2}=${!2,,}"
-		if [[ "${!2}" == 'y' ]] ; then
-			eval "${2}=1"
-		elif [[ ${!2} == 'n' ]] ; then
-			eval "${2}="
+		eval "${var}=${!var,,}"
+		if [[ "${!var}" == 'y' ]] ; then
+			eval "${var}=1"
+		elif [[ ${!var} == 'n' ]] ; then
+			eval "${var}="
 		# set default if empty...
 		else
-			eval "${2}=\${${2}:-$dfl}"
+			eval "${var}=\${${var}:-$dfl}"
 		fi
 	fi
 	[ $SCRIPTING ] \
-		&& echo "$2=${!2}"
+		&& echo "$var=${!var}"
 
-	if [ -z ${!2} ] ; then
+	if [ -z ${!var} ] ; then
 		return 1
 	fi
 }
