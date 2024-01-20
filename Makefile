@@ -9,6 +9,9 @@
 #
 #----------------------------------------------------------------------
 
+EDITOR := vim
+
+
 # NOTE: The order here is important: 
 # 	- to avoid bootstrapping network connections gate must be the 
 # 	  first CT to get built to route the rest of CT's to the WAN 
