@@ -57,11 +57,11 @@ buildAssets
 echo "# Creating CT..."
 pctCreateAlpine $ID "$PASS"
 
-echo "# Copying assets..."
-pctPushAssets $ID
-
 echo "# Installing dependencies..."
 @ lxc-attach $ID apk add bash syncthing logrotate
+
+echo "# Copying assets..."
+pctPushAssets $ID
 
 echo "# Setup: sysctl..."
 @ lxc-attach $ID rc-update add sysctl

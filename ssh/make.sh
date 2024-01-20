@@ -56,11 +56,17 @@ OPTS_STAGE_2="\
 
 #----------------------------------------------------------------------
 
+echo "# Building config..."
+buildAssets
+
 echo "# Creating CT..."
 pctCreateDebian $ID "$PASS"
 
 echo "# Installing dependencies..."
 @ lxc-attach $ID -- bash -c 'yes | apt install vim htop iftop iotop tmux mc sudo'
+
+echo "# Copying assets..."
+pctPushAssets $ID
 
 echo "# Setup: users..."
 while true ; do

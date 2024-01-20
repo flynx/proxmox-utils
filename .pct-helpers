@@ -657,7 +657,6 @@ pctBaseCreate(){
 #SWAP=
 #DRIVE=
 #PCT_EXTRA=
-# XXX
 pctCreate(){
 	# build network args...
 	local interfaces_args=()
