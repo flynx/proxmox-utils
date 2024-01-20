@@ -487,7 +487,7 @@ PCT_TEMPLATE_VARS=(
 	ADMIN_GATE
 )
 makePCTTemplateSEDPatterns(){
-	local vars=("${PCT_TEMPLATE_VARS}" "$@")
+	local vars=("${PCT_TEMPLATE_VARS[@]}" "$@")
 	# strip ips and save to *_IPn var...
 	local ip_vars=()
 	local var
