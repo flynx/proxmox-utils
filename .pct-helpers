@@ -49,6 +49,7 @@ would-like(){
 }
 
 
+
 #----------------------------------------------------------------------
 # Fill section...
 #
@@ -148,6 +149,7 @@ hostname2ct(){
 }
 
 
+
 #----------------------------------------------------------------------
 
 normpath(){
@@ -161,33 +163,8 @@ normpath(){
 }
 
 
+
 #----------------------------------------------------------------------
-
-#
-#	pveGetLatestTemplate PATTERN [VAR]
-#
-# see:
-#	https://pve.proxmox.com/wiki/Linux_Container
-pveGetLatestTemplate(){
-	if [ $DRY_RUN ] ; then
-		[ -z $2 ] \
-			|| eval "$2=${CT_TEMPLATE:-\\\$CT_TEMPLATE}"
-		return
-	fi
-
-	#@ pveam update 
-
-	local templates=($(pveam available | grep -o ''${1}'.*$'))
-	local latest=${templates[-1]}
-
-	@ pveam download local ${latest}
-
-	latest=$(pveam list local | grep -o "^.*$latest")
-	#latest=($(ls /var/lib/vz/template/cache/${1}*))
-
-	[ -z $2 ] \
-		|| eval "$2=${latest}"
-}
 
 #
 #	xread [-n] MSG VAR
@@ -286,32 +263,8 @@ xreadpass(){
 }
 
 
-# Wait for /etc/inithooks.conf to be generated then cleared
-#
-# 	tklWaitForSetup ID
-#
-# for tkl inithooks doc see:
-# 	https://www.turnkeylinux.org/docs/inithooks
-tklWaitForSetup(){
-	printf "# TKL setup, this may take a while"
-	if [ -z $DRY_RUN ] ; then
-		while ! $(lxc-attach $1 -- test -e /etc/inithooks.conf) ; do
-			printf '.'
-			sleep ${TIMEOUT:=5}
-		done
-		printf '+'
-		sleep ${TIMEOUT:=5}
-		while ! [[ $(lxc-attach $1 -- cat /etc/inithooks.conf | wc -c) < 2 ]] ; do
-			printf '.'
-			sleep ${TIMEOUT:=5}
-		done
-	else
-		printf '.+..'
-	fi
-	printf 'ready.\n'
-	sleep ${TIMEOUT:=5}
-}
 
+#----------------------------------------------------------------------
 
 # 
 # 	readConfig
@@ -340,6 +293,7 @@ readConfig(){
 		#__ENV=
 	fi
 }
+
 
 #
 #	saveConfig [-d|-a] CONFIG VAR ..
@@ -376,6 +330,7 @@ saveConfig(){
 	} >> "$cfg"
 }
 
+
 saveLastRunConfig(){
 	local cfg=config.last-run
 	echo "# Saving config to: config.last-run"
@@ -387,7 +342,10 @@ saveLastRunConfig(){
 	saveConfig -d -a "$cfg" ${XREAD_VARS[@]}
 }
 
+
+#
 #	webAppConfig NAME
+#
 webAppConfig(){
 	local name=${1^^}
 	eval "${name}_SUBDOMAIN=\${${name}_SUBDOMAIN:=\${DFL_SUB${name}_DOMAIN}}
@@ -402,6 +360,7 @@ webAppConfig(){
 	# force check of domain...
 	DOMAIN=
 }
+
 
 #
 #	readVars
@@ -621,11 +580,41 @@ buildAssets(){
 }
 
 
+
+#----------------------------------------------------------------------
+
 #
 #	pctPushAssets ID
 #
 pctPushAssets(){
 	@ pct-push-r $1 "${STAGING_DIR:-./staging}" /
+}
+
+
+#
+#	pveGetLatestTemplate PATTERN [VAR]
+#
+# see:
+#	https://pve.proxmox.com/wiki/Linux_Container
+pveGetLatestTemplate(){
+	if [ $DRY_RUN ] ; then
+		[ -z $2 ] \
+			|| eval "$2=${CT_TEMPLATE:-\\\$CT_TEMPLATE}"
+		return
+	fi
+
+	#@ pveam update 
+
+	local templates=($(pveam available | grep -o ''${1}'.*$'))
+	local latest=${templates[-1]}
+
+	@ pveam download local ${latest}
+
+	latest=$(pveam list local | grep -o "^.*$latest")
+	#latest=($(ls /var/lib/vz/template/cache/${1}*))
+
+	[ -z $2 ] \
+		|| eval "$2=${latest}"
 }
 
 
@@ -700,6 +689,31 @@ pctCreateTurnkey(){
 
 	sleep ${TIMEOUT:=5}
 }
+# Wait for /etc/inithooks.conf to be generated then cleared
+#
+# 	tklWaitForSetup ID
+#
+# for tkl inithooks doc see:
+# 	https://www.turnkeylinux.org/docs/inithooks
+tklWaitForSetup(){
+	printf "# TKL setup, this may take a while"
+	if [ -z $DRY_RUN ] ; then
+		while ! $(lxc-attach $1 -- test -e /etc/inithooks.conf) ; do
+			printf '.'
+			sleep ${TIMEOUT:=5}
+		done
+		printf '+'
+		sleep ${TIMEOUT:=5}
+		while ! [[ $(lxc-attach $1 -- cat /etc/inithooks.conf | wc -c) < 2 ]] ; do
+			printf '.'
+			sleep ${TIMEOUT:=5}
+		done
+	else
+		printf '.+..'
+	fi
+	printf 'ready.\n'
+	sleep ${TIMEOUT:=5}
+}
 #
 #	pctUpdateTurnkey ID
 #
@@ -745,6 +759,7 @@ pctSetNotes(){
 		echo -e "${TEXT}" > "${CT_DIR}/${ID}.conf"
 	fi
 }
+
 
 
 #----------------------------------------------------------------------
