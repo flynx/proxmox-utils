@@ -72,7 +72,7 @@ echo "# Starting TKL UI..."
 @ lxc-attach $ID -- bash -c "HUB_APIKEY=SKIP SEC_UPDATES=SKIP /usr/sbin/turnkey-init"
 
 echo "# Copying assets..."
-@ pct-push-r $ID ./assets /
+pctPushAssets $ID
 
 echo "# Disabling fail2ban..."
 # NOTE: we do not need this as we'll be running from behind a reverse proxy...

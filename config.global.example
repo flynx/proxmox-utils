@@ -33,17 +33,18 @@ LAN_BRIDGE=
 ADMIN_BRIDGE=
 
 
+# NOTE: it is simpler to statically assign these than to configure dhcp
+# 	plus port forewarding to the dynamically assigned IP.
 DFL_WAN_IP=192.168.1.101/24
 DFL_WAN_GATE=192.168.1.252
 
 DFL_WAN_SSH_IP:192.168.1.102/24
 
 
-# Doman and email configuration
+# Domain and email configuration
 #
-EMAIL=user@example.com
-
 DOMAIN=example.com
+EMAIL=user@example.com
 
 
 # Web app/service domain configuration

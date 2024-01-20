@@ -100,7 +100,7 @@ echo "# Installing dependencies..."
 	iptables wireguard-tools-wg-quick make bind-tools libqrencode logrotate
 
 echo "# Copying assets..."
-@ pct-push-r $ID ./assets /
+pctPushAssets $ID
 @ lxc-attach $ID -- chmod +x /root/getFreeClientIP
 
 echo "# Setup: wireguard server and client profile..."

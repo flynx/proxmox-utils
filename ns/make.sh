@@ -75,7 +75,7 @@ echo "# Installing dependencies..."
 @ lxc-attach $ID apk add bash dnsmasq logrotate
 
 echo "# Copying assets..."
-@ pct-push-r $ID ./assets /
+pctPushAssets $ID
 
 echo "# Setup: dnsmasq..."
 @ lxc-attach $ID rc-update add dnsmasq

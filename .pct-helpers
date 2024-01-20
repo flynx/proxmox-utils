@@ -164,18 +164,17 @@ normpath(){
 #----------------------------------------------------------------------
 
 #
-#	getLatestTemplate PATTERN [VAR]
+#	pveGetLatestTemplate PATTERN [VAR]
 #
 # see:
 #	https://pve.proxmox.com/wiki/Linux_Container
-getLatestTemplate(){
+pveGetLatestTemplate(){
 	if [ $DRY_RUN ] ; then
 		[ -z $2 ] \
 			|| eval "$2=${CT_TEMPLATE:-\\\$CT_TEMPLATE}"
 		return
 	fi
 
-	#IFS=$'\n'
 	#@ pveam update 
 
 	local templates=($(pveam available | grep -o ''${1}'.*$'))
@@ -490,6 +489,99 @@ readVars(){
 
 
 #
+#	makeTemplateSEDPatterns VAR ...
+#
+makeTemplateSEDPatterns(){
+	local var
+	for var in "$@" ; do
+		local val=${!var}
+		if [[ $val == SKIP ]] ; then
+			val=
+		fi
+		echo "-e 's/\\\${${var}}/${val//\//\\/}/g'"
+	done
+}
+
+# same as makeTemplateSEDPatterns but adds default vars + generates *_IPn vars...
+PCT_TEMPLATE_VARS=(
+	EMAIL
+	DOMAIN
+	CTHOSTNAME
+	GATE_HOSTNAME
+	NS_HOSTNAME
+	GATE_LAN_IP
+	GATE_ADMIN_IP
+	NS_LAN_IP
+	NS_ADMIN_IP
+	WAN_IP
+	WAN_GATE
+	LAN_IP
+	LAN_GATE
+	ADMIN_IP
+	ADMIN_GATE
+)
+makePCTTemplateSEDPatterns(){
+	# strip ips and save to *_IPn var...
+	local ip_vars=()
+	local var
+	local val
+	for var in ${PCT_TEMPLATE_VARS[@]} ; do
+		if [[ $var =~ .*_IP ]] ; then
+			local val=${!var}
+			if [[ $val == SKIP ]] ; then
+				val=
+			fi
+			ip_vars+=("${var}n")
+			eval "local ${var}n=\"${val/\/*}\""
+		fi
+	done
+
+	makeTemplateSEDPatterns "${PCT_TEMPLATE_VARS[@]}" "${ip_vars[@]}" "$@"
+}
+
+
+#
+#	expandTemplate PATH VAR ...
+#	.. | expandTemplate VAR ...
+#
+PCT_TEMPLATE_PATTERNS=
+expandTemplate(){
+	if [ -t 0 ] ; then
+		local input=$1
+		shift
+	else
+		local input=/dev/stdin
+	fi
+
+	if [ -z "$PCT_TEMPLATE_PATTERNS" ] ; then
+		local patterns=($(makeTemplateSEDPatterns "$@"))
+	else
+		local patterns=("${PCT_TEMPLATE_PATTERNS[@]}")
+	fi
+
+	cat "${input}" \
+		| eval "sed ${patterns[@]}" 
+}
+
+
+#
+#	expandTemplate PATH [VAR ...]
+#	.. | expandTemplate [VAR ...]
+#
+expandPCTTemplate(){
+	local input=
+	if [ -t 0 ] ; then
+		input=$1
+		shift
+	fi
+
+	local PCT_TEMPLATE_PATTERNS=($(makePCTTemplateSEDPatterns "$@"))
+
+	expandTemplate "${input}"
+}
+
+
+#
 #	buildAssets [VAR ..]
 #
 # XXX revise: SKIP handling...
@@ -497,62 +589,17 @@ NOTES=NOTES.md
 buildAssets(){
 	local template_dir=${TEMPLATE_DIR:-templates}
 	local assets_dir=${ASSETS_DIR:-assets}
+	local staging_dir=${STAGING_DIR:-staging}
 
 	if ! [ -e $template_dir ] ; then
 		return
 	fi
 
-	local PATTERNS=()
-	local DFL_VARS=(
-		EMAIL
-		DOMAIN
-		CTHOSTNAME
-		GATE_HOSTNAME
-		NS_HOSTNAME
-		GATE_LAN_IP
-		GATE_ADMIN_IP
-		NS_LAN_IP
-		NS_ADMIN_IP
-		WAN_IP
-		WAN_GATE
-		LAN_IP
-		LAN_GATE
-		ADMIN_IP
-		ADMIN_GATE
-	)
-	for var in ${DFL_VARS[@]} ; do
-		local val=${!var}
-		if [[ $val == SKIP ]] ; then
-			val=
-		fi
-		PATTERNS+=("-e 's/\\\${${var}}/${val//\//\\/}/g'")
-	done
-	local IP_VARS=(
-		GATE_LAN_IPn
-		GATE_ADMIN_IPn
-		NS_LAN_IPn
-		NS_ADMIN_IPn
-		WAN_IPn
-		LAN_IPn
-		ADMIN_IPn
-	)
-	for var in ${IP_VARS[@]} ; do
-		var=${var%n}
-		local val=${!var}
-		if [[ $val == SKIP ]] ; then
-			val=
-		fi
-		PATTERNS+=("-e 's/\\\${${var}n}/${val/\/*}/g'")
-	done
-	# args...
-	for var in $@ ; do
-		local val=${!var}
-		if [[ $val == SKIP ]] ; then
-			val=
-		fi
-		PATTERNS+=("-e 's/\\\${${var}}/${val//\//\\/}/g'")
-	done
+	local PCT_TEMPLATE_PATTERNS=($(makePCTTemplateSEDPatterns "$@"))
 
+	# assets...
+	cp -R "${assets_dir}"/* "${staging_dir}"
+	# template dir...
 	local TEMPLATES=($(find "$template_dir" -type f))
 	for file in "${TEMPLATES[@]}" ; do
 		file=${file#${template_dir}}
@@ -560,17 +607,25 @@ buildAssets(){
 		[ $DRY_RUN ] \
 			&& continue
 		# ensure the directory exists...
-		mkdir -p "$(dirname "${assets_dir}/${file}")"
+		mkdir -p "$(dirname "${staging_dir}/${file}")"
 		cat "${template_dir}/${file}" \
-			| eval "sed ${PATTERNS[@]}" \
-			> "${assets_dir}/${file}"
+			| expandTemplate \
+			> "${staging_dir}/${file}"
 	done
 	# special case: NOTES.md...
 	if [ -z "$DESCRIPTION" ] && [ -e "$NOTES" ] ; then
 		DESCRIPTION="$(\
 			cat ${NOTES} \
-				| eval "sed ${PATTERNS[@]}")"
+				| expandTemplate)"
 	fi
+}
+
+
+#
+#	pctPushAssets ID
+#
+pctPushAssets(){
+	@ pct-push-r $1 "${STAGING_DIR:-./staging}" /
 }
 
 
@@ -598,7 +653,7 @@ pctCreate(){
 #
 pctCreateAlpine(){
 	local TEMPLATE
-	getLatestTemplate alpine TEMPLATE
+	pveGetLatestTemplate alpine TEMPLATE
 
 	pctCreate $1 "$TEMPLATE" "$2" "$3"
 
@@ -609,7 +664,7 @@ pctCreateAlpine(){
 }
 pctCreateDebian(){
 	local TEMPLATE
-	getLatestTemplate 'debian-12-standard' TEMPLATE
+	pveGetLatestTemplate 'debian-12-standard' TEMPLATE
 
 	pctCreate $1 "$TEMPLATE" "$2" "$3"
 
@@ -620,7 +675,7 @@ pctCreateDebian(){
 }
 pctCreateUbuntu(){
 	local TEMPLATE
-	getLatestTemplate ubuntu TEMPLATE
+	pveGetLatestTemplate ubuntu TEMPLATE
 
 	pctCreate $1 "$TEMPLATE" "$2" "$3"
 
@@ -637,7 +692,7 @@ pctCreateTurnkey(){
 	local app=$1
 	shift
 	local TEMPLATE
-	getLatestTemplate '.*-turnkey-'$app TEMPLATE
+	pveGetLatestTemplate '.*-turnkey-'$app TEMPLATE
 
 	pctCreate $1 "$TEMPLATE" "$2" "$3"
 

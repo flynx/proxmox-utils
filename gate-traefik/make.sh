@@ -75,7 +75,7 @@ echo "# Installing dependencies..."
 @ lxc-attach $ID apk add bash bridge iptables traefik logrotate
 
 echo "# Copying assets..."
-@ pct-push-r $ID ./assets /
+pctPushAssets $ID
 
 echo "# Setup: traefik..."
 @ lxc-attach $ID rc-update add traefik

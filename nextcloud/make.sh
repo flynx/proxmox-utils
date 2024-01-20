@@ -145,7 +145,8 @@ done
 @ lxc-attach $ID -- turnkey-occ maintenance:update:htaccess
 
 echo "# Copying assets..."
-@ pct-push-r $ID ./assets /
+pctPushAssets $ID
+# XXX need to push proxy config to gate...
 
 echo "# Disabling fail2ban..."
 # NOTE: we do not need this as we'll be running from behind a reverse proxy...
