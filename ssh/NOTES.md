@@ -1,9 +1,8 @@
 # SSH (admin)
 
-SSH landing into the network
+SSH gateway into the network
 
-${HOSTNAME}  
-${CTHOSTNAME}.srv  
+${DOMAIN}  
+${CTHOSTNAME}.srv
 ${WAN_SSH_IPn}  
-${LAN_IP} (DHCP)  
 

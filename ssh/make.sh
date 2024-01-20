@@ -57,7 +57,7 @@ OPTS_STAGE_2="\
 #----------------------------------------------------------------------
 
 echo "# Building config..."
-buildAssets
+buildAssets WAN_SSH_IP
 
 echo "# Creating CT..."
 pctCreateDebian $ID "$PASS"
