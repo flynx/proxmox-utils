@@ -178,8 +178,9 @@ xread(){
 		shift
 		local non_empty=1
 	fi
-	# XXX check DFL_..???
-	if [[ "${!2}" == "SKIP" ]] ; then
+	# skip...
+	if [[ "${!2}" == "SKIP" ]] \
+			|| [[ "$(eval "echo \$DFL_$2")" == "SKIP" ]] ; then
 		eval "$2="
 		return
 	fi
