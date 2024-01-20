@@ -1,5 +1,5 @@
 # Syncthing
 
-https://${CTHOSTNAME}.srv
+https://${CTHOSTNAME}.adm
 
 

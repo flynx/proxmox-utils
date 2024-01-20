@@ -66,6 +66,9 @@ buildAssets
 echo "# Creating CT..."
 pctCreateAlpine $ID "${OPTS_STAGE_1}" "$PASS"
 
+echo "# Copying assets..."
+pctPushAssets $ID
+
 echo "# Installing dependencies..."
 @ lxc-attach $ID apk add bash syncthing logrotate
 
@@ -77,7 +80,8 @@ echo "# Setup: dashboard..."
 sleep ${TIMEOUT:=5}
 @ lxc-attach $ID -- \
 	sed \
-		-e 's/127\.0\.0\.1:8384/0.0.0.0:8384/g' \
+		-e 's/tls="false"/tls="true"/g' \
+		-e 's/127\.0\.0\.1:8384/0.0.0.0:443/g' \
 		-i /var/lib/syncthing/.config/syncthing/config.xml
 
 echo "# Setup: firewall..."
