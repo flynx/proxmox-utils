@@ -551,10 +551,6 @@ buildAssets(){
 	local assets_dir=${ASSETS_DIR:-assets}
 	local staging_dir=${STAGING_DIR:-staging}
 
-	if ! [ -e $template_dir ] ; then
-		return
-	fi
-
 	local PCT_TEMPLATE_PATTERNS=($(makePCTTemplateSEDPatterns "$@"))
 
 	# assets...
@@ -564,18 +560,20 @@ buildAssets(){
 	fi
 
 	# template dir...
-	local TEMPLATES=($(find "$template_dir" -type f))
-	for file in "${TEMPLATES[@]}" ; do
-		file=${file#${template_dir}}
-		echo Generating: ${file}...
-		[ $DRY_RUN ] \
-			&& continue
-		# ensure the directory exists...
-		mkdir -p "$(dirname "${staging_dir}/${file}")"
-		cat "${template_dir}/${file}" \
-			| expandTemplate \
-			> "${staging_dir}/${file}"
-	done
+	if [ -e $template_dir ] ; then
+		local TEMPLATES=($(find "$template_dir" -type f))
+		for file in "${TEMPLATES[@]}" ; do
+			file=${file#${template_dir}}
+			echo Generating: ${file}...
+			[ $DRY_RUN ] \
+				&& continue
+			# ensure the directory exists...
+			mkdir -p "$(dirname "${staging_dir}/${file}")"
+			cat "${template_dir}/${file}" \
+				| expandTemplate \
+				> "${staging_dir}/${file}"
+		done
+	fi
 
 	# special case: NOTES.md...
 	if [ -z "$DESCRIPTION" ] && [ -e "$NOTES" ] ; then
