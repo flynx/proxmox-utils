@@ -9,7 +9,7 @@
 #
 #----------------------------------------------------------------------
 
-EDITOR := vim
+EDITOR ?= vim
 
 
 # NOTE: The order here is important: 
