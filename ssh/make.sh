@@ -71,7 +71,7 @@ pctPushAssets $ID
 echo "# Setup: users..."
 while true ; do
 	xread "User name for ssh (empty to skip): " SSH_USER
-	if ! [ -z "$SSH_USER" ] ; then
+	if [ -z "$SSH_USER" ] ; then
 		break
 	fi
 
