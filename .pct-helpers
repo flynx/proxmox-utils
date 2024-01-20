@@ -487,11 +487,12 @@ PCT_TEMPLATE_VARS=(
 	ADMIN_GATE
 )
 makePCTTemplateSEDPatterns(){
+	local vars=("${PCT_TEMPLATE_VARS}" "$@")
 	# strip ips and save to *_IPn var...
 	local ip_vars=()
 	local var
 	local val
-	for var in ${PCT_TEMPLATE_VARS[@]} ; do
+	for var in ${vars[@]} ; do
 		if [[ $var =~ .*_IP ]] ; then
 			local val=${!var}
 			if [[ $val == SKIP ]] ; then
@@ -502,7 +503,7 @@ makePCTTemplateSEDPatterns(){
 		fi
 	done
 
-	makeTemplateSEDPatterns "${PCT_TEMPLATE_VARS[@]}" "${ip_vars[@]}" "$@"
+	makeTemplateSEDPatterns "${vars[@]}" "${ip_vars[@]}"
 }
 
 
