@@ -72,6 +72,9 @@ pctPushAssets $ID
 echo "# Installing dependencies..."
 @ lxc-attach $ID apk add bash syncthing logrotate
 
+echo "# Setup: sysctl..."
+@ lxc-attach $ID rc-update add sysctl
+
 echo "# Setup: syncthing..."
 @ lxc-attach $ID rc-update add syncthing
 @ lxc-attach $ID rc-service syncthing start
