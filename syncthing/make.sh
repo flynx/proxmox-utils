@@ -39,19 +39,10 @@ readVars
 
 #----------------------------------------------------------------------
 
-OPTS_STAGE_1="\
-	--hostname $CTHOSTNAME \
-	--cores $CORES \
-	--memory $RAM \
-	--swap $SWAP \
-	--net0 name=lan,bridge=vmbr${LAN_BRIDGE},firewall=1,ip=dhcp,type=veth \
-	--net1 name=admin,bridge=vmbr${ADMIN_BRIDGE},firewall=1,ip=dhcp,type=veth \
-	--storage local-lvm \
-	--rootfs local-lvm:$DRIVE \
-	--unprivileged 1 \
-	--features nesting=1 \
-	${PCT_EXTRA} \
-"
+INTERFACES=(
+	"name=lan,bridge=vmbr${LAN_BRIDGE},firewall=1,ip=dhcp,type=veth"
+	"name=admin,bridge=vmbr${ADMIN_BRIDGE},firewall=1,ip=dhcp,type=veth"
+)
 
 OPTS_STAGE_2="\
 	--onboot 1 \
@@ -64,7 +55,7 @@ echo "# Building config..."
 buildAssets
 
 echo "# Creating CT..."
-pctCreateAlpine $ID "${OPTS_STAGE_1}" "$PASS"
+pctCreateAlpine $ID "$PASS"
 
 echo "# Copying assets..."
 pctPushAssets $ID

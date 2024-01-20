@@ -56,27 +56,6 @@ INTERFACES=(
 	"name=lan,bridge=vmbr${LAN_BRIDGE},firewall=1,ip=dhcp,type=veth"
 )
 
-# XXX move this to .pct-helpers
-INTERFACES_ARGS=()
-i=0
-for interface in "${INTERFACES[@]}" ; do
-	INTERFACES_ARGS+=("--net${i} "${interface}"")
-	i=$(( i + 1 ))
-done
-# NOTE: TKL gui will not function correctly without nesting enabled...
-OPTS_STAGE_1="\
-	--hostname $CTHOSTNAME \
-	--cores $CORES \
-	--memory $RAM \
-	--swap $SWAP \
-	"${INTERFACES_ARGS[@]}" \
-	--storage local-lvm \
-	--rootfs local-lvm:$DRIVE \
-	--unprivileged 1 \
-	--features nesting=1 \
-	${PCT_EXTRA} \
-"
-
 OPTS_STAGE_2="\
 	--onboot 1 \
 "
@@ -88,7 +67,7 @@ echo "# Building config..."
 buildAssets
 
 echo "# Creating CT..."
-pctCreateTurnkey 'nextcloud' $ID "$OPTS_STAGE_1" "$PASS"
+pctCreateTurnkey 'nextcloud' $ID "$PASS"
 
 echo "# Starting TKL UI..."
 # XXX might be a good idea to reaaad stuff from config...

@@ -544,7 +544,6 @@ expandPCTTemplate(){
 #
 #	buildAssets [VAR ..]
 #
-# XXX revise: SKIP handling...
 NOTES=NOTES.md
 buildAssets(){
 	local template_dir=${TEMPLATE_DIR:-templates}
@@ -623,32 +622,77 @@ pveGetLatestTemplate(){
 
 
 #
-#	pctCreate ID TEMPLATE ARGS [PASS]
+#	pctBaseCreate ID TEMPLATE ARGS [PASS]
 #
-pctCreate(){
+pctBaseCreate(){
+	local ID=$1
+	local TEMPLATE=$2
+	local ARGS=$3
+	local PASS=$4
+
 	local TMP_PASS=$(cat /dev/urandom | base64 | head -c ${TMP_PASS_LEN:=32})
 	# NOTE: we are not setting the password here to avoid printing it to the terminal...
-	@ pct create $1 \
-		${2} \
-		${3} \
+	@ pct create $ID \
+		"${TEMPLATE}" \
+		${ARGS} \
 		--password="$TMP_PASS" \
 		--start 1 \
 	|| exit 1
+
 	# set actual root password...
-	if [ "$4" ] ; then
-		echo "root:$4" \
-			| @ lxc-attach $1 chpasswd
+	if [ "$PASS" ] ; then
+		echo "root:$PASS" \
+			| @ lxc-attach $ID chpasswd
 	fi
 }
 
 #
-#	pctCreate<distro> ID ARGS [PASS]
+#	pctCreate ID TEMPLATE [PASS]
+#
+#OPTS_STAGE_1=
+#INTERFACES=
+#CTHOSTNAME=
+#CORES=
+#RAM=
+#SWAP=
+#DRIVE=
+#PCT_EXTRA=
+# XXX
+pctCreate(){
+	# build network args...
+	local interfaces_args=()
+	local i=0
+	local interface
+	for interface in "${INTERFACES[@]}" ; do
+		interfaces_args+=("--net${i} "${interface}"")
+		i=$(( i + 1 ))
+	done
+
+	# NOTE: TKL gui will not function correctly without nesting enabled...
+	local args="\
+		--hostname $CTHOSTNAME \
+		--cores $CORES \
+		--memory $RAM \
+		--swap $SWAP \
+		"${interfaces_args[@]}" \
+		--storage local-lvm \
+		--rootfs local-lvm:$DRIVE \
+		--unprivileged 1 \
+		--features nesting=1 \
+		${PCT_EXTRA} \
+	"
+
+	pctBaseCreate "$1" "$2" "${OPTS_STAGE_1:-"${args}"}" "$3"
+}
+
+#
+#	pctCreate<distro> ID [PASS]
 #
 pctCreateAlpine(){
 	local TEMPLATE
 	pveGetLatestTemplate alpine TEMPLATE
 
-	pctCreate $1 "$TEMPLATE" "$2" "$3"
+	pctCreate $1 "$TEMPLATE" "$2"
 
 	sleep ${TIMEOUT:=5}
 
@@ -659,7 +703,7 @@ pctCreateDebian(){
 	local TEMPLATE
 	pveGetLatestTemplate 'debian-12-standard' TEMPLATE
 
-	pctCreate $1 "$TEMPLATE" "$2" "$3"
+	pctCreate $1 "$TEMPLATE" "$2"
 
 	sleep ${TIMEOUT:=5}
 
@@ -670,7 +714,7 @@ pctCreateUbuntu(){
 	local TEMPLATE
 	pveGetLatestTemplate ubuntu TEMPLATE
 
-	pctCreate $1 "$TEMPLATE" "$2" "$3"
+	pctCreate $1 "$TEMPLATE" "$2"
 
 	sleep ${TIMEOUT:=5}
 
@@ -679,7 +723,7 @@ pctCreateUbuntu(){
 }
 
 #
-#	pctCreateTurnkey APP ID ARGS [PASS]
+#	pctCreateTurnkey APP ID [PASS]
 #
 pctCreateTurnkey(){
 	local app=$1
@@ -687,12 +731,13 @@ pctCreateTurnkey(){
 	local TEMPLATE
 	pveGetLatestTemplate '.*-turnkey-'$app TEMPLATE
 
-	pctCreate $1 "$TEMPLATE" "$2" "$3"
+	pctCreate $1 "$TEMPLATE" "$2"
 
 	tklWaitForSetup $1
 
 	sleep ${TIMEOUT:=5}
 }
+
 # Wait for /etc/inithooks.conf to be generated then cleared
 #
 # 	tklWaitForSetup ID
@@ -718,6 +763,7 @@ tklWaitForSetup(){
 	printf 'ready.\n'
 	sleep ${TIMEOUT:=5}
 }
+
 #
 #	pctUpdateTurnkey ID
 #

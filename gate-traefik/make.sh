@@ -42,20 +42,11 @@ readVars
 
 #----------------------------------------------------------------------
 
-OPTS_STAGE_1="\
-	--hostname $CTHOSTNAME \
-	--cores $CORES \
-	--memory $RAM \
-	--swap $SWAP \
-	--net0 name=wan,bridge=vmbr${WAN_BRIDGE},firewall=1${WAN_GATE:+,gw=${WAN_GATE}}${WAN_IP:+,ip=${WAN_IP}},type=veth \
-	--net1 name=admin,bridge=vmbr${ADMIN_BRIDGE},firewall=1${ADMIN_IP:+,ip=${ADMIN_IP}},type=veth \
-	--net2 name=lan,bridge=vmbr${LAN_BRIDGE},firewall=1${LAN_IP:+,ip=${LAN_IP}},type=veth \
-	--storage local-lvm \
-	--rootfs local-lvm:$DRIVE \
-	--unprivileged 1 \
-	--features nesting=1 \
-	${PCT_EXTRA} \
-"
+INTERFACES=(
+	"name=wan,bridge=vmbr${WAN_BRIDGE},firewall=1${WAN_GATE:+,gw=${WAN_GATE}}${WAN_IP:+,ip=${WAN_IP}},type=veth"
+	"name=admin,bridge=vmbr${ADMIN_BRIDGE},firewall=1${ADMIN_IP:+,ip=${ADMIN_IP}},type=veth"
+	"name=lan,bridge=vmbr${LAN_BRIDGE},firewall=1${LAN_IP:+,ip=${LAN_IP}},type=veth"
+)
 
 OPTS_STAGE_2="\
 	--startup order=80 \
@@ -69,7 +60,7 @@ echo "# Building config..."
 buildAssets
 
 echo "# Creating CT..."
-pctCreateAlpine $ID "${OPTS_STAGE_1}" "$PASS"
+pctCreateAlpine $ID "$PASS"
 
 echo "# Installing dependencies..."
 @ lxc-attach $ID apk add bash bridge iptables traefik logrotate

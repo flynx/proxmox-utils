@@ -41,19 +41,9 @@ readVars
 
 #----------------------------------------------------------------------
 
-# NOTE: TKL gui will not function correctly without nesting enabled...
-OPTS_STAGE_1="\
-	--hostname $CTHOSTNAME \
-	--cores $CORES \
-	--memory $RAM \
-	--swap $SWAP \
-	--net0 name=lan,bridge=vmbr${LAN_BRIDGE},firewall=1,ip=dhcp,type=veth \
-	--storage local-lvm \
-	--rootfs local-lvm:$DRIVE \
-	--unprivileged 1 \
-	--features nesting=1 \
-	${PCT_EXTRA} \
-"
+INTERFACES=(
+	"name=lan,bridge=vmbr${LAN_BRIDGE},firewall=1,ip=dhcp,type=veth"
+)
 
 OPTS_STAGE_2="\
 	--onboot 1 \
@@ -66,7 +56,7 @@ echo "# Building config..."
 buildAssets
 
 echo "# Creating CT..."
-pctCreateTurnkey 'gitea' $ID "$OPTS_STAGE_1" "$PASS"
+pctCreateTurnkey 'gitea' $ID "$PASS"
 
 echo "# Starting TKL UI..."
 @ lxc-attach $ID -- bash -c "HUB_APIKEY=SKIP SEC_UPDATES=SKIP /usr/sbin/turnkey-init"
