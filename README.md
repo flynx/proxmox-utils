@@ -111,5 +111,11 @@ sudo make all
 ```
 
 
+## Post-setup
+
+XXX test conections
+XXX change proxmox ip/network
+
+
 
 
