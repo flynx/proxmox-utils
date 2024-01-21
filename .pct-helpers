@@ -551,6 +551,7 @@ expandPCTTemplate(){
 #
 #	buildAssets [VAR ..]
 #
+# XXX add vars in filenames (???)
 NOTES=NOTES.md
 buildAssets(){
 	local template_dir=${TEMPLATE_DIR:-templates}
