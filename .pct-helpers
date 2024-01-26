@@ -836,7 +836,7 @@ showNotes(){
 #
 pushNotes(){
 	[ -e "${BUILD_NOTES}" ] \
-		&& @ pct-push-r $1 "${BUILD_NOTES}"
+		&& @ pct-push-r $1 "${BUILD_NOTES}" /root/
 }
 
 
