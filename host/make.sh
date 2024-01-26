@@ -46,6 +46,8 @@ if xreadYes "# Update firewall rules?" FIREWALL ; then
 	@ cp --backup -i templates/etc/pve/firewall/cluster.fw /etc/pve/firewall/
 fi
 
+showNotes
+echo "# Done."
 
 
 

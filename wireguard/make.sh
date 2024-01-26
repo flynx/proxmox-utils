@@ -105,6 +105,7 @@ pctSetNotes $ID
 
 saveLastRunConfig
 
+showNotes
 echo "# Done."
 
 

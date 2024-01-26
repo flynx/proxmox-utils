@@ -77,6 +77,7 @@ makeReserveCT $NS_ID $RESERVE_NS_ID $TEMPLATE_NS_ID
 
 saveLastRunConfig
 
+showNotes
 echo "# Done."
 
 

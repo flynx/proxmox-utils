@@ -818,6 +818,28 @@ pctSetNotes(){
 }
 
 
+#
+#	showNotes [VAR ...]
+#
+BUILD_NOTES=BUILD_NOTES
+showNotes(){
+	[ -e "${BUILD_NOTES}" ] \
+		&& mv "${BUILD_NOTES}"{,.bak}
+	[ -e "${BUILD_NOTES}".tpl ] \
+		&& cat "${BUILD_NOTES}".tpl \
+			| expandPCTTemplate $@ \
+			| tee "${BUILD_NOTES}" 
+}
+
+#
+#	pushNotes ID
+#
+pushNotes(){
+	[ -e "${BUILD_NOTES}" ] \
+		&& @ pct-push-r $1 "${BUILD_NOTES}"
+}
+
+
 
 #----------------------------------------------------------------------
 # vim:set ts=4 sw=4 nowrap :
