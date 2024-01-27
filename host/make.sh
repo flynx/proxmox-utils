@@ -12,7 +12,7 @@ source ../.pct-helpers
 
 #----------------------------------------------------------------------
 
-need ifupdown2
+need ifreload
 
 
 #----------------------------------------------------------------------
@@ -23,10 +23,11 @@ readConfig
 DFL_WAN_PORT=${DFL_WAN_PORT:-enp5s0}
 DFL_ADMIN_PORT=${DFL_ADMIN_PORT:-enp2s0}
 
-# XXX move this to root config...
 DFL_HOST_ADMIN_IP=${PROXMOX_ADMIN_IP:-10.0.0.254/24}
 
+
 SOFTWARE=(
+	ifupdown2
 	make
 	w3m links
 	tree
@@ -52,22 +53,30 @@ fi
 #		- bootstrap this
 #		- setup the gate, ssh, and wireguard
 #		- inalize
+# XXX /etc/hosts
 if xreadYes "# Create bridges?" BRIDGES ; then
 	xread "WAN port: " WAN_PORT 
 	xread "ADMIN port: " ADMIN_PORT 
 	xread "Host ADMIN IP: " HOST_ADMIN_IP
 	xread "Gate ADMIN IP: " GATE_ADMIN_IP
 
-	INTERFACES="${cat bridges.tpl \
-		| expandPCTTemplate}"
+	BRIDGES="${\
+		cat bridges.tpl \
+			| expandPCTTemplate WAN_PORT ADMIN_PORT}"
 
-	# XXX add $INTERFACES to /etc/network/interfaces either before the 
+	@ cp /etc/network/interfaces{,.new}
+
+	# XXX add $BRIDGES to /etc/network/interfaces either before the 
 	#		source command or at the end...
 	# XXX
 
-	# XXX /etc/hosts
-
-	#@ ifupdown2 -a
+	echo "# Review updated: /etc/network/interfaces.new:"
+	@ cat /etc/network/interfaces.new
+	echo
+	if xreadYes "# Apply changes?" ; then
+		@ mv -b /etc/network/interfaces{.new,}
+		@ ifreload -a
+	fi
 fi
 
 # Firewall
