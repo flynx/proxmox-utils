@@ -50,7 +50,7 @@ fi
 # Networking
 # XXX need to:
 #		- bootstrap this
-#		- setup the gate and wireguard f
+#		- setup the gate, ssh, and wireguard
 #		- inalize
 if xreadYes "# Create bridges?" BRIDGES ; then
 	xread "WAN port: " WAN_PORT 
