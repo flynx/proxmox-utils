@@ -85,6 +85,9 @@ DFL_PCT_EXTRA=SKIP
 # can be left as-is.
 #
 
+# host
+HOST_ADMIN_IP=10.0.0.245/24
+
 # Nameserver
 NS_HOSTNAME=ns
 NS_ID=100

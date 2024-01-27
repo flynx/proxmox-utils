@@ -473,10 +473,11 @@ PCT_TEMPLATE_VARS=(
 	EMAIL
 	DOMAIN
 	CTHOSTNAME
+	HOST_ADMIN_IP
 	GATE_HOSTNAME
-	NS_HOSTNAME
 	GATE_LAN_IP
 	GATE_ADMIN_IP
+	NS_HOSTNAME
 	NS_LAN_IP
 	NS_ADMIN_IP
 	WAN_IP
@@ -532,8 +533,8 @@ expandTemplate(){
 
 
 #
-#	expandTemplate PATH [VAR ...]
-#	.. | expandTemplate [VAR ...]
+#	expandPCTTemplate PATH [VAR ...]
+#	.. | expandPCTTemplate [VAR ...]
 #
 expandPCTTemplate(){
 	local input=

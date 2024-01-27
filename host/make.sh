@@ -12,8 +12,19 @@ source ../.pct-helpers
 
 #----------------------------------------------------------------------
 
+need ifupdown2
+
+
+#----------------------------------------------------------------------
+
 readConfig
 
+
+DFL_WAN_PORT=${DFL_WAN_PORT:-enp5s0}
+DFL_ADMIN_PORT=${DFL_ADMIN_PORT:-enp2s0}
+
+# XXX move this to root config...
+DFL_HOST_ADMIN_IP=${PROXMOX_ADMIN_IP:-10.0.0.254/24}
 
 SOFTWARE=(
 	make
@@ -38,7 +49,19 @@ fi
 
 # Networking
 if xreadYes "# Create bridges?" BRIDGES ; then
-	echo
+	xread "WAN port: " WAN_PORT 
+	xread "ADMIN port: " ADMIN_PORT 
+	xread "Host ADMIN IP: " HOST_ADMIN_IP
+	xread "Gate ADMIN IP: " GATE_ADMIN_IP
+
+	INTERFACES="${cat bridges.tpl \
+		| expandPCTTemplate}"
+
+	# XXX add $INTERFACES to /etc/network/interfaces either before the 
+	#		source command or at the end...
+	# XXX
+
+	#@ ifupdown2 -a
 fi
 
 # Firewall
