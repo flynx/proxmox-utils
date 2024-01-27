@@ -48,6 +48,10 @@ if xreadYes "# Install additional apps?" APPS ; then
 fi
 
 # Networking
+# XXX need to:
+#		- bootstrap this
+#		- setup the gate and wireguard f
+#		- inalize
 if xreadYes "# Create bridges?" BRIDGES ; then
 	xread "WAN port: " WAN_PORT 
 	xread "ADMIN port: " ADMIN_PORT 
@@ -60,6 +64,8 @@ if xreadYes "# Create bridges?" BRIDGES ; then
 	# XXX add $INTERFACES to /etc/network/interfaces either before the 
 	#		source command or at the end...
 	# XXX
+
+	# XXX /etc/hosts
 
 	#@ ifupdown2 -a
 fi
