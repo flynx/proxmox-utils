@@ -371,6 +371,8 @@ webAppConfig(){
 
 #
 #	readVars
+#	readCTHardwareVars
+#	readBridgeVars
 #
 # Variables this handles:
 #	EMAIL
@@ -396,22 +398,28 @@ webAppConfig(){
 # 	TMP_PASS_LEN
 # 	ROOTPASS
 #
+readCTHardwareVars(){
+	# hardware...
+	xread "CPU cores: " CORES
+	xread "RAM (MB): " RAM
+	xread "SWAP (MB): " SWAP
+	xread "DRIVE (GB): " DRIVE
+}
+readBridgeVars(){
+	# bridge config...
+	xread "WAN bridge: vmbr" WAN_BRIDGE
+	xread "LAN bridge: vmbr" LAN_BRIDGE
+	xread "ADMIN bridge: vmbr" ADMIN_BRIDGE
+}
 readVars(){
 	xread -n "Email: " EMAIL
 	xread -n "Domain: " DOMAIN
 	xread "ID: " ID
 	xread "Hostname: " CTHOSTNAME
 
-	# hardware...
-	xread "CPU cores: " CORES
-	xread "RAM (MB): " RAM
-	xread "SWAP (MB): " SWAP
-	xread "DRIVE (GB): " DRIVE
+	readCTHardwareVars
 
-	# bridge config...
-	xread "WAN bridge: vmbr" WAN_BRIDGE
-	xread "LAN bridge: vmbr" LAN_BRIDGE
-	xread "ADMIN bridge: vmbr" ADMIN_BRIDGE
+	readBridgeVars
 
 	# gateway...
 	# IPs can be:

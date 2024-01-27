@@ -37,6 +37,10 @@ SOFTWARE=(
 )
 
 
+# XXX
+#readVars
+
+
 #----------------------------------------------------------------------
 
 # Tools
@@ -54,22 +58,25 @@ fi
 #		- setup the gate, ssh, and wireguard
 #		- inalize
 # XXX /etc/hosts
+# XXX should we do things in ./staging ???
 if xreadYes "# Create bridges?" BRIDGES ; then
 	xread "WAN port: " WAN_PORT 
 	xread "ADMIN port: " ADMIN_PORT 
 	xread "Host ADMIN IP: " HOST_ADMIN_IP
 	xread "Gate ADMIN IP: " GATE_ADMIN_IP
+	readBridgeVars
+
+	@ cp /etc/network/interfaces{,.new}
 
 	BRIDGES="${\
 		cat bridges.tpl \
 			| expandPCTTemplate WAN_PORT ADMIN_PORT}"
 
-	@ cp /etc/network/interfaces{,.new}
-
 	# XXX add $BRIDGES to /etc/network/interfaces either before the 
 	#		source command or at the end...
 	# XXX
 
+	# review/apply setup...
 	echo "# Review updated: /etc/network/interfaces.new:"
 	@ cat /etc/network/interfaces.new
 	echo
