@@ -58,6 +58,7 @@ fi
 #		- setup the gate, ssh, and wireguard
 #		- inalize
 # XXX /etc/hosts
+# XXX save config???
 # XXX should we do things in ./staging ???
 if xreadYes "# Create bridges?" BRIDGES ; then
 	xread "WAN port: " WAN_PORT 
