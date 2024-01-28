@@ -398,7 +398,10 @@ webAppConfig(){
 # 	TMP_PASS_LEN
 # 	ROOTPASS
 #
-readCTHardwareVars(){
+readCTVars(){
+	xread "ID: " ID
+	xread "Hostname: " CTHOSTNAME
+
 	# hardware...
 	xread "CPU cores: " CORES
 	xread "RAM (MB): " RAM
@@ -414,10 +417,8 @@ readBridgeVars(){
 readVars(){
 	xread -n "Email: " EMAIL
 	xread -n "Domain: " DOMAIN
-	xread "ID: " ID
-	xread "Hostname: " CTHOSTNAME
 
-	readCTHardwareVars
+	readCTVars
 
 	readBridgeVars
 
