@@ -613,6 +613,16 @@ pctPushAssets(){
 
 
 #
+#	traefikPushConfig
+#
+TRAEFIK_CFG=traefik.yml
+TRAEFIK_PATH=/etc/traefik.d/
+traefikPushConfig(){
+	# XXX 
+}
+
+
+#
 #	pveGetLatestTemplate PATTERN [VAR]
 #
 # see:
