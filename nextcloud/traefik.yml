@@ -1,15 +1,15 @@
 http:
   routers:
-    nextcloud:
+    ${CTHOSTNAME}:
       entryPoints:
         - https
-      service: nextcloud
+      service: ${CTHOSTNAME}
       rule: "Host(`${DOMAIN}`)"
       tls:
         certResolver: letsEncrypt
 
   services:
-    nextcloud:
+    ${CTHOSTNAME}:
       loadBalancer:
         servers:
-          - url: https://nextcloud.srv/
+          - url: https://${CTHOSTNAME}.srv/

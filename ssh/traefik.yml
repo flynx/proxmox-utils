@@ -1,13 +1,13 @@
 tcp:
   routers:
-    ssh:
+    ${CTHOSTNAME}:
       entryPoints:
         - ssh2
-      service: ssh
+      service: ${CTHOSTNAME}
       rule: "HostSNI(`*`)"
 
   services:
-    ssh:
+    ${CTHOSTNAME}:
       loadBalancer:
         servers:
-          - address: ssh.srv:22
+          - address: ${CTHOSTNAME}.srv:22

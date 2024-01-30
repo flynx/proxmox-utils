@@ -37,6 +37,8 @@ REBOOT=${REBOOT:=1}
 DFL_WAN_SSH_IP=${DFL_WAN_SSH_IP:=}
 xread "WAN ssh ip:" WAN_SSH_IP
 
+#xread "Gate CT id: " GATE_ID
+
 readVars
 
 
@@ -88,6 +90,8 @@ pctSet $ID "${OPTS_STAGE_2}" $REBOOT
 pctSetNotes $ID
 
 saveLastRunConfig
+
+traefikPushConfig
 
 showNotes
 echo "# Done."

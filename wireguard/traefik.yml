@@ -1,0 +1,12 @@
+udp:
+  routers:
+    ${CTHOSTNAME}:
+      entryPoints:
+        - wireguard2
+      service: ${CTHOSTNAME}
+
+  services:
+    ${CTHOSTNAME}:
+      loadBalancer:
+        servers:
+          - address: ${CTHOSTNAME}.srv:51820

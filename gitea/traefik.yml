@@ -1,29 +1,29 @@
 tcp:
   routers:
-    gitea:
+    ${CTHOSTNAME}:
       entryPoints:
         - ssh
-      service: gitea
+      service: ${CTHOSTNAME}
       rule: "HostSNI(`*`)"
 
   services:
-    gitea:
+    ${CTHOSTNAME}:
       loadBalancer:
         servers:
-          - address: gitea.srv:22
+          - address: ${CTHOSTNAME}.srv:22
 
 http:
   routers:
-    gitea:
+    ${CTHOSTNAME}:
       entryPoints:
         - https
-      service: gitea
+      service: ${CTHOSTNAME}
       rule: "Host(`${DOMAIN}`)"
       tls:
         certResolver: letsEncrypt
 
   services:
-    gitea:
+    ${CTHOSTNAME}:
       loadBalancer:
         servers:
-          - url: https://gitea.srv/
+          - url: https://${CTHOSTNAME}.srv/

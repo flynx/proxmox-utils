@@ -107,7 +107,9 @@ all: minimal $(APP_CTs)
 
 .PHONY: clean
 clean:
-	-rm -rf */staging
+	-rm -rf \
+		*/staging \
+		*/traefik
 
 
 

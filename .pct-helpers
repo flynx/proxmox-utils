@@ -418,6 +418,8 @@ readVars(){
 	xread -n "Email: " EMAIL
 	xread -n "Domain: " DOMAIN
 
+	xread -n "Gate ID: " GATE_ID
+
 	readCTVars
 
 	readBridgeVars
@@ -615,10 +617,37 @@ pctPushAssets(){
 #
 #	traefikPushConfig
 #
-TRAEFIK_CFG=traefik.yml
+# XXX generate config in a staging location...
+TRAEFIK_CONFIG=traefik.yml
 TRAEFIK_PATH=/etc/traefik.d/
+TRAEFIK_STAGING=traefik/
 traefikPushConfig(){
-	# XXX 
+	local filename="${CTHOSTNAME}.yml"
+	local source="${TRAEFIK_STAGING}/${filename}"
+	local target="${TRAEFIK_PATH}"/"${filename}"
+
+	# source file not found...
+	if ! [ -e "${TRAEFIK_CONFIG}" ] ; then
+		echo "${TRAEFIK_CONFIG}: not found." >&2
+		return
+	fi
+
+	# generat config...
+	mkdir -p "${TRAEFIK_STAGING}"
+	cat ${TRAEFIK_CONFIG} \
+		| expandPCTTemplate \
+		> "${source}"
+
+	# get things we need if they are not set...
+	xread "Gate CT id: " GATE_ID
+
+	# check if $filename exists...
+	if @ lxc-attach $GATE_ID -- test -e ${target} \
+			&& ! xreadYes "Overwrite existing \"${target}\"?" ; then
+		@ lxc-attach $GATE_ID -- mv "${target}" "${target}.bak"
+	fi
+
+	@ pct push $GATE_ID "${source}" "${target}"
 }
 
 
@@ -823,18 +852,17 @@ pctSetNotes(){
 	local NOTES="$(\
 		echo -e "${2:-${DESCRIPTION}}" \
 			| sed -e 's/^/#/')"
+
+	if [ "$DRY_RUN" ] ; then
+		return
+	fi
+
 	local CONF="$(cat "${CT_DIR}/${ID}.conf")"
 	local TEXT="\
 "${NOTES}"
 "${CONF}"
 "
-	if [ "$DRY_RUN" ] ; then
-		echo "--- ${CT_DIR}/${ID}.conf ---"
-		echo -e "${TEXT}"
-		echo "---"
-	else
-		echo -e "${TEXT}" > "${CT_DIR}/${ID}.conf"
-	fi
+	echo -e "${TEXT}" > "${CT_DIR}/${ID}.conf"
 }
 
 
@@ -846,9 +874,9 @@ showNotes(){
 	[ -e "${BUILD_NOTES}" ] \
 		&& mv "${BUILD_NOTES}"{,.bak}
 	[ -e "${BUILD_NOTES}".tpl ] \
-		&& cat "${BUILD_NOTES}".tpl \
+		&& ( cat "${BUILD_NOTES}".tpl \
 			| expandPCTTemplate $@ \
-			| tee "${BUILD_NOTES}" 
+			| tee "${BUILD_NOTES}" )
 }
 
 #
