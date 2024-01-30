@@ -178,6 +178,10 @@ xread(){
 		shift
 		local non_empty=1
 	fi
+	local prefix=
+	if [ $SCRIPTING ] ; then
+		prefix='# '
+	fi
 	# skip...
 	if [[ "${!2}" == "SKIP" ]] \
 			|| [[ "$(eval "echo \$DFL_$2")" == "SKIP" ]] ; then
@@ -185,7 +189,7 @@ xread(){
 		return
 	fi
 	if [ -z ${!2} ] ; then
-		eval 'read -ep "'$1'" -i "$DFL_'$2'" '${2}''
+		eval 'read -ep "'$prefix''$1'" -i "$DFL_'$2'" '${2}''
 		XREAD_VARS+=(${2})
 	fi
 	if [ -z $non_empty ] ; then
@@ -200,11 +204,15 @@ xread(){
 #
 xreadYes(){
 	if [ -z ${2} ] ; then
-		local var=__X
-		local __X
+		local var=__LOCAL
+		local __LOCAL
 	else
 		local var=${2}
 		local mode=
+	fi
+	local prefix=
+	if [ $SCRIPTING ] ; then
+		prefix='# '
 	fi
 	# XXX check DFL_..???
 	if [[ "${!var}" == "SKIP" ]] ; then
@@ -221,7 +229,7 @@ xreadYes(){
 			local no=n
 			local dfl=1
 		fi
-		eval 'read -ep "'$1' ('$yes'/'$no') " '${var}''
+		eval 'read -ep "'$prefix''$1' ('$yes'/'$no') " '${var}''
 		XREAD_VARS+=(${var})
 		# normalize...
 		eval "${var}=${!var,,}"
@@ -235,6 +243,7 @@ xreadYes(){
 		fi
 	fi
 	[ $SCRIPTING ] \
+		&& [[ "$var" != '__LOCAL' ]] \
 		&& echo "$var=${!var}"
 
 	if [ -z ${!var} ] ; then
@@ -249,18 +258,22 @@ xreadpass(){
 	if [[ ${!1} == 'SKIP' ]] ; then
 		return
 	fi
+	local prefix=
+	if [ $SCRIPTING ] ; then
+		prefix='# '
+	fi
 	local PASS1
 	local PASS2
 	for attempt in 1 2 3 ; do
-		read -sep "password (Enter to skip): " PASS1
+		read -sep "${prefix}password (Enter to skip): " PASS1
 		echo
 		if [ -z $PASS1 ] ; then
 			return
 		fi
-		read -sep "retype password: " PASS2
+		read -sep "${prefix}retype password: " PASS2
 		echo
 		if [[ $PASS1 != $PASS2 ]] ; then
-			echo "ERR: passwords do not match."
+			echo "ERROR: passwords do not match." >&2
 			continue
 		fi
 		eval ''$1'='${PASS1}''
