@@ -52,7 +52,7 @@ if xreadYes "# Install additional apps?" APPS ; then
 	@ apt install ${SOFTWARE[@]}
 fi
 
-# Networking
+# Bridges...
 # XXX need to:
 #		- bootstrap this
 #		- setup the gate, ssh, and wireguard
@@ -88,24 +88,39 @@ if xreadYes "# Create bridges?" BRIDGES ; then
 		cat bridges.tpl \
 			| expandPCTTemplate WAN_PORT ADMIN_PORT)"
 
-	# XXX add $BRIDGES to /etc/network/interfaces either before the 
-	#		source command or at the end...
-	# XXX
+	if [ -z "$DRY_RUN" ] ; then
+		# XXX add $BRIDGES to /etc/network/interfaces either before the 
+		#		source command or at the end...
+		# XXX
+		echo
+	fi
 
-	# review/apply setup...
-	echo "# Review updated: /etc/network/interfaces.new:"
-	@ cat /etc/network/interfaces.new
-	echo
-	if xreadYes "# Apply changes?" ; then
-		@ mv -b /etc/network/interfaces{.new,}
+	if reviewApplyChanges /etc/network/interfaces ; then
 		@ ifreload -a
 	fi
 fi
 
+
+echo "# Building config..."
+# XXX do we need any extra vars here???
+buildAssets
+
+
+# DNS
+if xreadYes "# Update DNS?" DNS ; then
+	file=/etc/resolv.conf
+	@ cp "staging/${file}" "${file}".new
+	reviewApplyChanges "${file}"
+fi
+
+
 # Firewall
 if xreadYes "# Update firewall rules?" FIREWALL ; then
-	@ cp --backup -i templates/etc/pve/firewall/cluster.fw /etc/pve/firewall/
+	file=/etc/pve/firewall/cluster.fw
+	@ cp "staging/${file}" "${file}".new
+	reviewApplyChanges "${file}"
 fi
+
 
 showNotes
 echo "# Done."

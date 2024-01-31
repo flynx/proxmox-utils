@@ -286,6 +286,41 @@ xreadpass(){
 }
 
 
+# Review changes in PATH.new, then edit/apply changes to PATH
+#
+#	reviewApplyChanges PATH
+#
+# NOTE: if changes are not applied this will return non-zero making this 
+#		usable in conditionals...
+reviewApplyChanges(){
+	local file=$1
+	echo "# Review updated: ${file}.new:"
+	@ cat ${file}.new
+	echo
+	# XXX add option to edit...
+	local res
+	while true ; do
+		read -ep "# [a]pply, [e]dit, [s]kip? " res
+		case "${res,,}" in
+			a|apply)
+				break
+				;;
+			e|edit)
+				${EDITOR} "${file}"
+				;;
+			s|skip)
+				echo "# file saved as: ${file}.new"
+				return 1
+				;;
+			*)
+				echo "ERROR: unknown command: \"$res\"" >&2
+				continue
+				;;
+		esac
+	done
+	@ mv -b "${file}"{.new,}
+}
+
 
 #----------------------------------------------------------------------
 
