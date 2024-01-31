@@ -296,8 +296,7 @@ reviewApplyChanges(){
 	local file=$1
 	echo "# Review updated: ${file}.new:"
 	@ cat ${file}.new
-	echo
-	# XXX add option to edit...
+	echo '---'
 	local res
 	while true ; do
 		read -ep "# [a]pply, [e]dit, [s]kip? " res
