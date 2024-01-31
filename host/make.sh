@@ -73,6 +73,9 @@ if xreadYes "# Create bridges?" BRIDGES ; then
 		cat bridges.tpl \
 			| expandPCTTemplate WAN_PORT ADMIN_PORT}"
 
+	# XXX check if new bridges already exist in intefaces...
+	# XXX
+
 	# XXX add $BRIDGES to /etc/network/interfaces either before the 
 	#		source command or at the end...
 	# XXX
