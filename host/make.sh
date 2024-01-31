@@ -49,7 +49,7 @@ if xreadYes "# Update system?" UPDATE ; then
 	@ apt upgrade
 fi
 if xreadYes "# Install additional apps?" APPS ; then
-	@ apt install $(SOFTWARE[@])
+	@ apt install ${SOFTWARE[@]}
 fi
 
 # Networking
@@ -67,14 +67,26 @@ if xreadYes "# Create bridges?" BRIDGES ; then
 	xread "Gate ADMIN IP: " GATE_ADMIN_IP
 	readBridgeVars
 
+	# check if new bridges already exist in interfaces...
+	if [ -e /etc/network/interfaces ] \
+			&& grep -q \
+				"vmbr\(${WAN_BRIDGE}\|${LAN_BRIDGE}\|${ADMIN_BRIDGE}\)" \
+				/etc/network/interfaces ; then
+		conflict=
+		for br in WAN_BRIDGE LAN_BRIDGE ADMIN_BRIDGE ; do
+			if grep -q "vmbr${!br}" /etc/network/interfaces ; then
+				conflict="${conflict}, vmbr${!br} (${br})"
+			fi
+		done
+		echo "ERROR: will not overwrite existing bridges: ${conflict:2}" >&2
+		exit 1
+	fi
+
 	@ cp /etc/network/interfaces{,.new}
 
-	BRIDGES="${\
+	BRIDGES="$(\
 		cat bridges.tpl \
-			| expandPCTTemplate WAN_PORT ADMIN_PORT}"
-
-	# XXX check if new bridges already exist in intefaces...
-	# XXX
+			| expandPCTTemplate WAN_PORT ADMIN_PORT)"
 
 	# XXX add $BRIDGES to /etc/network/interfaces either before the 
 	#		source command or at the end...
