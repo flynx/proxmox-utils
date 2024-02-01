@@ -23,7 +23,7 @@ fi
 for ct in $CT_DIR/*.conf ; do
 	id=$(basename ${ct/.conf/})
 
-	host=$(cat $ct | grep hostname | head -1)
+	host=$(ct2hostname)
 	host=${host/hostname: /}
 
 	# skip templates...
