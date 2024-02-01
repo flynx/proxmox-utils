@@ -141,6 +141,9 @@ pctSetNotes $ID
 
 saveLastRunConfig
 
+echo "# Traefik config..."
+traefikPushConfig
+
 showNotes
 echo "# Done."
 
