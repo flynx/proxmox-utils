@@ -23,6 +23,7 @@ fi
 for ct in $CT_DIR/*.conf ; do
 	id=$(basename ${ct/.conf/})
 
+	# XXX this seems to break on 302...
 	host=$(cat $ct | grep hostname | head -1)
 	host=${host/hostname: /}
 
