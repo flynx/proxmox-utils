@@ -106,6 +106,9 @@ echo "# Building config..."
 buildAssets
 
 
+# XXX /etc/hosts???
+
+
 # DNS
 if xreadYes "# Update DNS?" DNS ; then
 	file=/etc/resolv.conf

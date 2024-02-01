@@ -119,7 +119,9 @@ fillsection(){ (
 
 ct2hostname(){
 	local ct=${CT_DIR}/${1}.conf
-	local host=$(cat $ct | grep hostname | head -1)
+	local host=$(cat $ct \
+		| grep -e '^\s*hostname:' \
+		| head -1)
 	echo ${host/hostname: /}
 }
 
