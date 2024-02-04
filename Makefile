@@ -12,6 +12,8 @@
 EDITOR ?= vim
 
 
+# CTs...
+#
 # NOTE: The order here is important: 
 # 	- to avoid bootstrapping network connections gate must be the 
 # 	  first CT to get built to route the rest of CT's to the WAN 
@@ -26,6 +28,7 @@ MINIMAL_CTs := \
 	ssh wireguard 
 APP_CTs := \
 	syncthing nextcloud #gitea
+# Optional...
 DEV_CTs := \
 	gitea
 
@@ -114,3 +117,4 @@ clean:
 
 
 #----------------------------------------------------------------------
+# vim:set nowrap :
