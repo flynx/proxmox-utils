@@ -16,6 +16,8 @@ CT_DIR=${CT_DIR:=/etc/pve/lxc/}
 
 # Execute (optionally) and print a command.
 #
+#	@ COMMAND ARGS
+#
 #QUIET=
 #DRY_RUN=
 ECHO_PREFIX="### "
@@ -323,6 +325,7 @@ reviewApplyChanges(){
 	done
 	@ mv -b "${file}"{.new,}
 }
+
 
 
 #----------------------------------------------------------------------
