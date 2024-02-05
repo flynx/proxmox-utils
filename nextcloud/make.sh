@@ -19,7 +19,7 @@ readConfig
 
 webAppConfig Nextcloud
 
-DFL_ID=${DFL_ID:=300}
+DFL_ID=${DFL_ID:=1000}
 DFL_CTHOSTNAME=${DFL_CTHOSTNAME:=nextcloud}
 
 DFL_CORES=${DFL_CORES:=2}
