@@ -179,8 +179,6 @@ normpath(){
 #	xread [-n] MSG VAR
 #
 # This saves all user input variables to the $XREAD_VARS array.
-#
-# XXX add support for keywords like SKIP and DISABLE
 xread(){
 	local non_empty=
 	if [[ $1 == '-n' ]] ; then

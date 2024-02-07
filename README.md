@@ -94,6 +94,22 @@ ssh facing lan to avoid a single point of failure with gate
 ## Setup
 
 ```shell
+git clone https://github.com/flynx/proxmox-utils.git
+```
+or:
+```shell
+git clone git@github.com:flynx/proxmox-utils.git
+```
+
+
+For a clean host setup:
+```shell
+sudo make host
+```
+
+
+Install CT's:
+```shell
 sudo make all
 ```
 
