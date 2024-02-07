@@ -28,7 +28,7 @@ MINIMAL_CTs := \
 	ssh wireguard 
 APP_CTs := \
 	syncthing nextcloud #gitea
-# Optional...
+# Optional (see dev target)...
 DEV_CTs := \
 	gitea
 

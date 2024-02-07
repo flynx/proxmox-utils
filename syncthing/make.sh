@@ -17,7 +17,7 @@ readConfig
 
 #----------------------------------------------------------------------
 
-DFL_ID=${DFL_ID:=301}
+DFL_ID=${DFL_ID:=1001}
 DFL_CTHOSTNAME=${DFL_CTHOSTNAME:=syncthing}
 
 DFL_CORES=${DFL_CORES:=1}
