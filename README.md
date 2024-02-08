@@ -93,6 +93,7 @@ ssh facing lan to avoid a single point of failure with gate
 
 ## Setup
 
+Get the code:
 ```shell
 git clone https://github.com/flynx/proxmox-utils.git
 ```
@@ -102,15 +103,23 @@ git clone git@github.com:flynx/proxmox-utils.git
 ```
 
 
-For a clean host setup:
+For host setup:
 ```shell
 sudo make host
 ```
+
+Be carefull as this may overwrite existing configuration.
 
 
 Install CT's:
 ```shell
 sudo make all
+```
+
+
+Install gitea (optional):
+```shell
+sudo make dev
 ```
 
 
