@@ -3,7 +3,7 @@
 A set of scripts for automating setup and tasks in proxmox.
 
 ## TODO
-- a uniform way to push files to other CTs (mainly the gate -- traefik rules)
+- a uniform way to push files to other CTs (mainly the gate -- traefik rules) -- DONE
 - revise defaults
 - separate templates/assets into distribution and user directories
   ...this is needed to allow the user to change the configs without the 
