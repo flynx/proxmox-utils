@@ -1,0 +1,8 @@
+/var/log/traefik/*.log {
+	su traefik traefik
+        size 10M
+        rotate 10
+        missingok
+        sharedscripts
+        compress	
+}
