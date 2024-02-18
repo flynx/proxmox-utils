@@ -128,4 +128,21 @@ XXX change proxmox ip/network
 XXX firewall
 
 
+## Extending
 
+### Directory structure
+
+```
+/
++- <ct-type>/
+|   +- templates/
+|   +- assets/
+|   +- staging/
+|   +- make.sh
+|   +- config
+|   +- config.last-run
++- ...
++- Makefile
++- config.global
++- config.global.example
+```
