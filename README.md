@@ -13,6 +13,13 @@ A set of scripts for automating setup and tasks in proxmox.
 - setup host
 
 
+## Motivation
+
+This was simply faster to implement than learning and writing the same functionality in Ansible.
+
+_NOTE: for a fair assessment of viability of further development an Ansible version will be implemented next as a direct comparison._
+
+
 ## Architecture
 
 XXX service structure
