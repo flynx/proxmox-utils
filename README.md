@@ -15,9 +15,11 @@ A set of scripts for automating setup and tasks in proxmox.
 
 ## Motivation
 
-This was simply faster to implement than learning and writing the same functionality in Ansible.
+This was simply faster to implement than learning and writing the same 
+functionality in Ansible.
 
-_NOTE: for a fair assessment of viability of further development an Ansible version will be implemented next as a direct comparison._
+_NOTE: for a fair assessment of viability of further development an 
+Ansible version will be implemented next as a direct comparison._
 
 
 ## Architecture
@@ -90,9 +92,11 @@ https://pve.proxmox.com/wiki/Firewall
 
 ### Recovery strategies
 
-ns/gate as separate nodes for redundancy
+XXX ns/gate are separate nodes for redundancy
 
-ssh facing lan to avoid a single point of failure with gate
+XXX ssh facing lan to avoid a single point of failure with gate
+
+XXX access points: ssh and wireguard
 
 
 
