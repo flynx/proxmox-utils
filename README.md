@@ -96,7 +96,7 @@ XXX ns/gate are separate nodes for redundancy
 
 XXX ssh facing lan to avoid a single point of failure with gate
 
-XXX access points: ssh and wireguard
+XXX emergency access points: ssh and wireguard
 
 
 
