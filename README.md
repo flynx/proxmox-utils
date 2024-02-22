@@ -7,7 +7,9 @@ A set of scripts for automating setup and tasks in proxmox.
 - separate templates/assets into distribution and user directories
   ...this is needed to allow the user to change the configs without the 
   fear of them being overwritten by git (similar to how config is handlerd)
-- updates
+- might be a good idea to export a specific ct script that can be used 
+  for updates for that ct
+- ct updates
 - backup/restore
 - mail
 - setup host
