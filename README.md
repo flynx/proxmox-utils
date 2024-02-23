@@ -12,7 +12,6 @@ A set of scripts for automating setup and tasks in proxmox.
 - ct updates
 - backup/restore
 - mail
-- setup host
 
 
 ## Motivation
