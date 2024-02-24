@@ -25,6 +25,19 @@ Ansible version will be implemented next as a direct comparison._
 
 ## Architecture
 
+Goals:
+- Separate concerns  
+  Preferably one service/role per CT
+- Keep things as light as possible  
+  This for the most part rules out Docker as a nested virtualization
+  layer under Proxmox while preferring light distributions like Alpine
+  Linux
+- Pragmatic simplicity  
+  This goal yields some compromises to previous goals, for example [TKL]()
+  is used as a base for [Nextcloud]() effectively simplifying the setup 
+  and administration of all the related components at the cost of a 
+  heavier CT transparently integrating multiple related services
+
 XXX service structure
 
 XXX network
