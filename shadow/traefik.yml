@@ -1,12 +1,13 @@
-udp:
+tcp:
   routers:
     ${CTHOSTNAME}:
       entryPoints:
-        - wireguard
+        - ${CTHOSTNAME}
       service: ${CTHOSTNAME}
+      rule: "HostSNI(`*`)"
 
   services:
     ${CTHOSTNAME}:
       loadBalancer:
         servers:
-          - address: ${CTHOSTNAME}.srv:51820
+          - address: ${CTHOSTNAME}.srv:5555

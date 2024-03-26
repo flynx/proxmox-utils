@@ -22,6 +22,8 @@ entryPoints:
     address: ':51820/udp'
   wireguard2:
     address: ':51821/udp'
+  shadow:
+    address: ':5555'
   http:
     address: ':80'
     http:
