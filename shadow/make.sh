@@ -25,6 +25,10 @@ DFL_RAM=${DFL_RAM:=256}
 DFL_SWAP=${DFL_SWAP:=${DFL_RAM}}
 DFL_DRIVE=${DFL_DRIVE:=0.5}
 
+# XXX this is not used yet -- need to set this at traefik endpoint... 
+#DFL_ENDPOINT_PORT=${DFL_ENDPOINT_PORT:=5555}
+#xread "Shadowsocks endpoint port: " ENDPOINT_PORT
+
 WAN_IP=SKIP
 WAN_GATE=SKIP
 ADMIN_IP=SKIP
