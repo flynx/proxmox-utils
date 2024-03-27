@@ -38,10 +38,22 @@ LAN_GATE=SKIP
 
 REBOOT=${REBOOT:=1}
 
+USER=shadowsocks
+
+# Wireguard config...
+DFL_ENDPOINT=${DFL_ENDPOINT:=$(\
+	which dig > /dev/null 2>&1 \
+		&& (dig +short ${DOMAIN:-$DFL_DOMAIN} \
+			| tail -1) \
+		|| echo "${DOMAIN:-$DFL_DOMAIN}")}
+xread "Shadowsocks endpoint: " ENDPOINT
+
+DFL_ENDPOINT_PORT=${DFL_ENDPOINT_PORT:=5555}
+xread "Shadowsocks endpoint port: " ENDPOINT_PORT
+
+
 readVars
 
-
-USER=shadowsocks
 
 
 #----------------------------------------------------------------------
@@ -58,7 +70,7 @@ OPTS_STAGE_2="\
 #----------------------------------------------------------------------
 
 echo "# Building config..."
-buildAssets
+buildAssets ENDPOINT ENDPOINT_PORT
 
 echo "# Creating CT..."
 pctCreateAlpine $ID "$PASS"
