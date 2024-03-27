@@ -10,4 +10,4 @@ tcp:
     ${CTHOSTNAME}:
       loadBalancer:
         servers:
-          - address: ${CTHOSTNAME}.srv:5555
+          - address: ${CTHOSTNAME}.srv:8388

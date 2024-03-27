@@ -68,7 +68,7 @@ echo "# Installing dependencies..."
 	sed \
 		-e '/v3\.\d*/{p;s|v3\.\d*|edge|}' \
 		-i /etc/apk/repositories
-@ lxc-attach $ID apk add bash logrotate shadowsocks-rust
+@ lxc-attach $ID apk add bash libqrencode logrotate shadowsocks-rust
 
 
 echo "# Copying assets..."
@@ -78,6 +78,8 @@ pctPushAssets $ID
 echo "# Generating/updating config and server script..."
 @ lxc-attach $ID bash /root/update-shadowsocks.sh
 
+
+echo "# Profile: $*"
 
 echo "# Post config..."
 pctSet $ID "${OPTS_STAGE_2}" $REBOOT
