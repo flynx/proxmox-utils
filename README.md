@@ -9,6 +9,9 @@ A set of scripts for automating setup and tasks in proxmox.
   fear of them being overwritten by git (similar to how config is handlerd)
 - might be a good idea to export a specific ct script that can be used 
   for updates for that ct
+- which is better?
+  - Makefile (a-la wireguard)
+  - shell (a-la shadow)
 - ct updates
 - backup/restore
 - mail
