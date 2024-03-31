@@ -2,16 +2,19 @@
 #
 # NOTE: re-run this if the IP/PORT change...
 #
+# XXX should this be a makefile???
 
 ENDPOINT=${ENDPOINT}
 ENDPOINT_PORT=${ENDPOINT_PORT}
+ENCRYPTION=aes-256-gcm
+
 
 # get the current IP...
 HOST_IP=$(ip addr show dev lan \
 	| grep 'inet ' \
 	| cut -d ' ' -f 6 \
 	| cut -d '/' -f 1)
-ENCRYPTION=aes-256-gcm
+
 
 USER=shadowsocks
 SCRIPT=shadowsocks
@@ -28,7 +31,7 @@ if ! which ssserver > /dev/null ; then
 		-e '/v3\.\d*/{p;s|v3\.\d*|edge|}' \
 		-i /etc/apk/repositories
 	apk update
-	apk add shadowsocks-rust
+	apk add shadowsocks-rust libqrencode
 fi
 
 # user...
@@ -65,17 +68,25 @@ EOF
 chown $USER:$USER $SERVER_CONFIG
 chmod 600 $SERVER_CONFIG
 
+
 # /home/$USER/$CLIENT_CONFIG
 cat > $CLIENT_CONFIG << EOF
 {
-	"server": "${ENDPOINT}",
-	"server_port": ${ENDPOINT_PORT},
+	"server": "$ENDPOINT",
+	"server_port": $ENDPOINT_PORT,
 	"password": "${PASSWD}",
 	"method": "${ENCRYPTION}"
 	"local_address": "127.0.0.1",
     "local_port": 1080
 }
 EOF
+chown $USER:$USER $SERVER_CONFIG
+chmod 600 $SERVER_CONFIG
+
+# Print profile QRCode...
+echo "# Profile:"
+qrencode -t UTF8 "ss://${PASSWD}@$ENDPOINT:$ENDPOINT_PORT#shadow @ $ENDPOINT"
+
 
 # /home/$USER/$SCRIPT
 cat > $SCRIPT << EOF
