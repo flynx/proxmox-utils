@@ -84,8 +84,11 @@ chown $USER:$USER $SERVER_CONFIG
 chmod 600 $SERVER_CONFIG
 
 # Print profile QRCode...
+PROFILE="ss://$PASSWD@$ENDPOINT:$ENDPOINT_PORT#shadow @ $ENDPOINT"
 echo "# Profile:"
-qrencode -t UTF8 "ss://${PASSWD}@$ENDPOINT:$ENDPOINT_PORT#shadow @ $ENDPOINT"
+qrencode -t UTF8 "$PROFILE"
+echo "$PROFILE"
+echo
 
 
 # /home/$USER/$SCRIPT
