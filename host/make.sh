@@ -82,6 +82,7 @@ if xreadYes "# Create bridges?" BRIDGES ; then
 		exit 1
 	fi
 
+	@ cp /etc/network/interfaces{,.bak}
 	@ cp /etc/network/interfaces{,.new}
 
 	BRIDGES="$(\
@@ -96,6 +97,8 @@ if xreadYes "# Create bridges?" BRIDGES ; then
 		#		source command or at the end...
 		# XXX
 		echo "$BRIDGES" >> /etc/network/interfaces.new
+	else
+		echo "$BRIDGES"
 	fi
 
 	if reviewApplyChanges /etc/network/interfaces ; then
