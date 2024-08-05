@@ -67,14 +67,16 @@ if xreadYes "# Create bridges?" BRIDGES ; then
 	xread "Gate ADMIN IP: " GATE_ADMIN_IP
 	readBridgeVars
 
+	INTERFACES=/etc/network/interfaces
+
 	# check if new bridges already exist in interfaces...
-	if [ -e /etc/network/interfaces ] \
+	if [ -e "$INTERFACES" ] \
 			&& grep -q \
 				"vmbr\(${WAN_BRIDGE}\|${LAN_BRIDGE}\|${ADMIN_BRIDGE}\)" \
-				/etc/network/interfaces ; then
+				"$INTERFACES" ; then
 		conflict=
 		for br in WAN_BRIDGE LAN_BRIDGE ADMIN_BRIDGE ; do
-			if grep -q "vmbr${!br}" /etc/network/interfaces ; then
+			if grep -q "vmbr${!br}" "$INTERFACES" ; then
 				conflict="${conflict}, vmbr${!br} (${br})"
 			fi
 		done
@@ -82,8 +84,8 @@ if xreadYes "# Create bridges?" BRIDGES ; then
 		exit 1
 	fi
 
-	@ cp /etc/network/interfaces{,.bak}
-	@ cp /etc/network/interfaces{,.new}
+	@ cp "$INTERFACES"{,.bak}
+	@ cp "$INTERFACES"{,.new}
 
 	BRIDGES="$(\
 		cat bridges.tpl \
@@ -93,18 +95,18 @@ if xreadYes "# Create bridges?" BRIDGES ; then
 				HOST_ADMIN_IP GATE_ADMIN_IP)"
 
 	if [ -z "$DRY_RUN" ] ; then
-		# XXX add $BRIDGES to /etc/network/interfaces either before the 
+		# XXX add $BRIDGES to "$INTERFACES" either before the 
 		#		source command or at the end...
 		# XXX
-		echo "$BRIDGES" >> /etc/network/interfaces.new
+		echo "$BRIDGES" >> "$INTERFACES".new
 	else
 		echo "$BRIDGES"
 	fi
 
-	if reviewApplyChanges /etc/network/interfaces ; then
+	if reviewApplyChanges "$INTERFACES" ; then
 		if ! @ ifreload -a ; then
 			# reset settings back if ifreload fails...
-			@ cp /etc/network/interfaces{.bak,}
+			@ cp "$INTERFACES"{.bak,}
 			@ ifreload -a	
 		fi
 	fi
