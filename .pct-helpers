@@ -21,7 +21,7 @@ CT_DIR=${CT_DIR:=/etc/pve/lxc/}
 #QUIET=
 #DRY_RUN=
 ECHO_PREFIX="### "
-@(){
+function @ (){
 	if [ -z $DRY_RUN ] ; then
 		! [ $QUIET ] \
 			&& echo -e "${ECHO_PREFIX}$@"

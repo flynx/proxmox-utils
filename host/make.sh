@@ -102,7 +102,11 @@ if xreadYes "# Create bridges?" BRIDGES ; then
 	fi
 
 	if reviewApplyChanges /etc/network/interfaces ; then
-		@ ifreload -a
+		if ! @ ifreload -a ; then
+			# reset settings back if ifreload fails...
+			@ cp /etc/network/interfaces{.bak,}
+			@ ifreload -a	
+		fi
 	fi
 fi
 
