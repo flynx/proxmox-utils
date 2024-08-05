@@ -86,13 +86,16 @@ if xreadYes "# Create bridges?" BRIDGES ; then
 
 	BRIDGES="$(\
 		cat bridges.tpl \
-			| expandPCTTemplate WAN_PORT ADMIN_PORT)"
+			| expandPCTTemplate \
+				LAN_BRIDGE WAN_BRIDGE ADMIN_BRIDGE \
+				WAN_PORT ADMIN_PORT \
+				HOST_ADMIN_IP GATE_ADMIN_IP)"
 
 	if [ -z "$DRY_RUN" ] ; then
 		# XXX add $BRIDGES to /etc/network/interfaces either before the 
 		#		source command or at the end...
 		# XXX
-		echo
+		echo "$BRIDGES" >> /etc/network/interfaces.new
 	fi
 
 	if reviewApplyChanges /etc/network/interfaces ; then
