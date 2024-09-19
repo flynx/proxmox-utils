@@ -88,6 +88,18 @@ gate: gate-traefik
 
 #----------------------------------------------------------------------
 
+# XXX goal:
+# 	- build minimal system
+# 		- bootstrap bridge
+# 		- gate
+# 		- ns
+# 	
+.PHONY: bootstrap
+bootstrap:
+
+
+
+#----------------------------------------------------------------------
 
 .PHONY: core
 core: config $(CORE_CTs)
@@ -117,4 +129,4 @@ clean:
 
 
 #----------------------------------------------------------------------
-# vim:set nowrap :
+# vim:set ts=4 sw=4 nowrap :
