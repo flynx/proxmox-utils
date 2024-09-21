@@ -7,6 +7,7 @@
 # - backup
 # - pull config
 #
+#
 #----------------------------------------------------------------------
 
 EDITOR ?= vim
@@ -95,7 +96,7 @@ gate: gate-traefik
 # 		- ns
 # 	
 .PHONY: bootstrap
-bootstrap:
+bootstrap: host
 
 
 

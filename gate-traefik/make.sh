@@ -42,6 +42,7 @@ readVars
 
 #----------------------------------------------------------------------
 
+# XXX add interface bootstrap...
 INTERFACES=(
 	"name=wan,bridge=vmbr${WAN_BRIDGE},firewall=1${WAN_GATE:+,gw=${WAN_GATE}}${WAN_IP:+,ip=${WAN_IP}},type=veth"
 	"name=admin,bridge=vmbr${ADMIN_BRIDGE},firewall=1${ADMIN_IP:+,ip=${ADMIN_IP}},type=veth"
@@ -62,6 +63,7 @@ buildAssets
 echo "# Creating CT..."
 pctCreateAlpine $ID "$PASS"
 
+# XXX this requires a bootsrapped interface...
 echo "# Installing dependencies..."
 @ lxc-attach $ID apk add bash bridge iptables traefik logrotate
 
