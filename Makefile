@@ -94,6 +94,7 @@ gate: gate-traefik
 # 		- bootstrap bridge
 # 		- gate
 # 		- ns
+# 	...not yet sure of the best way to do this...
 # 	
 .PHONY: bootstrap
 bootstrap: host
