@@ -19,18 +19,19 @@ function @ (){
 }
 
 # XXX test if running as root...
+# XXX
 
-apt update
-apt upgrade
+@ apt update
+@ apt upgrade
 
 # XXX
-apt install \
+@ apt install \
 	git make wget
 
-#git clone git@github.com:flynx/proxmox-utils.git
-git clone https://github.com/flynx/proxmox-utils.git
+#@ git clone git@github.com:flynx/proxmox-utils.git
+@ git clone https://github.com/flynx/proxmox-utils.git
 
-cd proxmox-utils
+@ cd proxmox-utils
 
 source ./.pct-helpers
 
