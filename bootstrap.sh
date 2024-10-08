@@ -1,6 +1,7 @@
 #!/usr/bin/bash
 
 # XXX run self in nohup
+# 		..."$ make host" will likely break existing connections...
 # XXX TEST!
 
 # bootstrap...
@@ -40,3 +41,4 @@ source ./.pct-helpers
 # XXX
 
 
+# vim:set ts=4 sw=4 nowrap :
