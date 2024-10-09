@@ -1,5 +1,11 @@
 #!/usr/bin/bash
 
+# XXX should this be an interactive (env) option???
+#PROXMOX_UTILS=git@github.com:flynx/proxmox-utils.git
+PROXMOX_UTILS=${PROXMOX_UTILS:-https://github.com/flynx/proxmox-utils.git}
+
+
+
 # XXX run self in nohup
 # 		..."$ make host" will likely break existing connections...
 # XXX TEST!
@@ -29,8 +35,7 @@ function @ (){
 @ apt install \
 	git make wget
 
-#@ git clone git@github.com:flynx/proxmox-utils.git
-@ git clone https://github.com/flynx/proxmox-utils.git
+@ git clone $PROXMOX_UTILS 
 
 @ cd proxmox-utils
 
