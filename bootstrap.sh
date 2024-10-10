@@ -11,6 +11,8 @@ PROXMOX_UTILS=${PROXMOX_UTILS:-https://github.com/flynx/proxmox-utils.git}
 # XXX TEST!
 
 # bootstrap...
+# XXX might be a better idea to bootstrap the bootstrap by dowloading
+# 		the .pct-helpers...
 #QUIET=
 #DRY_RUN=
 ECHO_PREFIX="### "
