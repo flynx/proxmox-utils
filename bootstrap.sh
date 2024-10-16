@@ -10,7 +10,7 @@ apt upgrade
 
 # keep this to the minimum...
 apt install \
-	git make wget
+	git make wget vim
 
 git clone $PROXMOX_UTILS 
 
