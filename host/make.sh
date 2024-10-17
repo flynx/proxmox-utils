@@ -81,11 +81,12 @@ if xreadYes "# Create bridges?" BRIDGES ; then
 				conflict="${conflict}, vmbr${!br} (${br})"
 			fi
 		done
-		echo "ERROR: will not overwrite existing bridges: ${conflict:2}" >&2
 		if grep -q "vmbr${!ADMIN_BRIDGE}" "$INTERFACES" ; then
 			echo "NOTE: reusing vmbr${ADMIN_BRIDGE} for ADMIN."
+		else
+			echo "ERROR: will not overwrite existing bridges: ${conflict:2}" >&2
+			exit 1
 		fi
-		exit 1
 	fi
 
 	@ cp "$INTERFACES"{,.bak}
