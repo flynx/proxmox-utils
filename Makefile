@@ -60,12 +60,12 @@ check: check-message $(foreach dep,$(DEPENDENCIES),require($(dep)))
 FORCE:
 
 
-%-bootstrap:
-	BOOTSTRAP=1 make $*
+%-bootstrap: export BOOTSTRAP=1
+%-bootstrap: %
 
 
-%-bootstrap-clean:
-	BOOTSTRAP_CLEAN=1 make $*
+%-bootstrap-clean: export BOOTSTRAP_CLEAN=1
+%-bootstrap-clean: %
 
 
 %: config %/make.sh FORCE
