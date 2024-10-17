@@ -469,9 +469,9 @@ readCTVars(){
 }
 readBridgeVars(){
 	# bridge config...
+	xread "ADMIN bridge: vmbr" ADMIN_BRIDGE
 	xread "WAN bridge: vmbr" WAN_BRIDGE
 	xread "LAN bridge: vmbr" LAN_BRIDGE
-	xread "ADMIN bridge: vmbr" ADMIN_BRIDGE
 }
 readVars(){
 	xread -n "Email: " EMAIL

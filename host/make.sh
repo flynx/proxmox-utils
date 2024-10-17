@@ -75,12 +75,16 @@ if xreadYes "# Create bridges?" BRIDGES ; then
 				"vmbr\(${WAN_BRIDGE}\|${LAN_BRIDGE}\|${ADMIN_BRIDGE}\)" \
 				"$INTERFACES" ; then
 		conflict=
-		for br in WAN_BRIDGE LAN_BRIDGE ADMIN_BRIDGE ; do
+		#for br in WAN_BRIDGE LAN_BRIDGE ADMIN_BRIDGE ; do
+		for br in WAN_BRIDGE LAN_BRIDGE ; do
 			if grep -q "vmbr${!br}" "$INTERFACES" ; then
 				conflict="${conflict}, vmbr${!br} (${br})"
 			fi
 		done
 		echo "ERROR: will not overwrite existing bridges: ${conflict:2}" >&2
+		if grep -q "vmbr${!ADMIN_BRIDGE}" "$INTERFACES" ; then
+			echo "NOTE: reusing vmbr${ADMIN_BRIDGE} for ADMIN."
+		fi
 		exit 1
 	fi
 
