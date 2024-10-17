@@ -30,10 +30,13 @@
 #
 # NOTE: on a clean Proxmox install ADMIN is pre-setup, we will use it 
 # 	for bootstrapping and reconfigure it later.
+# NOTE: to make things simpler it is recommmended to number bridges 
+# 	connecting to physical ports the same as ports and virtual 
+# 	bridges with numbers greater than X (10 in the example below)
 #
-ADMIN_BRIDGE=vmbr0
-WAN_BRIDGE=
-LAN_BRIDGE=
+ADMIN_BRIDGE=0
+WAN_BRIDGE=3
+LAN_BRIDGE=10
 
 
 # NOTE: it is simpler to statically assign these than to configure dhcp
