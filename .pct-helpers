@@ -313,7 +313,7 @@ reviewApplyChanges(){
 				break
 				;;
 			e|edit)
-				${EDITOR} "${file}"
+				${EDITOR} "${file}.new"
 				;;
 			s|skip)
 				echo "# file saved as: ${file}.new"
