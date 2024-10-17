@@ -19,7 +19,6 @@ need ifreload
 
 readConfig
 
-
 DFL_WAN_PORT=${DFL_WAN_PORT:-enp5s0}
 DFL_ADMIN_PORT=${DFL_ADMIN_PORT:-enp2s0}
 
@@ -36,6 +35,7 @@ SOFTWARE=(
 	tmux
 )
 
+BRIDGES_TPL=bootstrap-bridges.tpl
 
 # XXX
 #readVars
@@ -88,7 +88,7 @@ if xreadYes "# Create bridges?" BRIDGES ; then
 	@ cp "$INTERFACES"{,.new}
 
 	BRIDGES="$(\
-		cat bridges.tpl \
+		cat "$BRIDGES_TPL" \
 			| expandPCTTemplate \
 				LAN_BRIDGE WAN_BRIDGE ADMIN_BRIDGE \
 				WAN_PORT ADMIN_PORT \
