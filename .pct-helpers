@@ -10,6 +10,10 @@ CT_DIR=${CT_DIR:=/etc/pve/lxc/}
 # XXX
 
 
+EDITOR=${EDITOR:-vim}
+
+
+
 #----------------------------------------------------------------------
 # XXX this is quite generic, might be a good idea to move this to a 
 # 		seporate lib/file...

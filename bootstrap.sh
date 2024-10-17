@@ -8,15 +8,16 @@ PROXMOX_UTILS=${PROXMOX_UTILS:-https://github.com/flynx/proxmox-utils.git}
 apt update
 apt upgrade
 
-# keep this to the minimum...
+# keep this to the minimum, at this point...
 apt install \
-	git make wget
+	git make
 
 git clone $PROXMOX_UTILS 
 
 cd proxmox-utils
 
 make bootstrap
+
 
 
 # vim:set ts=4 sw=4 nowrap :
