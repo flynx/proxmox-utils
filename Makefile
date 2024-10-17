@@ -60,6 +60,14 @@ check: check-message $(foreach dep,$(DEPENDENCIES),require($(dep)))
 FORCE:
 
 
+%-bootstrap:
+	BOOTSTRAP=1 make $*
+
+
+%-bootstrap-clean:
+	BOOTSTRAP_CLEAN=1 make $*
+
+
 %: config %/make.sh FORCE
 	$*/make.sh
 
@@ -97,7 +105,12 @@ gate: gate-traefik
 # 	...not yet sure of the best way to do this...
 # 	
 .PHONY: bootstrap
-bootstrap: host
+bootstrap: host-bootstrap gate-bootstrap \
+		ns \
+		bootstrap-clean
+
+.PHONY: bootstrap-clean
+bootstrap-clean: host-bootstrap-clean
 
 
 
