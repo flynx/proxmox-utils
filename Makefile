@@ -62,10 +62,12 @@ FORCE:
 
 %-bootstrap: export BOOTSTRAP=1
 %-bootstrap: %
+	echo
 
 
 %-bootstrap-clean: export BOOTSTRAP_CLEAN=1
 %-bootstrap-clean: %
+	echo
 
 
 %: config %/make.sh FORCE
