@@ -60,6 +60,7 @@ check: check-message $(foreach dep,$(DEPENDENCIES),require($(dep)))
 FORCE:
 
 
+# XXX should thisbe an env var or an arg to make.sh???
 %-bootstrap: export BOOTSTRAP=1
 %-bootstrap: %
 	true
