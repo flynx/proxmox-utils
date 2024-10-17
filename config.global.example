@@ -28,9 +28,12 @@
 #	LAN_BRIDGE=1
 #	ADMIN_BRIDGE=2
 #
+# NOTE: on a clean Proxmox install ADMIN is pre-setup, we will use it 
+# 	for bootstrapping and reconfigure it later.
+#
+ADMIN_BRIDGE=vmbr0
 WAN_BRIDGE=
 LAN_BRIDGE=
-ADMIN_BRIDGE=
 
 
 # NOTE: it is simpler to statically assign these than to configure dhcp
