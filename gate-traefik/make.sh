@@ -47,6 +47,7 @@ if ! [ -z $BOOTSTRAP ] ; then
 	WAN_BRIDGE=$ADMIN_BRIDGE
 else
 	# XXX
+	true
 fi
 
 
