@@ -268,7 +268,7 @@ xreadYes(){
 xreadpass(){
 	local msg
 	if [[ $# == 2 ]] ; then
-		msg=" $1 "
+		msg="$1 "
 		shift
 	fi
 	if [[ ${!1} == 'SKIP' ]] ; then
@@ -518,7 +518,7 @@ readVars(){
 
 	# root password...
 	if [ -z $ROOTPASS ] ; then
-		xreadpass PASS \
+		xreadpass root PASS \
 			|| exit 1
 	else
 		PASS=$ROOTPASS
