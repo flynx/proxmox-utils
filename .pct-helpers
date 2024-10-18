@@ -263,9 +263,14 @@ xreadYes(){
 }
 
 #
-#	xreadpass VAR
+#	xreadpass [msg] VAR
 #
 xreadpass(){
+	local msg
+	if [[ $# == 2 ]] ; then
+		msg=" $1 "
+		shift
+	fi
 	if [[ ${!1} == 'SKIP' ]] ; then
 		return
 	fi
@@ -276,7 +281,7 @@ xreadpass(){
 	local PASS1
 	local PASS2
 	for attempt in 1 2 3 ; do
-		read -sep "${prefix}password (Enter to skip): " PASS1
+		read -sep "${prefix}${msg}password (Enter to skip): " PASS1
 		echo
 		if [ -z $PASS1 ] ; then
 			return

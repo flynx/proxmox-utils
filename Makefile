@@ -63,12 +63,12 @@ FORCE:
 # XXX should thisbe an env var or an arg to make.sh???
 %-bootstrap: export BOOTSTRAP=1
 %-bootstrap: %
-	true
+	@true
 
 
 %-bootstrap-clean: export BOOTSTRAP_CLEAN=1
 %-bootstrap-clean: %
-	true
+	@true
 
 
 %: config %/make.sh FORCE
@@ -110,10 +110,11 @@ gate: gate-traefik
 .PHONY: bootstrap
 bootstrap: host-bootstrap gate-bootstrap \
 		ns \
+		wireguard \
 		bootstrap-clean
 
 .PHONY: bootstrap-clean
-bootstrap-clean: host-bootstrap-clean
+bootstrap-clean: gate-bootstrap-clean host-bootstrap-clean
 
 
 

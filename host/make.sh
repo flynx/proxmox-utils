@@ -35,10 +35,33 @@ SOFTWARE=(
 	tmux
 )
 
+# XXX
+#BRIDGES_TPL=bridges.tpl
 BRIDGES_TPL=bootstrap-bridges.tpl
 
 # XXX
 #readVars
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Bootstrap...
+
+if ! [ -z $BOOTSTRAP_CLEAN ] ; then
+	# XXX switch admin interface IP and Gateway to admin net...
+	# XXX
+	exit
+fi
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Bootstrap...
+
+if ! [ -z $BOOTSTRAP ] ; then
+	# XXX
+	BRIDGES_TPL=bootstrap-bridges.tpl
+	true
+fi
+
 
 
 #----------------------------------------------------------------------
