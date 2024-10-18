@@ -41,9 +41,15 @@ REBOOT=${REBOOT:=1}
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Bootstrap...
 
-if ! [ -z $BOOTSTRAP ] ; then
+if ! [ -z $BOOTSTRAP_CLEAN ] ; then
+	# XXX update wan bridge in config...
+	# XXX update IP ???
+	true
+
+elif ! [ -z $BOOTSTRAP ] ; then
 	WAN_BRIDGE=$ADMIN_BRIDGE
-	DFL_CTHOSTNAME=${DFL_CTHOSTNAME}-bootstrap
+	#DFL_CTHOSTNAME=${DFL_CTHOSTNAME}-bootstrap
+
 else
 	# XXX
 	true
@@ -53,6 +59,17 @@ fi
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 readVars
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+if ! [ -z $BOOTSTRAP_CLEAN ] ; then
+	echo "# Reverting to WAN bridge..."
+	@ sed -i \
+		-e 's/^\(net0.*vmbr\)'${ADMIN_BRIDGE}'/\1'${WAN_BRIDGE}'/' \
+		/etc/pve/lxc/${ID}.conf 
+	exit
+fi
 
 
 
