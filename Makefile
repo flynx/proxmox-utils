@@ -60,6 +60,17 @@ check: check-message $(foreach dep,$(DEPENDENCIES),require($(dep)))
 FORCE:
 
 
+# XXX should thisbe an env var or an arg to make.sh???
+%-bootstrap: export BOOTSTRAP=1
+%-bootstrap: %
+	true
+
+
+%-bootstrap-clean: export BOOTSTRAP_CLEAN=1
+%-bootstrap-clean: %
+	true
+
+
 %: config %/make.sh FORCE
 	$*/make.sh
 
@@ -97,7 +108,12 @@ gate: gate-traefik
 # 	...not yet sure of the best way to do this...
 # 	
 .PHONY: bootstrap
-bootstrap: host
+bootstrap: host-bootstrap gate-bootstrap \
+		ns \
+		bootstrap-clean
+
+.PHONY: bootstrap-clean
+bootstrap-clean: host-bootstrap-clean
 
 
 
