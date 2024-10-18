@@ -41,6 +41,18 @@ readVars
 
 
 #----------------------------------------------------------------------
+# Bootstrap...
+
+if ! [ -z $BOOTSTRAP ] ; then
+	WAN_BRIDGE=$ADMIN_BRIDGE
+else
+	# XXX
+fi
+
+
+
+#----------------------------------------------------------------------
+
 
 # XXX add interface bootstrap...
 INTERFACES=(
