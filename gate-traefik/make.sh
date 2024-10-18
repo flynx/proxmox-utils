@@ -37,18 +37,22 @@ LAN_GATE=SKIP
 
 REBOOT=${REBOOT:=1}
 
-readVars
 
-
-#----------------------------------------------------------------------
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Bootstrap...
 
 if ! [ -z $BOOTSTRAP ] ; then
 	WAN_BRIDGE=$ADMIN_BRIDGE
+	DFL_CTHOSTNAME=${DFL_CTHOSTNAME}-bootstrap
 else
 	# XXX
 	true
 fi
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+readVars
 
 
 
