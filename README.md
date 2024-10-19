@@ -57,7 +57,7 @@ Goals:
   |    |                  /                 |               |     |  
   |    +--($WAN_SSH_IP)- ssh ---------------+               |     |  
   |    |                  ^                 |               |     |  
-  |    |              (ssh:22)              |               |     |  
+  |    |              (ssh:23)              |               |     |  
   |    |                  .                 |               |     |  
   |    |                  . +------------------------(nat)--+     |  
   |    |                  ./                |               |     |  
@@ -109,10 +109,10 @@ After the basic setup is done connect the device to the network via the
 selcted WAN port and **disconnect** the ADMIN port.
 
 The WAN interface exposes two IPs:
-- Main server (config: `DFL_WAN_IP` / `WAN_IP`)
+- Main server (config: `$DFL_WAN_IP` / `$WAN_IP`)
   - ssh:23
   - wireguard:51820
-- Fail-safe ssh (config: `DFL_WAN_SSH_IP` / `WAN_SSH_IP`)
+- Fail-safe ssh (config: `$DFL_WAN_SSH_IP` / `$WAN_SSH_IP`)
   - ssh:22
 
 
