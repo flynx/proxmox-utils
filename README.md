@@ -41,6 +41,9 @@ Goals:
   and administration of all the related components at the cost of a 
   heavier CT transparently integrating multiple related services
 
+
+### Network
+
 ```
     Internet                                              Admin 
        v                                                    v
@@ -73,9 +76,12 @@ Goals:
   +---------------------------------------------------------------+  
 ```
 
-XXX network
+XXX
 
-XXX service structure
+
+### Services
+
+XXX
 
 
 
