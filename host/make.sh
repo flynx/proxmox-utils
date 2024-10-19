@@ -59,6 +59,7 @@ if ! [ -z $BOOTSTRAP_CLEAN ] ; then
 		DFL_HOSTS=SKIP
 		DFL_DNS=1
 		DFL_FIREWALL=SKIP
+
 	# stage 2: clean -> final
 	elif [ -e "$INTERFACES".final ] ; then
 		@ mv "$INTERFACES"{.final,.new}
@@ -68,6 +69,7 @@ if ! [ -z $BOOTSTRAP_CLEAN ] ; then
 		DFL_HOSTS=1
 		DFL_DNS=SKIP
 		DFL_FIREWALL=1
+
 	# done
 	else
 		exit
@@ -212,12 +214,8 @@ if xreadYes "# Create bridges?" BRIDGES ; then
 fi
 
 
-echo "# Building config..."
-# XXX do we need any extra vars here???
+echo "# Building config templates..."
 buildAssets
-
-
-# XXX /etc/hosts???
 
 
 # /etc/hosts
@@ -229,6 +227,7 @@ if xreadYes "# Update /etc/hosts?" HOSTS ; then
 		/etc/hosts.new
 	reviewApplyChanges /etc/hosts
 fi
+
 
 # DNS
 if xreadYes "# Update DNS?" DNS ; then
