@@ -18,6 +18,15 @@
 #
 #------------------------------------------------------------------------
 
+# Bootsrap configuration...
+#
+# Usually this is the default bridge created in Proxmox, so there is no 
+# need to touch this.
+BOOTSTRAP_BRIDGE=0
+# XXX
+#BOOTSTRAP_PORT=none
+
+
 # CT interface bridge configuration.
 #
 # These are set to the bridge number (the number in 'vmbr#') used for 
@@ -34,10 +43,10 @@
 #	ADMIN_BRIDGE=3
 #	LAN_BRIDGE=10
 #
-BOOTSTRAP_BRIDGE=0
-ADMIN_BRIDGE=00
-WAN_BRIDGE=03
-LAN_BRIDGE=10
+# XXX revise numbering...
+ADMIN_BRIDGE=_admin
+WAN_BRIDGE=_wan
+LAN_BRIDGE=_lan
 
 
 # NOTE: it is simpler to statically assign these than to configure dhcp

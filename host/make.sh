@@ -48,6 +48,7 @@ BRIDGES_TPL=bridges.tpl
 
 if ! [ -z $BOOTSTRAP_CLEAN ] ; then
 	# XXX switch admin interface IP and Gateway to admin net...
+	# 		
 	# 		update ADMIN_BRIDGE:
 	# 			- set gateway
 	# 			- set bridge port to admin port
@@ -59,10 +60,12 @@ fi
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Bootstrap...
 
+# XXX
 if ! [ -z $BOOTSTRAP ] ; then
-	# XXX
-	#BRIDGES_TPL=bootstrap-bridges.tpl
-	true
+	DFL_BOOTSTRAP_ADMIN_PORT=${DFL_BOOTSTRAP_ADMIN_PORT:-none}
+	xread "Bootstrap port: " BOOTSTRAP_ADMIN_PORT
+
+	BRIDGES_TPL=bootstrap-bridges.tpl
 fi
 
 
@@ -122,7 +125,7 @@ if xreadYes "# Create bridges?" BRIDGES ; then
 		cat "$BRIDGES_TPL" \
 			| expandPCTTemplate \
 				LAN_BRIDGE WAN_BRIDGE ADMIN_BRIDGE \
-				WAN_PORT ADMIN_PORT \
+				WAN_PORT ADMIN_PORT BOOTSTRAP_ADMIN_PORT \
 				HOST_ADMIN_IP GATE_ADMIN_IP)"
 
 	if [ -z "$DRY_RUN" ] ; then

@@ -1,6 +1,4 @@
 
-# NOTE: this assumes the ADMIN bridge to exist (proxmox default) and to be vmbr0...
-
 auto vmbr${LAN_BRIDGE}
 iface vmbr${LAN_BRIDGE} inet manual
         bridge-ports none
@@ -14,4 +12,12 @@ iface vmbr${WAN_BRIDGE} inet manual
         bridge-stp off
         bridge-fd 0
 #WAN
+
+auto vmbr${ADMIN_BRIDGE}
+iface vmbr${ADMIN_BRIDGE} inet static
+        address ${HOST_ADMIN_IP}
+        bridge-ports ${BOOTSTRAP_ADMIN_BRIDGE}
+        bridge-stp off
+        bridge-fd 0
+#ADMIN
 
