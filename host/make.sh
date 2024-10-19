@@ -104,23 +104,20 @@ fi
 
 #----------------------------------------------------------------------
 
-# Tools
+# System...
 if xreadYes "# Update system?" UPDATE ; then
 	@ apt update
 	@ apt upgrade
 fi
+
+
+# Tools...
 if xreadYes "# Install additional apps?" APPS ; then
 	@ apt install ${SOFTWARE[@]}
 fi
 
+
 # Bridges...
-# XXX need to:
-#		- bootstrap this
-#		- setup the gate, ssh, and wireguard
-#		- inalize
-# XXX /etc/hosts
-# XXX save config???
-# XXX should we do things in ./staging ???
 if xreadYes "# Create bridges?" BRIDGES ; then
 	xread "WAN port: " WAN_PORT 
 	xread "ADMIN port: " ADMIN_PORT 
@@ -214,10 +211,6 @@ if xreadYes "# Create bridges?" BRIDGES ; then
 fi
 
 
-echo "# Building config templates..."
-buildAssets
-
-
 # /etc/hosts
 if xreadYes "# Update /etc/hosts?" HOSTS ; then
 	@ cp /etc/hosts{,.bak}
@@ -229,8 +222,19 @@ if xreadYes "# Update /etc/hosts?" HOSTS ; then
 fi
 
 
+# build only if we need to...
+build(){
+	if [ -z $__ASSETS ] ; then
+		__ASSETS=1
+		echo "# Building config templates..."
+		buildAssets
+	fi
+}
+
+
 # DNS
 if xreadYes "# Update DNS?" DNS ; then
+	build
 	file=/etc/resolv.conf
 	@ cp "staging/${file}" "${file}".new
 	reviewApplyChanges "${file}"
@@ -239,6 +243,7 @@ fi
 
 # Firewall
 if xreadYes "# Update firewall rules?" FIREWALL ; then
+	build
 	file=/etc/pve/firewall/cluster.fw
 	@ cp "staging/${file}" "${file}".new
 	reviewApplyChanges "${file}"
