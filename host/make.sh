@@ -156,7 +156,7 @@ if xreadYes "# Create bridges?" BRIDGES ; then
 			# interfaces.clean
 			@ cp "$INTERFACES"{.new,.clean}
 			@ sed -i \
-				-e '/^.*gateway .*$/' \
+				-e '/^.*gateway .*$/d' \
 				"$INTERFACES".clean
 			echo "$BRIDGES" \
 				| sed \
