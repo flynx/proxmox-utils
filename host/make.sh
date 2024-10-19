@@ -144,6 +144,9 @@ if xreadYes "# Create bridges?" BRIDGES ; then
 		# write both bootstrap and clean bridge configurations...
 		if ! [ -z $BRIDGES_BOOTSTRAP ] ; then
 			@ cp "$INTERFACES"{.new,.clean}
+			@ sed -i \
+				-e 's/'$ADMIN_PORT'/'$BOOTSTRAP_PORT'/' \
+				"$INTERFACES".clean
 			echo "$BRIDGES" >> "$INTERFACES".clean
 			BRIDGES="$BRIDGES_BOOTSTRAP"
 		fi
