@@ -51,7 +51,7 @@ if ! [ -z $BOOTSTRAP_CLEAN ] ; then
 
 	echo "# Reverting gate's WAN bridge to: vmbr${WAN_BRIDGE}..."
 	@ sed -i \
-		-e 's/^\(net0.*vmbr\)'${BOOSTRAP_BRIDGE}'/\1'${WAN_BRIDGE}'/' \
+		-e 's/^\(net0.*vmbr\)'${BOOTSTRAP_BRIDGE}'/\1'${WAN_BRIDGE}'/' \
 		/etc/pve/lxc/${ID}.conf 
 	exit
 fi
