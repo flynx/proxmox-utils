@@ -48,6 +48,7 @@ BRIDGES_TPL=bootstrap-bridges.tpl
 
 if ! [ -z $BOOTSTRAP_CLEAN ] ; then
 	# XXX switch admin interface IP and Gateway to admin net...
+	# 		current ip -> $HOST_ADMIN_IP
 	# XXX
 	exit
 fi

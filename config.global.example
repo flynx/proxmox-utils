@@ -23,19 +23,20 @@
 # These are set to the bridge number (the number in 'vmbr#') used for 
 # a specific network.
 #
-# Example:
-# 	WAN_BRIDGE=0
-#	LAN_BRIDGE=1
-#	ADMIN_BRIDGE=2
-#
 # NOTE: on a clean Proxmox install ADMIN is pre-setup, we will use it 
 # 	for bootstrapping and reconfigure it later.
 # NOTE: to make things simpler it is recommmended to number bridges 
 # 	connecting to physical ports the same as ports and virtual 
 # 	bridges with numbers greater than X (10 in the example below)
 #
-ADMIN_BRIDGE=0
-WAN_BRIDGE=3
+# Example:
+# 	WAN_BRIDGE=0
+#	ADMIN_BRIDGE=3
+#	LAN_BRIDGE=10
+#
+BOOTSTRAP_BRIDGE=0
+ADMIN_BRIDGE=00
+WAN_BRIDGE=03
 LAN_BRIDGE=10
 
 

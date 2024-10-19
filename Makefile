@@ -110,11 +110,14 @@ gate: gate-traefik
 .PHONY: bootstrap
 bootstrap: host-bootstrap gate-bootstrap \
 		ns \
+		ssh \
 		wireguard \
 		bootstrap-clean
 
+
+# NOTE: host-bootstrap-clean will drop all connections to the server...
 .PHONY: bootstrap-clean
-bootstrap-clean: gate-bootstrap-clean host-bootstrap-clean
+bootstrap-clean: gate-bootstrap-clean #host-bootstrap-clean
 
 
 

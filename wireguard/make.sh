@@ -21,7 +21,7 @@ would-like dig #qrencode
 
 readConfig
 
-DFL_ID=${DFL_ID:=103}
+DFL_ID=${DFL_ID:=130}
 DFL_CTHOSTNAME=${DFL_CTHOSTNAME:=wireguard}
 
 DFL_CORES=${DFL_CORES:=1}

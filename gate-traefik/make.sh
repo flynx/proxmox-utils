@@ -47,10 +47,7 @@ if ! [ -z $BOOTSTRAP_CLEAN ] ; then
 	xread "ID: " ID
 	readBridgeVars
 
-	# XXX update WAN ip... (???)
-	# XXX
-	
-	echo "# Reverting gate's WAN bridge to vmbr${WAN_BRIDGE}..."
+	echo "# Reverting gate's WAN bridge to: vmbr${WAN_BRIDGE}..."
 	@ sed -i \
 		-e 's/^\(net0.*vmbr\)'${ADMIN_BRIDGE}'/\1'${WAN_BRIDGE}'/' \
 		/etc/pve/lxc/${ID}.conf 
@@ -63,8 +60,7 @@ fi
 
 if ! [ -z $BOOTSTRAP ] ; then
 	# this will allow the bootstrapped CTs to access the network...
-	WAN_BRIDGE=$ADMIN_BRIDGE
-	#DFL_CTHOSTNAME=${DFL_CTHOSTNAME}-bootstrap
+	WAN_BRIDGE=${ADMIN_BRIDGE}
 fi
 
 
