@@ -35,7 +35,7 @@ makeReserveCT(){
 	if [ $TEMPLATE_ID ] ; then
 		@ pct destroy $TEMPLATE_ID --purge
 		@ pct clone $RESERVE_ID $TEMPLATE_ID --hostname ${HOSTNAME}
-		@ pct templates $TEMPLATE_ID
+		@ pct template $TEMPLATE_ID
 	fi
 
 	# XXX sould this get into the template...
