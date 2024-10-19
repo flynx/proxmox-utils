@@ -64,31 +64,106 @@ XXX clean setup scripts...
 
 ## Prerequisites
 
-### Proxmox
+Install Proxmox and connect it to your network.
 
+
+## Semi-automated setup
+
+This will download the [`bootstrap.sh`](./bootstrap.sh) script and execute it:
 ```shell
-sudo apt update && sudo apt upgrade
+curl 'https://raw.githubusercontent.com/flynx/proxmox-utils/refs/heads/master/bootstrap.sh' | sudo bash
 ```
 
-```shell
-sudo apt install git make 
-```
+This will:
+- Install basic dependencies
+- Clone this repo
+- Run `make bootstrap` on the repo
+
+After the basic setup is done connect the device to the network via the 
+selcted WAN port and it is reccomended to disconnect the admin PORT.
+
+The WAN interface exposes two IPs:
+- Main server (config: `DFL_WAN_IP` / `WAN_IP`)
+  - ssh:23
+  - wireguard:51820
+- Fail-safe ssh (config: `DFL_WAN_SSH_IP` / `WAN_SSH_IP`)
+  - ssh:22
+
+The Proxmox administrative interface is available behind the Wireguard 
+proxy or on the ADMIN port, both on https://10.0.0.254:8006.
+
+
+XXX setup additional CTs...
+
+
+XXX configuration / administration...
+
+
+
+## Manual setup
+
+
+### Bootstrapping
+
+Since all the internal traffic is routed through the `gate` we need both 
+the bridges and it setup for things to work, thus we first bootstrap the
+bridges, create the basic infrastructure and then finalize the setup.
+
+Bootsrapping is done in three stages:
+1. Bootstrap: 
+  ```shell
+  make bootstrap
+  ```
+  - Create the needed bridges
+  - Create the infrastructure CT's (`gate`, `ns`, `ssh`, ...)
+2. Cleanup: 
+  ```shell
+  make bootstrap-clean
+  ```
+  - Route the `host` through the `gate`
+3. Finalize: 
+  ```shell
+  make finalise
+  ```
+  - disconnect the `host` from the non-ADMIN networks
+
+
+After the final stage two physical ports will be active, the ADMIN port 
+and the WAN port, the former is by default the same port set by Proxmox 
+setup, the WAN port is the port selected during the stup stage. All the 
+services will be listening on the WAN port while the admin port is used 
+only for administration and recovory cases.
+
 
 
 ### Network Bridges
 
 `proxmox-utils` expects there to be at least three bridges:
-- `WAN` - connected to the port that faces the external network (either 
-  directly of via a router)
-- `LAN` - a virtual bridge, not connected to any physical interfaces
-- `ADMIN` - connected to a second physical interface used for 
-  administrative purposes.
+- `WAN` (`vmbr_wan`) - connected to the port that faces the external 
+  network (either directly of via a router)
+- `LAN` (`vmbr_lan`) - a virtual bridge, not connected to any physical 
+  interfaces
+- `ADMIN` (`vmbr_admin`) - connected to a second physical interface used 
+  for administrative purposes.
 
-Note their numbers (i.e. the number in `vmbr#`), this will be needed for 
-setup.
+Created via:
+```shell
+make host-bootstrap
+```
 
-Note, if the device has more that two ports it is recommended to assign 
+Updated by:
+```shell
+make host-bootstrap-clean
+```
+
+and:
+```shell
+make finalize
+```
+
+If the device has more that two ports it is recommended to assign 
 first/last ports to wan/admin respectively and clearly mark them as such.
+
 
 
 ### DNS
@@ -96,12 +171,32 @@ first/last ports to wan/admin respectively and clearly mark them as such.
 Add `10.1.1.1` to the DNS on the Proxmox host node after the `127.0.0.1`
 but before whatever external DNS you are using.
 
+Donw via:
+```shell
+make host
+```
+
+or:
+```shell
+make host-bootstrap
+```
+
 
 ### Firewall
 
 Make sure to allow at least `ssh` access to the host node from the `ADMIN` 
 interface to allow admin CT's access to the host if needed, this is mostly
 needed to allow VPN/ssh administration from outside.
+
+Donw via:
+```shell
+make host
+```
+
+or:
+```shell
+make host-bootstrap
+```
 
 For Proxmox firewall configuration see:
 https://pve.proxmox.com/wiki/Firewall
@@ -117,31 +212,12 @@ XXX emergency access points: ssh and wireguard
 
 
 
-## Setup
-
-Get the code:
-```shell
-git clone https://github.com/flynx/proxmox-utils.git
-```
-or:
-```shell
-git clone git@github.com:flynx/proxmox-utils.git
-```
-
-
-For host setup:
-```shell
-sudo make host
-```
-
-Be carefull as this may overwrite existing configuration.
-
+## Misc
 
 Install CT's:
 ```shell
 sudo make all
 ```
-
 
 Install gitea (optional):
 ```shell
