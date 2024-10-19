@@ -84,7 +84,7 @@ bootstrap: \
 		host-bootstrap \
 		gate-bootstrap ns \
 		$(MINIMAL_CTs) \
-		bootstrap-clean
+	make bootstrap-clean
 
 
 # Bootstrap stage 2: reconnect host through the base infrastructure...
@@ -95,7 +95,7 @@ bootstrap-clean: host-bootstrap-clean
 # Finalize: reconect admin port/bridge correctly...
 .PHONY: finalize
 finalize: bootstrap-clean gate-bootstrap-clean 
-	@ make host-bootstrap-clean
+	make host-bootstrap-clean
 
 
 
