@@ -69,9 +69,9 @@ Install Proxmox and connect it to your network.
 
 ## Semi-automated setup
 
-This will download the [`bootstrap.sh`](./bootstrap.sh) script and execute it:
+This will download the [`bootstrap.sh`](./scripts/bootstrap.sh) script and execute it:
 ```shell
-curl 'https://raw.githubusercontent.com/flynx/proxmox-utils/refs/heads/master/bootstrap.sh' | sudo bash
+curl 'https://raw.githubusercontent.com/flynx/proxmox-utils/refs/heads/master/scripts/bootstrap.sh' | sudo bash
 ```
 
 This will:
