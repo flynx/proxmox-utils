@@ -67,6 +67,7 @@ echo "# Installing dependencies..."
 
 echo "# Copying assets..."
 pctPushAssets $ID
+@ lxc-attach $ID chmod +x /root/leases
 
 echo "# Setup: dnsmasq..."
 @ lxc-attach $ID rc-update add dnsmasq

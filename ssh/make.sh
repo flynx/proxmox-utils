@@ -39,7 +39,7 @@ LAN_GATE=SKIP
 REBOOT=${REBOOT:=1}
 
 DFL_WAN_SSH_IP=${DFL_WAN_SSH_IP:=}
-xread "WAN ssh ip:" WAN_SSH_IP
+xread "WAN ssh ip: " WAN_SSH_IP
 
 #xread "Gate CT id: " GATE_ID
 
