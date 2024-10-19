@@ -46,7 +46,7 @@ if ! [ -z $BOOTSTRAP_CLEAN ] ; then
 	#ID=${ID:-${DFL_ID}}
 
 	xread "ID: " ID
-	xread "Bootstrap bridge:" BOOSTRAP_BRIDGE
+	xread "Bootstrap bridge: vmbr" BOOTSTRAP_BRIDGE
 	readBridgeVars
 
 	echo "# Reverting gate's WAN bridge to: vmbr${WAN_BRIDGE}..."
@@ -61,9 +61,9 @@ fi
 # Bootstrap...
 
 if ! [ -z $BOOTSTRAP ] ; then
-	xread "Bootstrap bridge:" BOOSTRAP_BRIDGE
+	xread "Bootstrap bridge: vmbr" BOOTSTRAP_BRIDGE
 	# this will allow the bootstrapped CTs to access the network...
-	WAN_BRIDGE=${BOOSTRAP_BRIDGE}
+	WAN_BRIDGE=${BOOTSTRAP_BRIDGE}
 fi
 
 
