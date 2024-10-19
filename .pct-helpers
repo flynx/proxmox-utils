@@ -228,12 +228,12 @@ xreadYes(){
 	# XXX check DFL_..???
 	if [[ "${!var}" == "SKIP" ]] ; then
 		eval "$var="
-		return
+		return 1
 	fi
 	if [ -z ${!var} ] ; then
 		if [[ "$(eval "echo \$DFL_${var}")" == "SKIP" ]] ; then
 			eval "$var="
-			return
+			return 1
 		elif [ -z $(eval "echo \$DFL_${var}") ] ; then
 			local yes=y
 			local no=N
