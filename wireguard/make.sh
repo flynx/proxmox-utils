@@ -89,7 +89,7 @@ pctCreateAlpine $ID "$PASS"
 
 echo "# Installing dependencies..."
 @ lxc-attach $ID apk add \
-	iptables wireguard-tools-wg-quick make bind-tools libqrencode logrotate
+	iptables wireguard-tools-wg-quick make bind-tools libqrencode-tools logrotate
 
 echo "# Copying assets..."
 pctPushAssets $ID
