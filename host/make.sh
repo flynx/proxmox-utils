@@ -36,8 +36,8 @@ SOFTWARE=(
 )
 
 # XXX
-#BRIDGES_TPL=bridges.tpl
-BRIDGES_TPL=bootstrap-bridges.tpl
+BRIDGES_TPL=bridges.tpl
+#BRIDGES_TPL=bootstrap-bridges.tpl
 
 # XXX
 #readVars
@@ -48,7 +48,9 @@ BRIDGES_TPL=bootstrap-bridges.tpl
 
 if ! [ -z $BOOTSTRAP_CLEAN ] ; then
 	# XXX switch admin interface IP and Gateway to admin net...
-	# 		current ip -> $HOST_ADMIN_IP
+	# 		update ADMIN_BRIDGE:
+	# 			- set gateway
+	# 			- set bridge port to admin port
 	# XXX
 	exit
 fi
@@ -59,7 +61,7 @@ fi
 
 if ! [ -z $BOOTSTRAP ] ; then
 	# XXX
-	BRIDGES_TPL=bootstrap-bridges.tpl
+	#BRIDGES_TPL=bootstrap-bridges.tpl
 	true
 fi
 
