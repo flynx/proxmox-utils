@@ -148,7 +148,7 @@ if xreadYes "# Create bridges?" BRIDGES ; then
 			@ cp "$INTERFACES"{.new,.final}
 			@ sed -i \
 				-e 's/'$ADMIN_PORT'/'$BOOTSTRAP_PORT'/' \
-				-e 's/^.*gateway .*$//' \
+				-e '/^.*gateway .*$/d' \
 				"$INTERFACES".final
 			echo "$BRIDGES" \
 				>> "$INTERFACES".final
