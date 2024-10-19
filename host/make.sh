@@ -150,9 +150,12 @@ if xreadYes "# Create bridges?" BRIDGES ; then
 			#	-e 's/'$ADMIN_PORT'/'$BOOTSTRAP_PORT'/' \
 			#	"$INTERFACES".clean
 			@ sed -i \
-				-e 's/^.*gateway .*$//' \
+				-e 's/^.*gateway .*\n//' \
 				"$INTERFACES".clean
-			echo "$BRIDGES" >> "$INTERFACES".clean
+			echo "$BRIDGES" \
+				| sed \
+					-e 's/'$ADMIN_PORT'/'$BOOTSTRAP_PORT'/' \
+				>> "$INTERFACES".clean
 			BRIDGES=$(\
 				echo "$BRIDGES_BOOTSTRAP" \
 					| sed -e 's/^.*gateway .*$//')
