@@ -68,8 +68,8 @@ fi
 
 # XXX
 if ! [ -z $BOOTSTRAP ] ; then
-	DFL_BOOTSTRAP_ADMIN_PORT=${DFL_BOOTSTRAP_ADMIN_PORT:-none}
-	xread "Bootstrap port: " BOOTSTRAP_ADMIN_PORT
+	DFL_BOOTSTRAP_PORT=${DFL_BOOTSTRAP_PORT:-none}
+	xread "Bootstrap port: " BOOTSTRAP_PORT
 
 	BRIDGES_BOOTSTRAP_TPL=bootstrap-bridges.tpl
 fi
