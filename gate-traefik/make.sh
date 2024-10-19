@@ -41,6 +41,7 @@ REBOOT=${REBOOT:=1}
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Bootstrap cleanup...
 
+# NOTE: this is intentionally handled before the bootstrap...
 if ! [ -z $BOOTSTRAP_CLEAN ] ; then
 	#ID=${ID:-${DFL_ID}}
 

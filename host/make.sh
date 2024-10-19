@@ -19,6 +19,7 @@ need ifreload
 
 readConfig
 
+
 DFL_WAN_PORT=${DFL_WAN_PORT:-enp5s0}
 DFL_ADMIN_PORT=${DFL_ADMIN_PORT:-enp2s0}
 
@@ -35,9 +36,9 @@ SOFTWARE=(
 	tmux
 )
 
-# XXX
+INTERFACES=/etc/network/interfaces
+
 BRIDGES_TPL=bridges.tpl
-#BRIDGES_TPL=bootstrap-bridges.tpl
 
 # XXX
 #readVars
@@ -46,13 +47,18 @@ BRIDGES_TPL=bridges.tpl
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Bootstrap...
 
-if ! [ -z $BOOTSTRAP_CLEAN ] ; then
-	# XXX switch admin interface IP and Gateway to admin net...
-	# 		
-	# 		update ADMIN_BRIDGE:
-	# 			- set gateway
-	# 			- set bridge port to admin port
-	# XXX
+if ! [ -z $BOOTSTRAP_CLEAN ] \
+		&& [ -e "$INTERFACES".clean ] ; then
+	@ cp "$INTERFACES"{,.bak}
+	@ cp "$INTERFACES"{.clean,.new}
+	if reviewApplyChanges "$INTERFACES" ; then
+		# XXX this must be done in nohup to avoid breaking on connection lost...
+		if ! @ ifreload -a ; then
+			# reset settings back if ifreload fails...
+			@ cp "$INTERFACES"{.bak,}
+			@ ifreload -a	
+		fi
+	fi
 	exit
 fi
 
@@ -65,7 +71,7 @@ if ! [ -z $BOOTSTRAP ] ; then
 	DFL_BOOTSTRAP_ADMIN_PORT=${DFL_BOOTSTRAP_ADMIN_PORT:-none}
 	xread "Bootstrap port: " BOOTSTRAP_ADMIN_PORT
 
-	BRIDGES_TPL=bootstrap-bridges.tpl
+	BRIDGES_BOOTSTRAP_TPL=bootstrap-bridges.tpl
 fi
 
 
@@ -95,8 +101,6 @@ if xreadYes "# Create bridges?" BRIDGES ; then
 	xread "Host ADMIN IP: " HOST_ADMIN_IP
 	xread "Gate ADMIN IP: " GATE_ADMIN_IP
 	readBridgeVars
-
-	INTERFACES=/etc/network/interfaces
 
 	# check if new bridges already exist in interfaces...
 	if [ -e "$INTERFACES" ] \
@@ -128,16 +132,30 @@ if xreadYes "# Create bridges?" BRIDGES ; then
 				WAN_PORT ADMIN_PORT BOOTSTRAP_ADMIN_PORT \
 				HOST_ADMIN_IP GATE_ADMIN_IP)"
 
+	[ -z $BRIDGES_BOOTSTRAP_TPL ] \
+		|| BRIDGES_BOOTSTRAP="$(\
+			cat "$BRIDGES_BOOTSTRAP_TPL" \
+				| expandPCTTemplate \
+					LAN_BRIDGE WAN_BRIDGE ADMIN_BRIDGE \
+					WAN_PORT ADMIN_PORT BOOTSTRAP_ADMIN_PORT \
+					HOST_ADMIN_IP GATE_ADMIN_IP)"
+
 	if [ -z "$DRY_RUN" ] ; then
-		# XXX add $BRIDGES to "$INTERFACES" either before the 
-		#		source command or at the end...
-		# XXX
+		# write both bootstrap and clean bridge configurations...
+		if ! [ -z $BRIDGES_BOOTSTRAP ] ; then
+			@ cp "$INTERFACES"{.new,.clean}
+			echo "$BRIDGES" >> "$INTERFACES".clean
+			BRIDGES="$BRIDGES_BOOTSTRAP"
+		fi
+
 		echo "$BRIDGES" >> "$INTERFACES".new
+
 	else
 		echo "$BRIDGES"
 	fi
 
 	if reviewApplyChanges "$INTERFACES" ; then
+		# XXX this must be done in nohup to avoid breaking on connection lost...
 		if ! @ ifreload -a ; then
 			# reset settings back if ifreload fails...
 			@ cp "$INTERFACES"{.bak,}
