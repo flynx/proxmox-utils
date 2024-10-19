@@ -144,11 +144,18 @@ if xreadYes "# Create bridges?" BRIDGES ; then
 		# write both bootstrap and clean bridge configurations...
 		if ! [ -z $BRIDGES_BOOTSTRAP ] ; then
 			@ cp "$INTERFACES"{.new,.clean}
+			# XXX disconnect bootstrap and connnect admin...
+			# 		...make this optional...
+			#@ sed -i \
+			#	-e 's/'$ADMIN_PORT'/'$BOOTSTRAP_PORT'/' \
+			#	"$INTERFACES".clean
 			@ sed -i \
-				-e 's/'$ADMIN_PORT'/'$BOOTSTRAP_PORT'/' \
+				-e 's/^.*gateway .*$//' \
 				"$INTERFACES".clean
 			echo "$BRIDGES" >> "$INTERFACES".clean
-			BRIDGES="$BRIDGES_BOOTSTRAP"
+			BRIDGES=$(\
+				echo "$BRIDGES_BOOTSTRAP" \
+					| sed -e 's/^.*gateway .*$//')
 		fi
 
 		echo "$BRIDGES" >> "$INTERFACES".new
