@@ -89,7 +89,6 @@ bootstrap: \
 
 # Bootstrap stage 2: reconnect host through the base infrastructure...
 .PHONY: bootstrap-clean 
-.PHONY: host-bootstrap-clean
 bootstrap-clean: host-bootstrap-clean
 
 
