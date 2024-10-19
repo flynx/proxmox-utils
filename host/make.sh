@@ -53,10 +53,22 @@ if ! [ -z $BOOTSTRAP_CLEAN ] ; then
 	# stage 1: bootstrap -> clean
 	if [ -e "$INTERFACES".clean ] ; then
 		@ mv "$INTERFACES"{.clean,.new}
+		DFL_UPDATE=SKIP
+		DFL_APPS=SKIP
+		DFL_BRIDGES=SKIP
+		DFL_HOSTS=SKIP
+		DFL_DNS=1
+		DFL_FIREWALL=SKIP
 	# stage 2: clean -> final
 	elif [ -e "$INTERFACES".final ] ; then
 		@ mv "$INTERFACES"{.final,.new}
-	# donw
+		DFL_UPDATE=SKIP
+		DFL_APPS=SKIP
+		DFL_BRIDGES=SKIP
+		DFL_HOSTS=1
+		DFL_DNS=SKIP
+		DFL_FIREWALL=1
+	# done
 	else
 		exit
 	fi
@@ -69,19 +81,21 @@ if ! [ -z $BOOTSTRAP_CLEAN ] ; then
 			@ ifreload -a	
 		fi
 	fi
-	exit
-fi
+	#exit
 
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Bootstrap...
-
-# XXX
-if ! [ -z $BOOTSTRAP ] ; then
+elif ! [ -z $BOOTSTRAP ] ; then
 	DFL_BOOTSTRAP_PORT=${DFL_BOOTSTRAP_PORT:-none}
 	xread "Bootstrap port: " BOOTSTRAP_PORT
 
 	BRIDGES_BOOTSTRAP_TPL=bootstrap-bridges.tpl
+
+	DFL_UPDATE=1
+	DFL_APPS=1
+	DFL_BRIDGES=1
+	DFL_HOSTS=SKIP
+	DFL_DNS=SKIP
+	DFL_FIREWALL=SKIP
 fi
 
 
@@ -211,7 +225,7 @@ if xreadYes "# Update /etc/hosts?" HOSTS ; then
 	@ cp /etc/hosts{,.bak}
 	@ cp /etc/hosts{,.new}
 	@ sed -i \
-		-e 's/^[^#].* \(pve.local.*\)$/'${HOST_ADMIN_IP/\/*}'\1/' \
+		-e 's/^[^#].* \(pve.local.*\)$/'${HOST_ADMIN_IP/\/*}' \1/' \
 		/etc/hosts.new
 	reviewApplyChanges /etc/hosts
 fi
