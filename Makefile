@@ -60,7 +60,6 @@ check: check-message $(foreach dep,$(DEPENDENCIES),require($(dep)))
 FORCE:
 
 
-# XXX should thisbe an env var or an arg to make.sh???
 %-bootstrap: export BOOTSTRAP=1
 %-bootstrap: %
 	@true
@@ -100,24 +99,24 @@ gate: gate-traefik
 
 #----------------------------------------------------------------------
 
-# XXX goal:
-# 	- build minimal system
-# 		- bootstrap bridge
-# 		- gate
-# 		- ns
-# 	...not yet sure of the best way to do this...
-# 	
+# Bootstrap stage 1: build basic infrastructure...
 .PHONY: bootstrap
-bootstrap: host-bootstrap gate-bootstrap \
-		ns \
-		ssh \
-		wireguard \
+bootstrap: \
+		host-bootstrap \
+		gate-bootstrap \
+		ns ssh wireguard \
 		bootstrap-clean
 
 
-# NOTE: host-bootstrap-clean will drop all connections to the server...
-.PHONY: bootstrap-clean
-bootstrap-clean: gate-bootstrap-clean #host-bootstrap-clean
+# Bootstrap stage 2: reconnect host through the base infrastructure...
+.PHONY: bootstrap-clean host-bootstrap-clean
+bootstrap-clean: host-bootstrap-clean
+
+
+# Finalize: reconect admin port/bridge correctly...
+.PHONY: finalize
+finalize: bootstrap-clean gate-bootstrap-clean 
+	@ make host-bootstrap-clean
 
 
 
@@ -138,6 +137,12 @@ dev: minimal $(DEV_CTs)
 .PHONY: all
 all: minimal $(APP_CTs)
 
+
+.PHONY: test
+test:
+	@echo "TEST!"
+
+test2: test test
 
 
 #----------------------------------------------------------------------

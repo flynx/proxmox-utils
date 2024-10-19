@@ -47,10 +47,20 @@ BRIDGES_TPL=bridges.tpl
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Bootstrap...
 
-if ! [ -z $BOOTSTRAP_CLEAN ] \
-		&& [ -e "$INTERFACES".clean ] ; then
+if ! [ -z $BOOTSTRAP_CLEAN ] ; then
 	@ cp "$INTERFACES"{,.bak}
-	@ cp "$INTERFACES"{.clean,.new}
+
+	# stage 1: bootstrap -> clean
+	if [ -e "$INTERFACES".clean ] ; then
+		@ mv "$INTERFACES"{.clean,.new}
+	# stage 2: clean -> final
+	elif [ -e "$INTERFACES".final ] ; then
+		@ mv "$INTERFACES"{.final,.new}
+	# donw
+	else
+		exit
+	fi
+
 	if reviewApplyChanges "$INTERFACES" ; then
 		# XXX this must be done in nohup to avoid breaking on connection lost...
 		if ! @ ifreload -a ; then
