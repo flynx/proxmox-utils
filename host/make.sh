@@ -211,7 +211,7 @@ if xreadYes "# Update /etc/hosts?" HOSTS ; then
 	@ cp /etc/hosts{,.bak}
 	@ cp /etc/hosts{,.new}
 	@ sed -i \
-		-e 's/^[^#].* \(pve.local.*\)$/'${HOST_ADMIN_IPn}'\1/' \
+		-e 's/^[^#].* \(pve.local.*\)$/'${HOST_ADMIN_IP/\/*}'\1/' \
 		/etc/hosts.new
 	reviewApplyChanges /etc/hosts
 fi
