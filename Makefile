@@ -15,20 +15,10 @@ EDITOR ?= vim
 
 # CTs...
 #
-# NOTE: The order here is important: 
-# 	- to avoid bootstrapping network connections gate must be the 
-# 	  first CT to get built to route the rest of CT's to the WAN 
-# 	  connection during the build process.
-# 	- ns should be the second to be built to provide the rest of the
-# 	  CT's with DHCP network configuration.
-# 	- the rest of the CT's are created in order of importance, strting 
-# 	  from CT's needed for access and ending with services.
-CORE_CTs := \
-	gate ns
 MINIMAL_CTs := \
 	ssh wireguard 
 APP_CTs := \
-	syncthing nextcloud #gitea
+	syncthing nextcloud
 # Optional (see dev target)...
 DEV_CTs := \
 	gitea
@@ -86,25 +76,14 @@ config.global: config.global.example
 
 
 #----------------------------------------------------------------------
-# Shorthands...
-
-.PHONY: config
-config: config.global
-
-
-.PHONY: gate
-gate: gate-traefik
-
-
-
-#----------------------------------------------------------------------
+# Bootstrapping...
 
 # Bootstrap stage 1: build basic infrastructure...
 .PHONY: bootstrap
 bootstrap: \
 		host-bootstrap \
-		gate-bootstrap \
-		ns ssh wireguard \
+		gate-bootstrap ns \
+		$(MINIMAL_CTs) \
 		bootstrap-clean
 
 
@@ -121,28 +100,26 @@ finalize: bootstrap-clean gate-bootstrap-clean
 
 
 #----------------------------------------------------------------------
+# Shorthands...
 
-.PHONY: core
-core: config $(CORE_CTs)
+.PHONY: config
+config: config.global
 
 
-.PHONY: minimal
-minimal: core $(MINIMAL_CTs)
+.PHONY: gate
+gate: gate-traefik
+
+
+
+#----------------------------------------------------------------------
+
+.PHONY: all
+all: $(APP_CTs)
 
 
 .PHONY: dev
-dev: minimal $(DEV_CTs) 
+dev: $(DEV_CTs) 
 
-
-.PHONY: all
-all: minimal $(APP_CTs)
-
-
-.PHONY: test
-test:
-	@echo "TEST!"
-
-test2: test test
 
 
 #----------------------------------------------------------------------
