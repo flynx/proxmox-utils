@@ -58,8 +58,6 @@ This level is handled by the `Makefile` and is almost completely automated
 This level depends on the host setup and is currently done manually 
 depending on existing host configuration.
 
-XXX clean setup scripts...
-  
 
 
 ## Prerequisites
@@ -93,10 +91,55 @@ The Proxmox administrative interface is available behind the Wireguard
 proxy or on the ADMIN port, both on https://10.0.0.254:8006.
 
 
-XXX setup additional CTs...
+To finalize the setup run:
+```shell
+make finalize
+```
+
+This will
+- detach the host from any external ports and make it accessible only 
+  from the internal network.  
+  See: [Architecture](#architecture) and [Bootstrapping](#bootstrapping)
+- setup firewall rules.  
+  Note that the firewall will not be enabled, this should be done manually
+  after rule review.
+  
+
+### Accessing the host
+
+XXX
 
 
-XXX configuration / administration...
+### Setup additional services
+
+XXX
+
+```shell
+make all
+```
+
+```shell
+make dev
+```
+
+
+Or individually:
+```shell
+make nextcloud
+```
+
+```shell
+make syncthing
+```
+
+```shell
+make gitea
+```
+
+
+### Setup and configure custom services
+
+XXX traefik rules
 
 
 
