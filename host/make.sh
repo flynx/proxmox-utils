@@ -84,8 +84,6 @@ if ! [ -z $BOOTSTRAP_CLEAN ] ; then
 			@ cp "$INTERFACES"{.bak,}
 			@ ifreload -a	
 		fi
-		[ -z $REBOOT ] \
-			|| reboot
 	fi
 
 # Bootstrap...
@@ -255,6 +253,12 @@ fi
 
 showNotes
 echo "# Done."
+
+
+if ! [ -z $REBOOT ] ; then
+	echo "# Rebooting..."
+	@ reboot
+fi
 
 
 
