@@ -83,12 +83,13 @@ config.global: config.global.example
 bootstrap: \
 		host-bootstrap \
 		gate-bootstrap ns \
-		$(MINIMAL_CTs) \
+		$(MINIMAL_CTs)
 	make bootstrap-clean
 
 
 # Bootstrap stage 2: reconnect host through the base infrastructure...
-.PHONY: bootstrap-clean host-bootstrap-clean
+.PHONY: bootstrap-clean 
+.PHONY: host-bootstrap-clean
 bootstrap-clean: host-bootstrap-clean
 
 
