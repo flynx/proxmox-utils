@@ -143,12 +143,18 @@ if xreadYes "# Create bridges?" BRIDGES ; then
 	if [ -z "$DRY_RUN" ] ; then
 		# write both bootstrap and clean bridge configurations...
 		if ! [ -z $BRIDGES_BOOTSTRAP ] ; then
+
+			# interfaces.final
+			@ cp "$INTERFACES"{.new,.final}
+			@ sed -i \
+				-e 's/'$ADMIN_PORT'/'$BOOTSTRAP_PORT'/' \
+				-e 's/^.*gateway .*$//' \
+				"$INTERFACES".final
+			echo "$BRIDGES" \
+				>> "$INTERFACES".final
+
+			# interfaces.clean
 			@ cp "$INTERFACES"{.new,.clean}
-			# XXX disconnect bootstrap and connnect admin...
-			# 		...make this optional...
-			#@ sed -i \
-			#	-e 's/'$ADMIN_PORT'/'$BOOTSTRAP_PORT'/' \
-			#	"$INTERFACES".clean
 			@ sed -i \
 				-e 's/^.*gateway .*\n//' \
 				"$INTERFACES".clean
@@ -156,17 +162,21 @@ if xreadYes "# Create bridges?" BRIDGES ; then
 				| sed \
 					-e 's/'$ADMIN_PORT'/'$BOOTSTRAP_PORT'/' \
 				>> "$INTERFACES".clean
+
+			# interfaces.new (prep)
 			BRIDGES=$(\
 				echo "$BRIDGES_BOOTSTRAP" \
 					| sed -e 's/^.*gateway .*$//')
 		fi
 
+		# interfaces.new
 		echo "$BRIDGES" >> "$INTERFACES".new
 
 	else
 		echo "$BRIDGES"
 	fi
 
+	# interfaces
 	if reviewApplyChanges "$INTERFACES" ; then
 		# XXX this must be done in nohup to avoid breaking on connection lost...
 		if ! @ ifreload -a ; then
