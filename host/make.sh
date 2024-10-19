@@ -70,6 +70,8 @@ if ! [ -z $BOOTSTRAP_CLEAN ] ; then
 		DFL_DNS=SKIP
 		DFL_FIREWALL=1
 
+		REBOOT=1
+
 	# done
 	else
 		exit
@@ -82,8 +84,9 @@ if ! [ -z $BOOTSTRAP_CLEAN ] ; then
 			@ cp "$INTERFACES"{.bak,}
 			@ ifreload -a	
 		fi
+		[ -z $REBOOT ] \
+			|| reboot
 	fi
-	#exit
 
 # Bootstrap...
 elif ! [ -z $BOOTSTRAP ] ; then
