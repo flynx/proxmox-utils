@@ -95,7 +95,7 @@ Install Proxmox and connect it to your device/network.
 This setup will use three IP addresses:
 1. IP adress used for setup only, this is the static (usually) IP adress 
   initially assigned to Proxmox on install and it will not be used after 
-  setup,
+  setup is done,
 2. WAN IP adress to be used for the main set of applications, this is 
   the address that all the requests will be routed from to various 
   services internally,
