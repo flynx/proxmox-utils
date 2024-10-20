@@ -92,7 +92,7 @@ XXX
 
 Install Proxmox and connect it to your device/network.
 
-Tjis setup will use three IP addresses:
+This setup will use three IP addresses:
 1. IP adress used for setup only, this is the static (usually) IP adress 
   initially assigned to Proxmox on install and it will not be used after 
   setup,
