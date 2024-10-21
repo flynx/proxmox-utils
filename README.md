@@ -183,7 +183,8 @@ connecting it to a configured network can lead to unexpected behavior._
 #### Accessing the host
 
 The simplest way is to connect to `wireguard` VPN and open http://pve.adm:8006 
-in a browser.
+in a browser (a profile was created during the setup process and stored 
+in the `/root/clients/` directory on the `wireguard` CT).
 
 The second approach is to `ssh` to either:
 
