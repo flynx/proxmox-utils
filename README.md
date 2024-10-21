@@ -27,6 +27,8 @@ functionality in Ansible.
 _NOTE: for a fair assessment of viability of further development an 
 Ansible version will be implemented next as a direct comparison._
 
+Fun.
+
 
 ## Architecture
 
