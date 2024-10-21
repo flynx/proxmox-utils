@@ -105,7 +105,7 @@ host (i.e. via `lxc-attach ..`).
 
 Three ways of access to the ADMIN network are provided:
 - `ssh` service (CT) via the `gate` reverse proxy
-- `wireguard` vpn via `gate` reverse proxy
+- `wireguard` VPN (CT) via `gate` reverse proxy
 - `ssh` service (CT) via the direct `$WAN_SSH_IP` (fail-safe)
 
 
