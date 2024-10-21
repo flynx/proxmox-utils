@@ -52,6 +52,18 @@ BRIDGES_TPL=${BRIDGES_TPL:-bridges.tpl}
 if ! [ -z $BOOTSTRAP_CLEAN ] ; then
 	@ cp "$INTERFACES"{,.bak}
 
+	__finalize(){
+		if reviewApplyChanges "$INTERFACES" ; then
+			# XXX this must be done in nohup to avoid breaking on connection lost...
+			if ! @ ifreload -a ; then
+				# reset settings back if ifreload fails...
+				@ cp "$INTERFACES"{.bak,}
+				@ ifreload -a	
+			fi
+		fi
+		unset -f __finalize
+	}
+
 	# stage 1: bootstrap -> clean
 	if [ -e "$INTERFACES".clean ] ; then
 		@ mv "$INTERFACES"{.clean,.new}
@@ -61,6 +73,8 @@ if ! [ -z $BOOTSTRAP_CLEAN ] ; then
 		DFL_HOSTS=SKIP
 		DFL_DNS=1
 		DFL_FIREWALL=SKIP
+
+		__finalize
 
 	# stage 2: clean -> final
 	elif [ -e "$INTERFACES".final ] ; then
@@ -77,15 +91,6 @@ if ! [ -z $BOOTSTRAP_CLEAN ] ; then
 	# done
 	else
 		exit
-	fi
-
-	if reviewApplyChanges "$INTERFACES" ; then
-		# XXX this must be done in nohup to avoid breaking on connection lost...
-		if ! @ ifreload -a ; then
-			# reset settings back if ifreload fails...
-			@ cp "$INTERFACES"{.bak,}
-			@ ifreload -a	
-		fi
 	fi
 
 # Bootstrap...
@@ -255,6 +260,11 @@ fi
 
 showNotes
 echo "# Done."
+
+
+if [[ $( type -t __finalize ) == function ]] ; then
+	__finalize
+fi
 
 
 if ! [ -z $REBOOT ] ; then
