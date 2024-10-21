@@ -110,7 +110,7 @@ finalize:
 	###   then:
 	###   # tmux a
 	###
-	tmux 'make _finalize'
+	tmux new-session 'make _finalize'
 
 
 
