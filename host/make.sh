@@ -49,6 +49,7 @@ BRIDGES_TPL=${BRIDGES_TPL:-bridges.tpl}
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Bootstrap...
 
+# cleanup...
 if ! [ -z $BOOTSTRAP_CLEAN ] ; then
 	@ cp "$INTERFACES"{,.bak}
 
@@ -61,6 +62,7 @@ if ! [ -z $BOOTSTRAP_CLEAN ] ; then
 				@ ifreload -a	
 			fi
 		fi
+		# clear self to avoid a second deffered execution...
 		unset -f __finalize
 	}
 
@@ -74,6 +76,7 @@ if ! [ -z $BOOTSTRAP_CLEAN ] ; then
 		DFL_DNS=1
 		DFL_FIREWALL=SKIP
 
+		# NOTE: in general this is non-destructive and can be done inline.
 		__finalize
 
 	# stage 2: clean -> final
@@ -85,6 +88,8 @@ if ! [ -z $BOOTSTRAP_CLEAN ] ; then
 		DFL_HOSTS=1
 		DFL_DNS=SKIP
 		DFL_FIREWALL=1
+
+		# NOTE: __finalize is deferred to just before reboot...
 
 		REBOOT=1
 
@@ -112,20 +117,20 @@ fi
 
 #----------------------------------------------------------------------
 
-# System...
+# system...
 if xreadYes "# Update system?" UPDATE ; then
 	@ apt update
 	@ apt upgrade
 fi
 
 
-# Tools...
+# tools...
 if xreadYes "# Install additional apps?" APPS ; then
 	@ apt install ${SOFTWARE[@]}
 fi
 
 
-# Bridges...
+# bridges...
 if xreadYes "# Create bridges?" BRIDGES ; then
 	xread "WAN port: " WAN_PORT 
 	xread "ADMIN port: " ADMIN_PORT 
@@ -262,11 +267,14 @@ showNotes
 echo "# Done."
 
 
-if [[ $( type -t __finalize ) == function ]] ; then
+# finalize...
+if [[ $( type -t __finalize ) == "function" ]] ; then
+	echo "# Finalizing ${INTERFACES}..."
 	__finalize
 fi
 
 
+# reboot...
 if ! [ -z $REBOOT ] ; then
 	echo "# Rebooting..."
 	@ reboot

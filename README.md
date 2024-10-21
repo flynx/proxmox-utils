@@ -173,20 +173,17 @@ To finalize the setup run:
 make finalize
 ```
 
-This will break the ssh connection, reconnect via the WAN port 
-and reattach to the `tmux` session via:
-
-```shell
-tmux a
-```
-
 This will
-- detach the host from any external ports and make it accessible only 
-  from the internal network.  
-  See: [Architecture](#architecture) and [Bootstrapping](#bootstrapping)
-- setup firewall rules.  
+- Setup firewall rules.  
   Note that the firewall will not be enabled, this should be done manually
   after rule review.
+- Detach the host from any external ports and make it accessible only 
+  from the internal network.  
+  See: [Architecture](#architecture) and [Bootstrapping](#bootstrapping)
+
+This will break the ssh connection when done, reconnect via the WAN port 
+to continue (see: [Accessing the host](#accessing-the-host)), or connect 
+directly to the ADMIN port (DHCP) and ssh into `$HOST_ADMIN_IP` (default: 10.0.0.254).
 
 
 _Note that the ADMIN port is configured for direct connections only (DHCP), 
