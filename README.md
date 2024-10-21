@@ -173,7 +173,12 @@ To finalize the setup run:
 make finalize
 ```
 
-Note that this will break the ssh connection.
+This will break the ssh connection, reconnect via the WAN port 
+and reattach to the `tmux` session via:
+
+```shell
+tmux a
+```
 
 This will
 - detach the host from any external ports and make it accessible only 

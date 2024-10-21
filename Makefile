@@ -107,8 +107,10 @@ finalize:
 	### - $ ssh <user>@<WAN_SSH_IP> 
 	###   from there:
 	###   $ ssh root@pve
+	###   then:
+	###   # tmux a
 	###
-	nohup make _finalize & tail -f nohup.out
+	tmux 'make _finalize'
 
 
 
