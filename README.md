@@ -77,12 +77,34 @@ Goals:
   +---------------------------------------------------------------+  
 ```
 
-XXX
+The system defines two networks:
+- LAN  
+  Hosts all the service CT's (`*.srv`)
+- ADMIN  
+  Used for administration (`*.adm`)
 
+The ADMIN network is connected to the admin port.
 
-### Services
+Both networks are provided DNS and DHCP services by the `ns` CT.
 
-XXX
+Services on both networks are connected to the outside world (WAN) via 
+a NAT router implemented by the `gate` CT (`iptables`).
+
+The `gate` CT also implements a reverse proxy (`traefik`), routing requests 
+from the WAN ($WAN_IP) to appropriate service CT's on the LAN.
+
+Services expose their administration interfaces only on the ADMIN network
+when possible.
+
+The host Proxmox (`pve.adm`) is only accessible through the ADMIN network.
+
+The `gate` and `ns` CT's are only accessible for administration from the 
+host (i.e. via `lxc-attach ..`).
+
+Three ways of access to the ADMIN network are provided:
+- `ssh` service (CT) via the `gate` reverse proxy
+- `wireguard` vpn via `gate` reverse proxy
+- `ssh` service (CT) via the direct `$WAN_SSH_IP` (fail-safe)
 
 
 
@@ -92,11 +114,13 @@ XXX
 
 Install Proxmox and connect it to your device/network.
 
+
+#### Notes
+
 This setup will use three IP addresses:
-1. IP address used for setup only, this is the static (usually) IP 
-  initially assigned to Proxmox on install and it will not be used after 
-  setup is done,
-2. WAN IP adress to be used for the main set of applications, this is 
+1. The static (usually) IP initially assigned to Proxmox on install. This 
+  will not be used after setup is done,
+2. WAN IP address to be used for the main set of applications, this is 
   the address that all the requests will be routed from to various 
   services internally,
 3. Fail-safe ssh IP address, this is the connection used for recovery 
