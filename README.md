@@ -173,6 +173,8 @@ To finalize the setup run:
 make finalize
 ```
 
+Note that this will break the ssh connection.
+
 This will
 - detach the host from any external ports and make it accessible only 
   from the internal network.  

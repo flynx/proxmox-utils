@@ -93,9 +93,22 @@ bootstrap-clean: host-bootstrap-clean
 
 
 # Finalize: reconect admin port/bridge correctly...
-.PHONY: finalize
-finalize: bootstrap-clean gate-bootstrap-clean 
+.PHONY: _finalize
+_finalize: bootstrap-clean gate-bootstrap-clean 
 	make host-bootstrap-clean
+
+
+.PHONY: finalize
+finalize:
+	###
+	### This will break the connection to the server, to continue:
+	### - Detach the ADMIN port, 
+	### - Connect the WAN port,
+	### - $ ssh <user>@<WAN_SSH_IP> 
+	###   from there:
+	###   $ ssh root@pve
+	###
+	nohup make _finalize & tail -f nohup.out
 
 
 
