@@ -91,8 +91,9 @@ Both networks are provided DNS and DHCP services by the `ns` CT.
 Services on both networks are connected to the outside world (WAN) via 
 a NAT router implemented by the `gate` CT (`iptables`).
 
-The `gate` CT also implements a reverse proxy (`traefik`), routing requests 
-from the WAN ($WAN_IP) to appropriate service CT's on the LAN.
+The `gate` CT also implements a reverse proxy ([`traefik`](https://traefik.io/traefik/)), 
+routing requests from the WAN (`$WAN_IP`) to appropriate service CT's on 
+the LAN.
 
 Services expose their administration interfaces only on the ADMIN network
 when possible.
