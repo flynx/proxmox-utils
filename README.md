@@ -174,9 +174,51 @@ This will
 connecting it to a configured network can lead to unexpected behavior.*
 
 
+
 #### Accessing the host
 
+The simplest way is to connect to `wireguard` VPN and open http://pve.adm:8006 
+in a browser.
+
+The second approach is to `ssh` to either:
+
+```shell
+ssh -p 23 <user>@<WAN_IP>
+```
+
+or:
+```shell
+ssh <user>@<WAN_SSH_IP>
+```
+
+The later will also work if the `gate` CT is down or not accessible.
+
+
+And from the `ssh` CT:
+```shell
+ssh root@pve
+```
+
+_WARNING: NEVER store any ssh keys on the `ssh` CT, use `ssh-agent` instead!_
+
+
+
+#### Configuration
+
 XXX
+
+The following CT's interfaces can not be configured in the Proxmox UI:
+- `gate`
+- `ns`
+- `nextcloud`
+- `wireguard`
+
+This is done mostly to keep Proxmox from touching the `hostname $(hostname)`
+directive (used by the DNS server to assigned predefined IP's) and in 
+the case of `gate` and `wireguard` to keep it from touching the additional 
+bridges or interfaces defined.  
+(XXX this restriction may be lifted in the future)
+
 
 
 #### Setup additional services
@@ -209,6 +251,8 @@ make gitea
 #### Setup and configure custom services
 
 XXX traefik rules
+
+
 
 
 

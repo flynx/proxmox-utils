@@ -1,4 +1,4 @@
-#------------------------------------------------------------------------
+#----------------------------------------------------------------------
 #
 # Global config file
 #
@@ -16,7 +16,68 @@
 # It is not recomended to set passwords here or in other config files.
 #
 #
-#------------------------------------------------------------------------
+#----------------------------------------------------------------------
+# These options need to be revised or changed... 
+# (remove "DFL_" prefix to disable promting)
+#
+
+# Domain and email configuration
+#
+DFL_DOMAIN=example.com
+DFL_EMAIL=user@example.com
+
+
+# Network configuration...
+#
+# NOTE: it is simpler to statically assign these than to configure DHCP
+# 	plus port forewarding to the dynamically assigned IP.
+# NOTE: if installing on a different network than the target, these can 
+# 	be changed for target deployment in:
+# 	- gate CT's /etc/network/interfaces (NOT in the Proxmox UI)
+# 	- ssh CT's network configuration (Proxmox UI)
+DFL_WAN_IP=192.168.1.101/24
+DFL_WAN_GATE=192.168.1.252
+
+# IP used for fail-safe conection to the ADMIN network
+DFL_WAN_SSH_IP=192.168.1.102/24
+
+
+# Web app/service domain configuration
+#
+# Here two optional variables are provided per service:
+# - <SERVICE>_DOMAIN=...
+# 	Overrides the $DOMAIN option above for <SERVICE>
+# - <SERVICE>_SUBDOMAIN=...
+# 	Sets the subdomain of $DOMAIN (or $<SERVICE>_DOMAIN) for <SERVICE>
+
+# Nextcloud
+#NEXTCLOUD_DOMAIN=
+NEXTCLOUD_SUBDOMAIN=nc.
+
+# Gitea
+#GITEA_DOMAIN=
+#GITEA_SUBDOMAIN=git.
+
+
+# Extra options passed to each CT when created.
+#
+# This can be used for passing in ssh keys, etc...
+#
+# see: 
+# 	man pct
+#
+# Example:
+# 	DFL_PCT_EXTRA="--ssh-public-keys /path/to/autohrized_keys"
+#
+DFL_PCT_EXTRA=SKIP
+
+
+
+#----------------------------------------------------------------------
+#
+# Options afetr this point are sane defaults and in the general case 
+# can be left as-is.
+#
 
 # Bootsrap configuration...
 #
@@ -37,69 +98,20 @@ BOOTSTRAP_BRIDGE=0
 # 	bridges with numbers greater than X (10 in the example below)
 #
 # Example:
-# 	WAN_BRIDGE=0
-#	ADMIN_BRIDGE=3
-#	LAN_BRIDGE=10
+#	ADMIN_BRIDGE=_admin
+# 	WAN_BRIDGE=_wan
+#	LAN_BRIDGE=_lan
 #
 ADMIN_BRIDGE=_admin
 WAN_BRIDGE=_wan
 LAN_BRIDGE=_lan
 
 
-# NOTE: it is simpler to statically assign these than to configure dhcp
-# 	plus port forewarding to the dynamically assigned IP.
-DFL_WAN_IP=192.168.1.101/24
-DFL_WAN_GATE=192.168.1.252
-
-DFL_WAN_SSH_IP=192.168.1.102/24
-
-
-# Domain and email configuration
-#
-DOMAIN=example.com
-EMAIL=user@example.com
-
-
-# Web app/service domain configuration
-#
-# Here two optional variables are provided per service:
-# - <SERVICE>_DOMAIN=...
-# 	Overrides the $DOMAIN option above for <SERVICE>
-# - <SERVICE>_SUBDOMAIN=...
-# 	Sets the subdomain of $DOMAIN (or $<SERVICE>_DOMAIN) for <SERVICE>
-#
-
-# Nextcloud
-#NEXTCLOUD_DOMAIN=
-NEXTCLOUD_SUBDOMAIN=nc.
-
-# Gitea
-#GITEA_DOMAIN=
-#GITEA_SUBDOMAIN=git.
-
-
-# Extra options passed to each CT created.
-#
-# This can be used for passing in ssh keys, etc...
-#
-# see: 
-# 	man pct
-#
-# Example:
-# 	DFL_PCT_EXTRA="--ssh-public-keys /path/to/autohrized_keys"
-#
-DFL_PCT_EXTRA=SKIP
-
-
-
-#------------------------------------------------------------------------
-#
-# Options afetr this point are sane defaults and in the general case 
-# can be left as-is.
-#
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # host
 HOST_ADMIN_IP=10.0.0.254/24
+
 
 # Nameserver
 NS_HOSTNAME=ns
@@ -109,6 +121,7 @@ NS_LAN_IP=10.1.1.1/24
 
 RESERVE_NS_ID=101
 TEMPLATE_NS_ID=200
+
 
 # Gateway / Reverse proxy
 GATE_HOSTNAME=gate
@@ -120,4 +133,5 @@ RESERVE_GATE_ID=111
 TEMPLATE_GATE_ID=210
 
 
-#------------------------------------------------------------------------
+
+#----------------------------------------------------------------------
