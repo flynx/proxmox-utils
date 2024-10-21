@@ -54,7 +54,7 @@ if ! [ -z $BOOTSTRAP_CLEAN ] ; then
 	@ cp "$INTERFACES"{,.bak}
 
 	__finalize(){
-		if reviewApplyChanges "$INTERFACES" ; then
+		if reviewApplyChanges "$INTERFACES" apply ; then
 			# XXX this must be done in nohup to avoid breaking on connection lost...
 			if ! @ ifreload -a ; then
 				# reset settings back if ifreload fails...
@@ -213,7 +213,7 @@ if xreadYes "# Create bridges?" BRIDGES ; then
 	fi
 
 	# interfaces
-	if reviewApplyChanges "$INTERFACES" ; then
+	if reviewApplyChanges "$INTERFACES" apply ; then
 		# XXX this must be done in nohup to avoid breaking on connection lost...
 		if ! @ ifreload -a ; then
 			# reset settings back if ifreload fails...
@@ -231,7 +231,7 @@ if xreadYes "# Update /etc/hosts?" HOSTS ; then
 	@ sed -i \
 		-e 's/^[^#].* \(pve.local.*\)$/'${HOST_ADMIN_IP/\/*}' \1/' \
 		/etc/hosts.new
-	reviewApplyChanges /etc/hosts
+	reviewApplyChanges /etc/hosts apply
 fi
 
 
@@ -250,7 +250,7 @@ if xreadYes "# Update DNS?" DNS ; then
 	build
 	file=/etc/resolv.conf
 	@ cp "staging/${file}" "${file}".new
-	reviewApplyChanges "${file}"
+	reviewApplyChanges "${file}" apply
 fi
 
 
@@ -259,7 +259,7 @@ if xreadYes "# Update firewall rules?" FIREWALL ; then
 	build
 	file=/etc/pve/firewall/cluster.fw
 	@ cp "staging/${file}" "${file}".new
-	reviewApplyChanges "${file}"
+	reviewApplyChanges "${file}" apply
 fi
 
 
