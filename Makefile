@@ -109,6 +109,7 @@ finalize:
 	###   $ ssh root@pve
 	###   then:
 	###   # tmux a
+	### - When done this will reboot the system.
 	###
 	tmux new-session 'make _finalize'
 
