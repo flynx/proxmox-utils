@@ -34,17 +34,17 @@ Fun.
 
 ### Goals
 
-- Separate concerns  
+- _Separate concerns_  
   Preferably one service/role per CT
-- Keep things as light as possible  
+- _Keep things as light as possible_ 
   This for the most part rules out Docker as a nested virtualization
-  layer under Proxmox while preferring light distributions like Alpine
+  layer under Proxmox, and preferring light distributions like Alpine
   Linux
-- Pragmatic simplicity  
+- _Pragmatic simplicity_  
   This goal yields some compromises to previous goals, for example [TKL]()
   is used as a base for [Nextcloud]() effectively simplifying the setup 
   and administration of all the related components at the cost of a 
-  heavier CT transparently integrating multiple related services
+  heavier CT, transparently integrating multiple related services
 
 
 ### Network
@@ -108,9 +108,9 @@ The `gate` and `ns` CT's are only accessible for administration from the
 host (i.e. via `lxc-attach ..`).
 
 Three ways of access to the ADMIN network are provided:
-- `ssh` service (CT) via the `gate` reverse proxy
-- `wireguard` VPN (CT) via `gate` reverse proxy
-- `ssh` service (CT) via the direct `$WAN_SSH_IP` (fail-safe)
+- `wireguard` VPN (CT) via `gate` reverse proxy,
+- `ssh` service (CT) via the `gate` reverse proxy,
+- `ssh` service (CT) via the direct `$WAN_SSH_IP` (fail-safe).
 
 
 
@@ -131,7 +131,7 @@ This setup will use three IP addresses:
   will not be used after setup is done,
 2. WAN IP address to be used for the main set of applications, this is 
   the address that all the requests will be routed from to various 
-  services internally,
+  services on the LAN network,
 3. Fail-safe ssh IP address, this is the connection used for recovery 
   in case the internal routing fails.
 
@@ -139,9 +139,9 @@ This setup will use three IP addresses:
 
 ### Semi-automated setup
 
-Open a terminal on the host (`ssh` or via the UI).
+Open a terminal on the host, either `ssh` (recommended) or via the UI.
 
-Optionally, set a desired default editor via:
+Optionally, set a desired default editor (default: `nano`) via:
 ```shell
 export EDITOR=nano
 ```
@@ -151,21 +151,19 @@ Download the [`bootstrap.sh`](./scripts/bootstrap.sh) script and execute it:
 curl 'https://raw.githubusercontent.com/flynx/proxmox-utils/refs/heads/master/scripts/bootstrap.sh' | sudo bash
 ```
 
+_It is recommended to review the script/code before starting._
+
 This will:
-- Install basic dependencies
-- Clone this repo
-- Run `make bootstrap` on the repo
+- Install basic dependencies,
+- Clone this repo,
+- Run `make bootstrap` on the repo.
 
-After the basic setup is done connect the device to the network via the 
-selcted WAN port and **disconnect** the ADMIN port.
-
-The WAN interface exposes two IPs:
+At this point WAN interface exposes two IPs:
 - Main server (config: `$DFL_WAN_IP` / `$WAN_IP`)
   - ssh:23
   - wireguard:51820
 - Fail-safe ssh (config: `$DFL_WAN_SSH_IP` / `$WAN_SSH_IP`)
   - ssh:22
-
 
 The Proxmox administrative interface is available behind the Wireguard 
 proxy or on the ADMIN port, both on https://10.0.0.254:8006.
@@ -187,9 +185,9 @@ This will break the ssh connection when done, reconnect via the WAN port
 to continue (see: [Accessing the host](#accessing-the-host)), or connect 
 directly to the ADMIN port (DHCP) and ssh into `$HOST_ADMIN_IP` (default: 10.0.0.254).
 
-
-_Note that the ADMIN port is configured for direct connections only (DHCP), 
-connecting it to a configured network can lead to unexpected behavior._
+_Note that the ADMIN port is configured for direct connections only, 
+connecting it to a configured network can lead to unexpected behavior -- 
+DHCP races, IP clashes... etc._
 
 
 
