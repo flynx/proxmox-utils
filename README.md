@@ -28,7 +28,8 @@ Ansible version will be implemented next as a direct comparison._
 
 ## Architecture
 
-Goals:
+### Goals
+
 - Separate concerns  
   Preferably one service/role per CT
 - Keep things as light as possible  
