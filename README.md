@@ -174,8 +174,6 @@ This will
   Note that the firewall will not be enabled, this should be done manually
   after rule review.
 
-After this stage disconnect from the ADMIN port and connect the WAN port 
-to the network.
 
 _Note that the ADMIN port is configured for direct connections only (DHCP), 
 connecting it to a configured network can lead to unexpected behavior._
