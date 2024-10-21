@@ -139,9 +139,9 @@ This setup will use three IP addresses:
 
 Open a terminal on the host (`ssh` or via the UI).
 
-Optionally, set a desired default editor (defaults to `nano`) via:
+Optionally, set a desired default editor via:
 ```shell
-export EDITOR=..
+export EDITOR=nano
 ```
 
 Download the [`bootstrap.sh`](./scripts/bootstrap.sh) script and execute it:
