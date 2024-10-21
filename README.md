@@ -90,7 +90,17 @@ XXX
 
 ### Prerequisites
 
-Install Proxmox and connect it to your network.
+Install Proxmox and connect it to your device/network.
+
+This setup will use three IP addresses:
+1. IP address used for setup only, this is the static (usually) IP 
+  initially assigned to Proxmox on install and it will not be used after 
+  setup is done,
+2. WAN IP adress to be used for the main set of applications, this is 
+  the address that all the requests will be routed from to various 
+  services internally,
+3. Fail-safe ssh IP address, this is the connection used for recovery 
+  in case the internal routing fails.
 
 
 
