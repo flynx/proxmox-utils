@@ -3,18 +3,20 @@
 A set of scripts for automating setup and tasks in proxmox.
 
 ## TODO
-- revise defaults
+- CT updates
+- backup/restore
+- mail
+- which is better?
+  - Makefile (a-la ./wireguard/templates/root/Makefile)
+  - shell (a-la ./shadow/templates/root/update-shadowsocks.sh)
 - separate templates/assets into distribution and user directories
   ...this is needed to allow the user to change the configs without the 
   fear of them being overwritten by git (similar to how config is handlerd)
-- might be a good idea to export a specific ct script that can be used 
-  for updates for that ct
-- which is better?
-  - Makefile (a-la wireguard)
-  - shell (a-la shadow)
-- ct updates
-- backup/restore
-- mail
+
+
+<!-- START doctoc -->
+<!-- END doctoc -->
+
 
 
 ## Motivation
