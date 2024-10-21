@@ -38,7 +38,9 @@ SOFTWARE=(
 
 INTERFACES=/etc/network/interfaces
 
-BRIDGES_TPL=bridges.tpl
+BOOTSTRAP_PORT=${BOOTSTRAP_PORT:-none}
+
+BRIDGES_TPL=${BRIDGES_TPL:-bridges.tpl}
 
 # XXX
 #readVars

@@ -23,8 +23,6 @@
 # Usually this is the default bridge created in Proxmox, so there is no 
 # need to touch this.
 BOOTSTRAP_BRIDGE=0
-# XXX
-#BOOTSTRAP_PORT=none
 
 
 # CT interface bridge configuration.
@@ -43,7 +41,6 @@ BOOTSTRAP_BRIDGE=0
 #	ADMIN_BRIDGE=3
 #	LAN_BRIDGE=10
 #
-# XXX revise numbering...
 ADMIN_BRIDGE=_admin
 WAN_BRIDGE=_wan
 LAN_BRIDGE=_lan
