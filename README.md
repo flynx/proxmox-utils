@@ -116,6 +116,9 @@ Three ways of access to the ADMIN network are provided:
 
 Install Proxmox and connect it to your device/network.
 
+Proxmox will need to have access to the internet to download assets and 
+updates.
+
 
 #### Notes
 
@@ -168,10 +171,12 @@ This will
 - setup firewall rules.  
   Note that the firewall will not be enabled, this should be done manually
   after rule review.
-  
 
-*Note that the ADMIN port is configured for direct connections only (DHCP), 
-connecting it to a configured network can lead to unexpected behavior.*
+After this stage disconnect from the ADMIN port and connect the WAN port 
+to the network.
+
+_Note that the ADMIN port is configured for direct connections only (DHCP), 
+connecting it to a configured network can lead to unexpected behavior._
 
 
 
