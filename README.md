@@ -137,6 +137,13 @@ This setup will use three IP addresses:
 
 ### Semi-automated setup
 
+Open a terminal on the host (`ssh` or via the UI).
+
+Optionally, set a desired default editor (defaults to `nano`) via:
+```shell
+export EDITOR=..
+```
+
 Download the [`bootstrap.sh`](./scripts/bootstrap.sh) script and execute it:
 ```shell
 curl 'https://raw.githubusercontent.com/flynx/proxmox-utils/refs/heads/master/scripts/bootstrap.sh' | sudo bash
