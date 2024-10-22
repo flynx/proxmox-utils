@@ -317,7 +317,8 @@ make gitea
 Gitea is mapped to the subdomain `$GITEA_SUBDOMAIN` of `$GITEA_DOMAIN` 
 or `$DOMAIN` if the former is not defined.
 
-For basic configuration see: [./config.global] and [./config.global.example]
+For basic configuration edit the generated: [config.global](./config.global) 
+and for defaults: [config.global.example](./config.global.example).
 
 For more info see: https://gitea.com/
 
