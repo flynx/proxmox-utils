@@ -3,7 +3,7 @@
 A set of scripts for automating setup and tasks in proxmox.
 
 ## TODO
-- CT updates
+- CT updates / upgrades  
   Right now the simplest way to update the infrastructure CT's if the 
   sources changed is to simply rebuild them -- add rebuild command.
     - backup
