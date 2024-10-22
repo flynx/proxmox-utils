@@ -425,11 +425,14 @@ XXX firewall
 ### Directory structure
 
 ```
-/
+proxmox-utils/
 +- <ct-type>/
 |   +- templates/
+|   |   +- ...
 |   +- assets/
+|   |   +- ...
 |   +- staging/
+|   |   +- ...
 |   +- make.sh
 |   +- config
 |   +- config.last-run
