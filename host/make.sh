@@ -38,7 +38,9 @@ SOFTWARE=(
 
 INTERFACES=/etc/network/interfaces
 
-BRIDGES_TPL=bridges.tpl
+BOOTSTRAP_PORT=${BOOTSTRAP_PORT:-none}
+
+BRIDGES_TPL=${BRIDGES_TPL:-bridges.tpl}
 
 # XXX
 #readVars
@@ -47,8 +49,22 @@ BRIDGES_TPL=bridges.tpl
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Bootstrap...
 
+# cleanup...
 if ! [ -z $BOOTSTRAP_CLEAN ] ; then
 	@ cp "$INTERFACES"{,.bak}
+
+	__finalize(){
+		if reviewApplyChanges "$INTERFACES" apply ; then
+			# XXX this must be done in nohup to avoid breaking on connection lost...
+			if ! @ ifreload -a ; then
+				# reset settings back if ifreload fails...
+				@ cp "$INTERFACES"{.bak,}
+				@ ifreload -a	
+			fi
+		fi
+		# clear self to avoid a second deffered execution...
+		unset -f __finalize
+	}
 
 	# stage 1: bootstrap -> clean
 	if [ -e "$INTERFACES".clean ] ; then
@@ -60,6 +76,9 @@ if ! [ -z $BOOTSTRAP_CLEAN ] ; then
 		DFL_DNS=1
 		DFL_FIREWALL=SKIP
 
+		# NOTE: in general this is non-destructive and can be done inline.
+		__finalize
+
 	# stage 2: clean -> final
 	elif [ -e "$INTERFACES".final ] ; then
 		@ mv "$INTERFACES"{.final,.new}
@@ -70,20 +89,13 @@ if ! [ -z $BOOTSTRAP_CLEAN ] ; then
 		DFL_DNS=SKIP
 		DFL_FIREWALL=1
 
+		# NOTE: __finalize is deferred to just before reboot...
+
 		REBOOT=1
 
 	# done
 	else
 		exit
-	fi
-
-	if reviewApplyChanges "$INTERFACES" ; then
-		# XXX this must be done in nohup to avoid breaking on connection lost...
-		if ! @ ifreload -a ; then
-			# reset settings back if ifreload fails...
-			@ cp "$INTERFACES"{.bak,}
-			@ ifreload -a	
-		fi
 	fi
 
 # Bootstrap...
@@ -105,20 +117,20 @@ fi
 
 #----------------------------------------------------------------------
 
-# System...
+# system...
 if xreadYes "# Update system?" UPDATE ; then
 	@ apt update
 	@ apt upgrade
 fi
 
 
-# Tools...
+# tools...
 if xreadYes "# Install additional apps?" APPS ; then
 	@ apt install ${SOFTWARE[@]}
 fi
 
 
-# Bridges...
+# bridges...
 if xreadYes "# Create bridges?" BRIDGES ; then
 	xread "WAN port: " WAN_PORT 
 	xread "ADMIN port: " ADMIN_PORT 
@@ -201,7 +213,7 @@ if xreadYes "# Create bridges?" BRIDGES ; then
 	fi
 
 	# interfaces
-	if reviewApplyChanges "$INTERFACES" ; then
+	if reviewApplyChanges "$INTERFACES" apply ; then
 		# XXX this must be done in nohup to avoid breaking on connection lost...
 		if ! @ ifreload -a ; then
 			# reset settings back if ifreload fails...
@@ -219,7 +231,7 @@ if xreadYes "# Update /etc/hosts?" HOSTS ; then
 	@ sed -i \
 		-e 's/^[^#].* \(pve.local.*\)$/'${HOST_ADMIN_IP/\/*}' \1/' \
 		/etc/hosts.new
-	reviewApplyChanges /etc/hosts
+	reviewApplyChanges /etc/hosts apply
 fi
 
 
@@ -238,7 +250,7 @@ if xreadYes "# Update DNS?" DNS ; then
 	build
 	file=/etc/resolv.conf
 	@ cp "staging/${file}" "${file}".new
-	reviewApplyChanges "${file}"
+	reviewApplyChanges "${file}" apply
 fi
 
 
@@ -247,7 +259,7 @@ if xreadYes "# Update firewall rules?" FIREWALL ; then
 	build
 	file=/etc/pve/firewall/cluster.fw
 	@ cp "staging/${file}" "${file}".new
-	reviewApplyChanges "${file}"
+	reviewApplyChanges "${file}" apply
 fi
 
 
@@ -255,6 +267,14 @@ showNotes
 echo "# Done."
 
 
+# finalize...
+if [[ $( type -t __finalize ) == "function" ]] ; then
+	echo "# Finalizing ${INTERFACES}..."
+	__finalize
+fi
+
+
+# reboot...
 if ! [ -z $REBOOT ] ; then
 	echo "# Rebooting..."
 	@ reboot

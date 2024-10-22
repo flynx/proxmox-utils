@@ -302,33 +302,81 @@ xreadpass(){
 }
 
 
+# Like cat but a prettier...
+#
+#	listFile PATH
+#
+listFile(){
+	if [ -e "$1" ] ; then
+		echo "--- $1 ---"
+		cat "$1"
+		echo '---'
+	else
+		echo "$FUNCNAME: $1: No such file or directory."
+		return 1
+	fi
+}
+
+
 # Review changes in PATH.new, then edit/apply changes to PATH
 #
-#	reviewApplyChanges PATH
+#	reviewApplyChanges PATH [apply|edit|skip]
+#
 #
 # NOTE: if changes are not applied this will return non-zero making this 
 #		usable in conditionals...
 reviewApplyChanges(){
 	local file=$1
+	if ! [ -e "$file".new ] ; then
+		echo "$FUNCNAME: $1: No such file or directory."
+		return 1
+	fi
+
+	# default option...
+	local dfl=
+	local a=a
+	local e=e
+	local s=s
+	case "${2,,}" in
+		a|apply)
+			a=A
+			dfl=a
+			;;
+		e|edit)
+			e=E
+			dfl=e
+			;;
+		s|skip)
+			s=S
+			dfl=s
+			;;
+	esac
+
 	echo "# Review updated: ${file}.new:"
-	@ cat ${file}.new
-	echo '---'
+	listFile ${file}.new
 	local res
 	while true ; do
-		read -ep "# [a]pply, [e]dit, [s]kip? " res
+		read -ep "# [$a]pply, [$e]dit, [$s]kip? " res
+		if [ -z $res ] ; then
+			if [ -z $dfl ] ; then
+				continue
+			fi
+			res=$dfl
+		fi
 		case "${res,,}" in
 			a|apply)
 				break
 				;;
 			e|edit)
 				${EDITOR} "${file}.new"
+				listFile ${file}.new
 				;;
 			s|skip)
-				echo "# file saved as: ${file}.new"
+				echo "# Changes kept as: ${file}.new"
 				return 1
 				;;
 			*)
-				echo "ERROR: unknown command: \"$res\"" >&2
+				echo "ERROR: Unknown command: \"$res\"" >&2
 				continue
 				;;
 		esac

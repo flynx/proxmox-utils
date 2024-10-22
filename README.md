@@ -3,18 +3,28 @@
 A set of scripts for automating setup and tasks in proxmox.
 
 ## TODO
-- revise defaults
+- CT updates / upgrades  
+  Right now the simplest way to update the infrastructure CT's if the 
+  sources changed is to simply rebuild them -- add rebuild command.
+    - backup
+    - build (new reserve)
+    - destroy
+    - clone
+    - cleanup
+- backup/restore
+- config manager -- save/use/..
+- mail server
+- which is better?
+  - Makefile (a-la ./wireguard/templates/root/Makefile)
+  - shell (a-la ./shadow/templates/root/update-shadowsocks.sh)
 - separate templates/assets into distribution and user directories
   ...this is needed to allow the user to change the configs without the 
   fear of them being overwritten by git (similar to how config is handlerd)
-- might be a good idea to export a specific ct script that can be used 
-  for updates for that ct
-- which is better?
-  - Makefile (a-la wireguard)
-  - shell (a-la shadow)
-- ct updates
-- backup/restore
-- mail
+
+
+<!-- START doctoc -->
+<!-- END doctoc -->
+
 
 
 ## Motivation
@@ -25,21 +35,25 @@ functionality in Ansible.
 _NOTE: for a fair assessment of viability of further development an 
 Ansible version will be implemented next as a direct comparison._
 
+Fun.
+
 
 ## Architecture
 
-Goals:
-- Separate concerns  
+### Goals
+
+- _Separate concerns_  
   Preferably one service/role per CT
-- Keep things as light as possible  
+- _Keep things as light as possible_  
   This for the most part rules out Docker as a nested virtualization
-  layer under Proxmox while preferring light distributions like Alpine
+  layer under Proxmox, and preferring light distributions like Alpine
   Linux
-- Pragmatic simplicity  
-  This goal yields some compromises to previous goals, for example [TKL]()
-  is used as a base for [Nextcloud]() effectively simplifying the setup 
+- _Pragmatic simplicity_  
+  This goal yields some compromises to previous goals, for example 
+  [TKL](https://www.turnkeylinux.org/) is used as a base for 
+  [Nextcloud](https://nextcloud.com/) effectively simplifying the setup 
   and administration of all the related components at the cost of a 
-  heavier CT transparently integrating multiple related services
+  heavier CT, transparently integrating multiple related services
 
 
 ### Network
@@ -77,60 +91,96 @@ Goals:
   +---------------------------------------------------------------+  
 ```
 
-XXX
+The system defines two networks:
+- LAN  
+  Hosts all the service CT's (`*.srv`)
+- ADMIN  
+  Used for administration (`*.adm`)
+
+The ADMIN network is connected to the admin port.
+
+Both networks are provided DNS and DHCP services by the `ns` CT.
+
+Services on either network are connected to the outside world (WAN) via 
+a NAT router implemented by the `gate` CT (`iptables`).
+
+The `gate` CT also implements a reverse proxy ([`traefik`](https://traefik.io/traefik/)), 
+routing requests from the WAN (`$WAN_IP`) to appropriate service CT's on 
+the LAN.
+
+Services expose their administration interfaces only on the ADMIN network
+when possible.
+
+The host Proxmox (`pve.adm`) is only accessible through the ADMIN network.
+
+The `gate` and `ns` CT's are only accessible for administration from the 
+host (i.e. via `lxc-attach ..`).
+
+Three ways of access to the ADMIN network are provided:
+- [`wireguard`](https://www.wireguard.com/) VPN (CT) via `gate` reverse proxy,
+- `ssh` service (CT) via the `gate` reverse proxy,
+- `ssh` service (CT) via the direct `$WAN_SSH_IP` (fail-safe).
 
 
-### Services
 
-XXX
-
-
-
-## Setup
+## Getting started
 
 ### Prerequisites
 
 Install Proxmox and connect it to your device/network.
 
-Proxmox will need to have internet access
+Proxmox will need to have access to the internet to download assets and 
+updates.
+
+
+#### Notes
 
 This setup will use three IP addresses:
-1. IP address used for setup only, this is the static (usually) IP 
-  initially assigned to Proxmox on install and it will not be used after 
-  setup is done,
-2. WAN IP adress to be used for the main set of applications, this is 
+1. The static (usually) IP initially assigned to Proxmox on install. This 
+  will not be used after setup is done,
+2. WAN IP address to be used for the main set of applications, this is 
   the address that all the requests will be routed from to various 
-  services internally,
+  services on the LAN network,
 3. Fail-safe ssh IP address, this is the connection used for recovery 
   in case the internal routing fails.
 
 
 
-### Semi-automated setup
+### Setup
+
+Open a terminal on the host, either `ssh` (recommended) or via the UI.
+
+Optionally, set a desired default editor (default: `nano`) via:
+```shell
+export EDITOR=nano
+```
 
 Download the [`bootstrap.sh`](./scripts/bootstrap.sh) script and execute it:
 ```shell
 curl 'https://raw.githubusercontent.com/flynx/proxmox-utils/refs/heads/master/scripts/bootstrap.sh' | sudo bash
 ```
 
+_It is recommended to review the script/code before starting._
+
 This will:
-- Install basic dependencies
-- Clone this repo
-- Run `make bootstrap` on the repo
+- Install basic dependencies,
+- Clone this repo,
+- Run `make bootstrap` on the repo:
+  - bootstrap configure the network (2 out of 3 stages)
+  - build and infrastructure start CT's (`gate`, `ns`, `ssh`, and `wireguard`)
 
-After the basic setup is done connect the device to the network via the 
-selcted WAN port and **disconnect** the ADMIN port.
-
-The WAN interface exposes two IPs:
+At this point WAN interface exposes two IPs:
 - Main server (config: `$DFL_WAN_IP` / `$WAN_IP`)
   - ssh:23
   - wireguard:51820
 - Fail-safe ssh (config: `$DFL_WAN_SSH_IP` / `$WAN_SSH_IP`)
   - ssh:22
 
+The Proxmox administrative interface is available behind the 
+[Wireguard](https://www.wireguard.com/) proxy or on the ADMIN port, both 
+on https://10.0.0.254:8006.
 
-The Proxmox administrative interface is available behind the Wireguard 
-proxy or on the ADMIN port, both on https://10.0.0.254:8006.
+Additional administrative tasks can be performed now if needed.
 
 To finalize the setup run:
 ```shell
@@ -138,56 +188,150 @@ make finalize
 ```
 
 This will
-- detach the host from any external ports and make it accessible only 
-  from the internal network.  
-  See: [Architecture](#architecture) and [Bootstrapping](#bootstrapping)
-- setup firewall rules.  
+- Setup firewall rules.  
   Note that the firewall will not be enabled, this should be done manually
   after rule review.
-  
+- Detach the host from any external ports and make it accessible only 
+  from the internal network.  
+  See: [Architecture](#architecture) and [Bootstrapping](#bootstrapping)
 
-*Note that the ADMIN port is configured for direct connections only (DHCP), 
-connecting it to a configured network can lead to unexpected behavior.*
+This will break the ssh connection when done, reconnect via the WAN port 
+to continue (see: [Accessing the host](#accessing-the-host)), or connect 
+directly to the ADMIN port (DHCP) and ssh into `$HOST_ADMIN_IP` (default: 10.0.0.254).
+
+_Note that the ADMIN port is configured for direct connections only, 
+connecting it to a configured network can lead to unexpected behavior -- 
+DHCP races, IP clashes... etc._
+
 
 
 #### Accessing the host
 
+The simplest way is to connect to `wireguard` VPN and open http://pve.adm:8006 
+in a browser (a profile was created during the setup process and stored 
+in the `/root/clients/` directory on the `wireguard` CT).
+
+The second approach is to `ssh` to either:
+
+```shell
+ssh -p 23 <user>@<WAN_IP>
+```
+
+or:
+```shell
+ssh <user>@<WAN_SSH_IP>
+```
+
+The later will also work if the `gate` CT is down or not accessible.
+
+
+And from the `ssh` CT:
+```shell
+ssh root@pve
+```
+
+_WARNING: NEVER store any ssh keys on the `ssh` CT, use `ssh-agent` instead!_
+
+
+
+#### Configuration
+
 XXX
 
+The following CT's interfaces can not be configured in the Proxmox UI:
+- `gate`
+- `ns`
+- `nextcloud`
+- `wireguard`
 
-#### Setup additional services
+This is done mostly to keep Proxmox from touching the `hostname $(hostname)`
+directive (used by the DNS server to assigned predefined IP's) and in 
+the case of `gate` and `wireguard` to keep it from touching the additional 
+bridges or interfaces defined.  
+(XXX this restriction may be lifted in the future)
 
-XXX
 
+
+## Services
+
+Install all user services:
 ```shell
 make all
 ```
 
+Includes:
+- [`syncthing`](#syncthing)
+- [`nextcloud`](#nextcloud)
+
+
+Install development services:
 ```shell
 make dev
 ```
 
+Includes:
+- [`gitea`](#gitea)
 
-Or individually:
-```shell
-make nextcloud
-```
+
+
+### Syncthing
 
 ```shell
 make syncthing
 ```
 
+Syncthing administration interface is accessible via https://syncthing.adm/ 
+on the ADMIN network, it is recommended to set an admin password on 
+the web interface as soon as possible.
+
+No additional routing or network configuration is required, Syncthing is
+smart enough to handle its own connections itself.
+
+For more info see: https://syncthing.net/
+
+
+### Nextcloud
+
+```shell
+make nextcloud
+```
+
+Nextcloud will get mapped to subdomain `$NEXTCLOUD_SUBDOMAIN` of 
+`$NEXTCLOUD_DOMAIN` (defaulting to `$DOMAIN`, if not defined).
+
+For basic configuration edit the generated: [config.global](./config.global) 
+and for defaults: [config.global.example](./config.global.example).
+
+For deeper management use the [TKL](https://www.turnkeylinux.org/) consoles 
+(via https://nextcloud.srv, on the LAN network) and `ssh`, for more details 
+see: https://www.turnkeylinux.org/nextcloud
+
+For more info on Nextcloud see: https://nextcloud.com/
+
+
+### Gitea
+
 ```shell
 make gitea
 ```
 
+Gitea is mapped to the subdomain `$GITEA_SUBDOMAIN` of `$GITEA_DOMAIN` 
+or `$DOMAIN` if the former is not defined.
 
-#### Setup and configure custom services
+For basic configuration edit the generated: [config.global](./config.global) 
+and for defaults: [config.global.example](./config.global.example).
+
+For more info see: https://gitea.com/
+
+
+### Custom services
 
 XXX traefik rules
 
 
 
+
+<!--
 ### Manual setup
 
 
@@ -318,6 +462,7 @@ sudo make dev
 XXX test conections
 XXX change proxmox ip/network
 XXX firewall
+-->
 
 
 ## Extending
@@ -325,11 +470,14 @@ XXX firewall
 ### Directory structure
 
 ```
-/
+proxmox-utils/
 +- <ct-type>/
 |   +- templates/
+|   |   +- ...
 |   +- assets/
+|   |   +- ...
 |   +- staging/
+|   |   +- ...
 |   +- make.sh
 |   +- config
 |   +- config.last-run

@@ -10,7 +10,7 @@
 #
 #----------------------------------------------------------------------
 
-EDITOR ?= vim
+EDITOR ?= nano
 
 
 # CTs...
@@ -62,6 +62,7 @@ FORCE:
 
 %: config %/make.sh FORCE
 	$*/make.sh
+	@echo
 
 
 %.config: %/config.example
@@ -94,7 +95,10 @@ bootstrap-clean: host-bootstrap-clean
 
 # Finalize: reconect admin port/bridge correctly...
 .PHONY: finalize
-finalize: bootstrap-clean gate-bootstrap-clean 
+finalize: gate-bootstrap-clean
+	# cleanup: stage 1...
+	make host-bootstrap-clean
+	# cleanup: stage 2...
 	make host-bootstrap-clean
 
 
