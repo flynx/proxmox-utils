@@ -299,7 +299,8 @@ make nextcloud
 Nextcloud will get mapped to subdomain `$NEXTCLOUD_SUBDOMAIN` of 
 `$NEXTCLOUD_DOMAIN` (defaulting to `$DOMAIN`, if not defined).
 
-For basic configuration see: ./config.global and ./config.global.example
+For basic configuration edit the generated: [config.global](./config.global) 
+and for defaults: [config.global.example](./config.global.example).
 
 For deeper management use the [TKL](https://www.turnkeylinux.org/) consoles 
 (via https://nextcloud.srv, on the LAN network) and `ssh`, for more details 
