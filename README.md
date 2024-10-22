@@ -44,7 +44,7 @@ Fun.
 
 - _Separate concerns_  
   Preferably one service/role per CT
-- _Keep things as light as possible_ 
+- _Keep things as light as possible_  
   This for the most part rules out Docker as a nested virtualization
   layer under Proxmox, and preferring light distributions like Alpine
   Linux
