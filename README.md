@@ -49,8 +49,9 @@ Fun.
   layer under Proxmox, and preferring light distributions like Alpine
   Linux
 - _Pragmatic simplicity_  
-  This goal yields some compromises to previous goals, for example [TKL]()
-  is used as a base for [Nextcloud]() effectively simplifying the setup 
+  This goal yields some compromises to previous goals, for example 
+  [TKL](https://www.turnkeylinux.org/) is used as a base for 
+  [Nextcloud](https://nextcloud.com/) effectively simplifying the setup 
   and administration of all the related components at the cost of a 
   heavier CT, transparently integrating multiple related services
 
@@ -279,7 +280,12 @@ Includes:
 make syncthing
 ```
 
-XXX
+Syncthing administration interface is accessible via https://syncthing.adm/ 
+on the ADMIN network, it is recommended to set an admin password on 
+the web interface as soon as possible.
+
+No additional routing or network configuration is required, Syncthing is
+smart enough to handle its own connections itself.
 
 For more info see: https://syncthing.net/
 
@@ -290,9 +296,16 @@ For more info see: https://syncthing.net/
 make nextcloud
 ```
 
-XXX
+Nextcloud will get mapped to subdomain `$NEXTCLOUD_SUBDOMAIN` of 
+`$NEXTCLOUD_DOMAIN` (defaulting to `$DOMAIN`, if not defined).
 
-For more info see: https://nextcloud.com/
+For basic configuration see: ./config.global and ./config.global.example
+
+For deeper management use the [TKL](https://www.turnkeylinux.org/) consoles 
+(via https://nextcloud.srv, on the LAN network) and `ssh`, for more details 
+see: https://www.turnkeylinux.org/nextcloud
+
+For more info on Nextcloud see: https://nextcloud.com/
 
 
 ### Gitea
@@ -301,10 +314,12 @@ For more info see: https://nextcloud.com/
 make gitea
 ```
 
-XXX
+Gitea is mapped to the subdomain `$GITEA_SUBDOMAIN` of `$GITEA_DOMAIN` 
+or `$DOMAIN` if the former is not defined.
 
+For basic configuration see: ./config.global and ./config.global.example
 
-For more info see: https://about.gitea.com/
+For more info see: https://gitea.com/
 
 
 ### Custom services
