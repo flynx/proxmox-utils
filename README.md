@@ -272,7 +272,7 @@ XXX traefik rules
 
 
 
-
+<!--
 ### Manual setup
 
 
@@ -403,6 +403,7 @@ sudo make dev
 XXX test conections
 XXX change proxmox ip/network
 XXX firewall
+-->
 
 
 ## Extending
