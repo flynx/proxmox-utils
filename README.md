@@ -4,8 +4,16 @@ A set of scripts for automating setup and tasks in proxmox.
 
 ## TODO
 - CT updates
+  Right now the simplest way to update the infrastructure CT's if the 
+  sources changed is to simply rebuild them -- add rebuild command.
+    - backup
+    - build (new reserve)
+    - destroy
+    - clone
+    - cleanup
 - backup/restore
-- mail
+- config manager -- save/use/..
+- mail server
 - which is better?
   - Makefile (a-la ./wireguard/templates/root/Makefile)
   - shell (a-la ./shadow/templates/root/update-shadowsocks.sh)
