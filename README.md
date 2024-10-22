@@ -100,7 +100,7 @@ The ADMIN network is connected to the admin port.
 
 Both networks are provided DNS and DHCP services by the `ns` CT.
 
-Services on both networks are connected to the outside world (WAN) via 
+Services on either network are connected to the outside world (WAN) via 
 a NAT router implemented by the `gate` CT (`iptables`).
 
 The `gate` CT also implements a reverse proxy ([`traefik`](https://traefik.io/traefik/)), 
@@ -116,7 +116,7 @@ The `gate` and `ns` CT's are only accessible for administration from the
 host (i.e. via `lxc-attach ..`).
 
 Three ways of access to the ADMIN network are provided:
-- `wireguard` VPN (CT) via `gate` reverse proxy,
+- [`wireguard`](https://www.wireguard.com/) VPN (CT) via `gate` reverse proxy,
 - `ssh` service (CT) via the `gate` reverse proxy,
 - `ssh` service (CT) via the direct `$WAN_SSH_IP` (fail-safe).
 
@@ -164,7 +164,9 @@ _It is recommended to review the script/code before starting._
 This will:
 - Install basic dependencies,
 - Clone this repo,
-- Run `make bootstrap` on the repo.
+- Run `make bootstrap` on the repo:
+  - bootstrap configure the network (2 out of 3 stages)
+  - build and infrastructure start CT's (`gate`, `ns`, `ssh`, and `wireguard`)
 
 At this point WAN interface exposes two IPs:
 - Main server (config: `$DFL_WAN_IP` / `$WAN_IP`)
@@ -173,8 +175,11 @@ At this point WAN interface exposes two IPs:
 - Fail-safe ssh (config: `$DFL_WAN_SSH_IP` / `$WAN_SSH_IP`)
   - ssh:22
 
-The Proxmox administrative interface is available behind the Wireguard 
-proxy or on the ADMIN port, both on https://10.0.0.254:8006.
+The Proxmox administrative interface is available behind the 
+[Wireguard](https://www.wireguard.com/) proxy or on the ADMIN port, both 
+on https://10.0.0.254:8006.
+
+Additional administrative tasks can be performed now if needed.
 
 To finalize the setup run:
 ```shell
@@ -248,15 +253,24 @@ bridges or interfaces defined.
 
 ## Services
 
-XXX
-
+Install all user services:
 ```shell
 make all
 ```
 
+Includes:
+- [`syncthing`](#syncthing)
+- [`nextcloud`](#nextcloud)
+
+
+Install development services:
 ```shell
 make dev
 ```
+
+Includes:
+- [`gitea`](#gitea)
+
 
 
 ### Syncthing
@@ -267,6 +281,8 @@ make syncthing
 
 XXX
 
+For more info see: https://syncthing.net/
+
 
 ### Nextcloud
 
@@ -275,6 +291,8 @@ make nextcloud
 ```
 
 XXX
+
+For more info see: https://nextcloud.com/
 
 
 ### Gitea
@@ -285,6 +303,8 @@ make gitea
 
 XXX
 
+
+For more info see: https://about.gitea.com/
 
 
 ### Custom services
