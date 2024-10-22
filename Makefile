@@ -62,6 +62,7 @@ FORCE:
 
 %: config %/make.sh FORCE
 	$*/make.sh
+	@echo
 
 
 %.config: %/config.example
