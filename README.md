@@ -114,7 +114,7 @@ Three ways of access to the ADMIN network are provided:
 
 
 
-## Setup
+## Getting started
 
 ### Prerequisites
 
@@ -137,7 +137,7 @@ This setup will use three IP addresses:
 
 
 
-### Semi-automated setup
+### Setup
 
 Open a terminal on the host, either `ssh` (recommended) or via the UI.
 
@@ -238,7 +238,7 @@ bridges or interfaces defined.
 
 
 
-#### Setup additional services
+## Services
 
 XXX
 
@@ -251,21 +251,35 @@ make dev
 ```
 
 
-Or individually:
-```shell
-make nextcloud
-```
+### Syncthing
 
 ```shell
 make syncthing
 ```
 
+XXX
+
+
+### Nextcloud
+
+```shell
+make nextcloud
+```
+
+XXX
+
+
+### Gitea
+
 ```shell
 make gitea
 ```
 
+XXX
 
-#### Setup and configure custom services
+
+
+### Custom services
 
 XXX traefik rules
 
