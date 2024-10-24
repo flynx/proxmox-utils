@@ -12,6 +12,8 @@ CT_DIR=${CT_DIR:=/etc/pve/lxc/}
 
 EDITOR=${EDITOR:-nano}
 
+LAST_RUN_CONFIG=config.last-run
+
 
 
 #----------------------------------------------------------------------
@@ -406,9 +408,9 @@ readConfig(){
 		[ -e ./config ] \
 			&& source ./config
 		# XXX is this the right priority for this???
-		[ -e ./config.last-run ] \
+		[ -e ./$LAST_RUN_CONFIG ] \
 			&& [ -z $CLEAN_RUN ] \
-			&& source ./config.last-run
+			&& source ./$LAST_RUN_CONFIG
 		[ -e "$CONFIG" ] \
 			&& source $CONFIG
 		#eval "${__ENV[@]}"
@@ -454,14 +456,16 @@ saveConfig(){
 
 
 saveLastRunConfig(){
-	local cfg=config.last-run
-	echo "# Saving config to: config.last-run"
+	local cfg=$LAST_RUN_CONFIG
+	local ct_cfg=$ID-$CTHOSTNAME.cfg
+	echo "# Saving config to: $cfg and $ct_cfg"
 	{
 		echo "#"
 		echo "# This file is auto-generated, any changes here will be overwritten." 
 		echo "#"
 	} > "$cfg"
 	saveConfig -d -a "$cfg" ${XREAD_VARS[@]}
+	cp "$cfg" "$ct_cfg"
 }
 
 
