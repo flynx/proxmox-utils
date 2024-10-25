@@ -42,14 +42,18 @@ DFL_WAN_GATE=192.168.1.252
 DFL_WAN_SSH_IP=192.168.1.102/24
 
 
-# port configuration...
+# Port configuration...
 #
-# Administration port
+# If the device has multiple ports it is recommended to select the WAN 
+# and ADMIN on the opposite ends as to minimize the chance of erronius 
+# connections.
+#
+# Administration port (ADMIN)
 # This is mainly used for setup and for sirect access to the internal 
 # ADMIN network.
 DFL_ADMIN_PORT=enp2s0
 
-# General connection port
+# General connection port (WAN)
 # This is used to communicate with the services installed.
 DFL_WAN_PORT=enp5s0
 
