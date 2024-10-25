@@ -42,6 +42,18 @@ DFL_WAN_GATE=192.168.1.252
 DFL_WAN_SSH_IP=192.168.1.102/24
 
 
+# port configuration...
+#
+# Administration port
+# This is mainly used for setup and for sirect access to the internal 
+# ADMIN network.
+DFL_ADMIN_PORT=enp2s0
+
+# General connection port
+# This is used to communicate with the services installed.
+DFL_WAN_PORT=enp5s0
+
+
 # Web app/service domain configuration
 #
 # Here two optional variables are provided per service:
