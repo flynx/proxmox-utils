@@ -457,15 +457,20 @@ saveConfig(){
 
 saveLastRunConfig(){
 	local cfg=$LAST_RUN_CONFIG
-	local ct_cfg=$ID-$CTHOSTNAME.cfg
-	echo "# Saving config to: $cfg and $ct_cfg"
+	local ct_cfg
+	if ! [ -z $ID ] && ! [ -z $CTHOSTNAME ] ; then
+		local ct_cfg=$ID-$CTHOSTNAME.cfg
+	fi
+	echo "# Saving config to: $cfg ${ct_cfg:+and $ct_cfg}"
 	{
 		echo "#"
 		echo "# This file is auto-generated, any changes here will be overwritten." 
 		echo "#"
 	} > "$cfg"
 	saveConfig -d -a "$cfg" ${XREAD_VARS[@]}
-	cp "$cfg" "$ct_cfg"
+	if ! [ -z ${ct_cfg} ] ; then
+		cp "$cfg" "$ct_cfg"
+	fi
 }
 
 
