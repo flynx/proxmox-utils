@@ -27,21 +27,6 @@ DFL_DOMAIN=example.com
 DFL_EMAIL=user@example.com
 
 
-# Network configuration...
-#
-# NOTE: it is simpler to statically assign these than to configure DHCP
-# 	plus port forewarding to the dynamically assigned IP.
-# NOTE: if installing on a different network than the target, these can 
-# 	be changed for target deployment in:
-# 	- gate CT's /etc/network/interfaces (NOT in the Proxmox UI)
-# 	- ssh CT's network configuration (Proxmox UI)
-DFL_WAN_IP=192.168.1.101/24
-DFL_WAN_GATE=192.168.1.252
-
-# IP used for fail-safe conection to the ADMIN network
-DFL_WAN_SSH_IP=192.168.1.102/24
-
-
 # Port configuration...
 #
 # If the device has multiple ports it is recommended to select the WAN 
@@ -56,6 +41,21 @@ DFL_ADMIN_PORT=enp2s0
 # General connection port (WAN)
 # This is used to communicate with the services installed.
 DFL_WAN_PORT=enp5s0
+
+
+# Network configuration...
+#
+# NOTE: it is simpler to statically assign these than to configure DHCP
+# 	plus port forewarding to the dynamically assigned IP.
+# NOTE: if installing on a different network than the target, these can 
+# 	be changed for target deployment in:
+# 	- gate CT's /etc/network/interfaces (NOT in the Proxmox UI)
+# 	- ssh CT's network configuration (Proxmox UI)
+DFL_WAN_IP=192.168.1.101/24
+DFL_WAN_GATE=192.168.1.252
+
+# IP used for fail-safe conection to the ADMIN network
+DFL_WAN_SSH_IP=192.168.1.102/24
 
 
 # Web app/service domain configuration
