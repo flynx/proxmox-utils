@@ -92,9 +92,9 @@ Fun.
 ```
 
 The system defines two networks:
-- LAN  
+- _LAN_  
   Hosts all the service CT's (`*.srv`)
-- ADMIN  
+- _ADMIN_  
   Used for administration (`*.adm`)
 
 The ADMIN network is connected to the admin port.
