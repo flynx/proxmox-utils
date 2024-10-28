@@ -390,6 +390,28 @@ reviewApplyChanges(){
 
 #----------------------------------------------------------------------
 
+#
+#	readCTConfig
+#
+# XXX list or load a specific CT config...
+readCTConfig(){
+	if [ -z $ID ] && ! [ -z $CTHOSTNAME ] ; then
+		# XXX select by id...
+		true
+	elif ! [ -z $ID ] && [ -z $CTHOSTNAME ] ; then
+		# XXX select by hostname...
+		true
+	else
+		# XXX list all...
+		return
+	fi
+	local ct_cfg=$ID-$CTHOSTNAME.cfg
+	if [ -e $ct_cfg ] ; then
+		source "$ct_cfg"
+	fi
+}
+
+
 # 
 # 	readConfig
 #
