@@ -132,6 +132,11 @@ Install Proxmox and connect it to your device/network.
 Proxmox will need to have access to the internet to download assets and 
 updates.
 
+Note that Proxmox repositories must be configured for `apt` to work 
+correctly, i.e. either _subsctiprion_ or _no-subscribtion_ repos must be 
+active and working, for more info rfer to: 
+https://pve.proxmox.com/wiki/Package_Repositories
+
 
 #### Notes
 
