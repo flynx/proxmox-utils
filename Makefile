@@ -71,7 +71,7 @@ FORCE:
 config.global: config.global.example
 	@ [ ! -e "$@" ] \
 		&& cp -p "$<" "$@" \
-		&& touch "$<"
+		&& touch "$<" \
 		&& $(EDITOR) "$@" \
 	|| true
 
