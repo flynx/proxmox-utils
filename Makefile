@@ -70,7 +70,8 @@ FORCE:
 
 config.global: config.global.example
 	@ [ ! -e "$@" ] \
-		&& cp "$<" "$@" \
+		&& cp -p "$<" "$@" \
+		&& touch "$<"
 		&& $(EDITOR) "$@" \
 	|| true
 
