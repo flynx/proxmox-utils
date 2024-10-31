@@ -70,6 +70,7 @@ FORCE:
 
 config.global: config.global.example
 	@ [ ! -e "$@" ] \
+			|| cmp --silent "$<" "$@" \
 		&& cp -p "$<" "$@" \
 		&& touch "$<" \
 		&& $(EDITOR) "$@" \
