@@ -162,7 +162,7 @@ export EDITOR=nano
 
 Download the [`bootstrap.sh`](./scripts/bootstrap.sh) script and execute it:
 ```shell
-curl 'https://raw.githubusercontent.com/flynx/proxmox-utils/refs/heads/master/scripts/bootstrap.sh' | sudo bash
+curl -O 'https://raw.githubusercontent.com/flynx/proxmox-utils/refs/heads/master/scripts/bootstrap.sh' && sudo bash bootstrap.sh
 ```
 
 _It is recommended to review the script/code before starting._

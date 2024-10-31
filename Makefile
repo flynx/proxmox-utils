@@ -132,7 +132,13 @@ dev: $(DEV_CTs)
 clean:
 	-rm -rf \
 		*/staging \
-		*/traefik
+		*/traefik \
+		*/config.last-run
+
+.PHONY: clean-all
+clean-all: clean
+	-rm -rf \
+		config.global
 
 
 
