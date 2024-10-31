@@ -68,6 +68,8 @@ FORCE:
 %.config: %/config.example
 
 
+# NOTE: this will edit the config either if it does not exist or if it 
+# 		is the same as the example...
 config.global: config.global.example
 	@ [ ! -e "$@" ] \
 			|| cmp --silent "$<" "$@" \
