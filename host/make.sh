@@ -158,6 +158,9 @@ if xreadYes "# Create bridges?" BRIDGES ; then
 		fi
 	fi
 
+	# interfaces.orig: backup...
+	[ -e "${INTERFACES}.orig" ] \
+		|| @ cp "${INTERFACES}"{,.orig}
 	@ cp "$INTERFACES"{,.bak}
 	@ cp "$INTERFACES"{,.new}
 
