@@ -70,7 +70,7 @@ FORCE:
 
 config.global: config.global.example
 	@ [ ! -e "$@" ] \
-		&& cat "$<" > "$@" \
+		&& cp "$<" "$@" \
 		&& $(EDITOR) "$@" \
 	|| true
 
@@ -139,6 +139,7 @@ clean:
 clean-all: clean
 	-rm -rf \
 		config.global
+
 
 
 
