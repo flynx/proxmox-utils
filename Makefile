@@ -139,10 +139,12 @@ clean:
 		*/traefik \
 		*/config.last-run
 
+
 .PHONY: clean-interfaces
 clean-interfaces: /etc/network/interfaces.orig
 	# NOTE: this may need 'ifreload -a' to take effect...
 	cp "$<" "$(subst .orig,,$<)"
+
 
 .PHONY: clean-all
 clean-all: clean
