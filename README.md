@@ -242,108 +242,6 @@ _WARNING: NEVER store any ssh keys on the `ssh` CT, use `ssh-agent` instead!_
 
 
 
-#### Recovery
-
-- Configuration or bridge failure while bootstrapping
-
-  Remove all the CT's that were created by make:
-  ```shell
-  pct destroy ID
-  ```
-
-  Cleanup the interfaces:
-  ```shell
-  make clean-interfaces
-  ```
-
-  Revise configuration if `./config.global`
-
-  Cleanup CT cached configuration:
-  ```shell
-  make clean
-  ```
-
-  Rebuild the bridges:
-  ```shell
-  make host-bootstrap
-  ```
-  And select (type "y") "Create bridges" while rejecting all other sections.
-
-  Or, do a full rebuild selecting/rejecting the appropriate sections:
-  ```shell
-  make bootstrap
-  ```
-
-
-- Failure while creating the `gate` CT
-
-  Check if the bridges are correct, and check if the host as internet access.
-
-  Remove the `gate` CT (replacing 110 if you created it with a different ID):
-  ```shell
-  pct destroy 110
-  ```
-
-  Build the bootstrapped gate:
-  ```shell
-  make gate-bootstrap
-  ```
-
-  Check if gate is accesable and if it has internet access.
-
-  Then create the base CT's:
-  ```shell
-  make ns ssh wireguard
-  ```
-
-  finally cleanup:
-  ```shell
-  make bootstrap-clean
-  ```
-
-  now the setup can be finalized (see: [Setup](#setup))
-
-
-
-- Failure while creating other CT's
-
-  Check if gate is accesable and if it has internet access, if it is not
-  then this will fail, check or rebuild the gate.
-
-  Simply remove the CT
-  ```shell
-  pct destroy ID
-  ```
-
-  Then rebuild it:
-  ```shell
-  make CT_NAME
-  ```
-
-
-
-- Full clean rebuild
-
-  Remove any of the base CT's:
-  ```shell
-  pct destroy ID
-  ```
-
-  Restore bridge configuration:
-  ```shell
-  make clean-interfaces
-  ```
-
-  Cleanup the configuration data:
-  ```shell
-  make clean-all
-  ```
-
-  Follow the instructions in [Setup](#setup)
-
-
-
-
 #### Configuration
 
 XXX
@@ -596,3 +494,107 @@ proxmox-utils/
 +- config.global
 +- config.global.example
 ```
+
+
+
+## Recovery and Troubleshooting
+
+- Configuration or bridge failure while bootstrapping
+
+  Remove all the CT's that were created by make:
+  ```shell
+  pct destroy ID
+  ```
+
+  Cleanup the interfaces:
+  ```shell
+  make clean-interfaces
+  ```
+
+  Revise configuration if `./config.global`
+
+  Cleanup CT cached configuration:
+  ```shell
+  make clean
+  ```
+
+  Rebuild the bridges:
+  ```shell
+  make host-bootstrap
+  ```
+  And select (type "y") "Create bridges" while rejecting all other sections.
+
+  Or, do a full rebuild selecting/rejecting the appropriate sections:
+  ```shell
+  make bootstrap
+  ```
+
+
+- Failure while creating the `gate` CT
+
+  Check if the bridges are correct, and check if the host as internet access.
+
+  Remove the `gate` CT (replacing 110 if you created it with a different ID):
+  ```shell
+  pct destroy 110
+  ```
+
+  Build the bootstrapped gate:
+  ```shell
+  make gate-bootstrap
+  ```
+
+  Check if gate is accesable and if it has internet access.
+
+  Then create the base CT's:
+  ```shell
+  make ns ssh wireguard
+  ```
+
+  finally cleanup:
+  ```shell
+  make bootstrap-clean
+  ```
+
+  now the setup can be finalized (see: [Setup](#setup))
+
+
+
+- Failure while creating other CT's
+
+  Check if gate is accesable and if it has internet access, if it is not
+  then this will fail, check or rebuild the gate.
+
+  Simply remove the CT
+  ```shell
+  pct destroy ID
+  ```
+
+  Then rebuild it:
+  ```shell
+  make CT_NAME
+  ```
+
+
+
+- Full clean rebuild
+
+  Remove any of the base CT's:
+  ```shell
+  pct destroy ID
+  ```
+
+  Restore bridge configuration:
+  ```shell
+  make clean-interfaces
+  ```
+
+  Cleanup the configuration data:
+  ```shell
+  make clean-all
+  ```
+
+  Follow the instructions in [Setup](#setup)
+
+
+
