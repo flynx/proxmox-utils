@@ -17,6 +17,9 @@ readConfig
 
 #----------------------------------------------------------------------
 
+#SYNCTHING_CONFIG=/var/lib/syncthing/.config/syncthing/config.xml
+SYNCTHING_CONFIG=/var/lib/syncthing/.local/state/syncthing/config.xml
+
 DFL_ID=${DFL_ID:=1010}
 DFL_CTHOSTNAME=${DFL_CTHOSTNAME:=syncthing}
 
@@ -49,6 +52,9 @@ OPTS_STAGE_2="\
 "
 
 
+
+
+
 #----------------------------------------------------------------------
 
 echo "# Building config..."
@@ -76,7 +82,7 @@ sleep ${TIMEOUT:=5}
 	sed \
 		-e 's/tls="false"/tls="true"/g' \
 		-e 's/127\.0\.0\.1:8384/0.0.0.0:443/g' \
-		-i /var/lib/syncthing/.config/syncthing/config.xml
+		-i "$SYNCTHING_CONFIG"
 
 echo "# Setup: firewall..."
 @ cp --backup -i fw/ID.fw /etc/pve/firewall/$ID.fw
