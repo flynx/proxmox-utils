@@ -11,6 +11,7 @@ A set of scripts for automating setup and tasks in proxmox.
     - destroy
     - clone
     - cleanup
+  need to automate this...
 - backup/restore
 - config manager -- save/use/..
 - mail server
