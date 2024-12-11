@@ -130,6 +130,18 @@ pctPushAssets $ID
 # Colabora...
 if false ; then
 	echo "# Colabora office..."
+	# apache2...
+	@ lxc-attach $ID -- a2enmod proxy
+	@ lxc-attach $ID -- a2enmod proxy_http
+	@ lxc-attach $ID -- a2enmod proxy_connect
+	@ lxc-attach $ID -- a2enmod proxy_wstunnel
+	# XXX TEST... 
+	@ lxc-attach $ID -- bash -c "\
+		sed -i \
+			'/<VirtualHost \*:443>/,/<\/VirtualHost>/ { 
+				/<\/VirtualHost>/ iInclude /etc/apache2/conf-available/coolwsd.conf
+			}' /etc/apache2/sites-available/nextcloud.conf"
+	
 	# coolwsd...
 	# see:
 	# 	https://sdk.collaboraonline.com/docs/installation/Configuration.html
@@ -156,8 +168,8 @@ if false ; then
 	@ lxc-attach $ID -- turnkey-occ app:install richdocuments
 	@ lxc-attach $ID -- turnkey-occ config:app:set richdocuments disable_certificate_verification yes
 	# XXX what variable should we use???
-	@ lxc-attach $ID -- turnkey-occ config:app:set richdocuments public_wopi_url "https://${NEXTCLOUD_SUBDOMAIN}${DOMAIN}"
-	@ lxc-attach $ID -- turnkey-occ config:app:set richdocuments wopi_url "https://${NEXTCLOUD_SUBDOMAIN}${DOMAIN}"
+	@ lxc-attach $ID -- turnkey-occ config:app:set richdocuments public_wopi_url "https://${APP_DOMAIN}"
+	@ lxc-attach $ID -- turnkey-occ config:app:set richdocuments wopi_url "https://${APP_DOMAIN}"
 	# XXX do we need this???
 	@ lxc-attach $ID -- turnkey-occ config:app:set richdocuments types prevent_group_restriction 
 	@ lxc-attach $ID -- turnkey-occ config:app:set richdocuments enabled yes
