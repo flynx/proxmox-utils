@@ -127,6 +127,42 @@ echo "# Copying assets..."
 pctPushAssets $ID
 # XXX need to push proxy config to gate...
 
+# Colabora...
+if false ; then
+	echo "# Colabora office..."
+	# coolwsd...
+	# see:
+	# 	https://sdk.collaboraonline.com/docs/installation/Configuration.html
+	@ lxc-attach $ID -- bash -c "\
+		cd /usr/share/keyrings \
+			&& wget https://collaboraoffice.com/downloads/gpg/collaboraonline-release-keyring.gpg"
+	@ lxc-attach $ID -- bash -c "\
+		apt update \
+			&& apt install coolwsd code-brand"
+	# XXX should these be set in here or as args in the coolwsd.service ???
+	# /etc/coolwsd/coolwsd.xml
+	# 	ssl>enable -> false
+	@ lxc-attach $ID -- bash -c "\
+		sed -i \
+			'/<ssl /,+5{ s/\(<enable [^>]*>\)true\(</enable>\)/\1false\2/ }' \
+			/etc/coolwsd/coolwsd.xml"
+	# 	ssl>termination -> true
+	@ lxc-attach $ID -- bash -c "\
+		sed -i \
+			'/<ssl /,+5{ s/\(<termination [^>]*>\)false\(</termination>\)/\1true\2/ }' \
+			/etc/coolwsd/coolwsd.xml"
+	@ lxc-attach $ID -- systemctl restart coolswd
+	# nextcloud...
+	@ lxc-attach $ID -- turnkey-occ app:install richdocuments
+	@ lxc-attach $ID -- turnkey-occ config:app:set richdocuments disable_certificate_verification yes
+	# XXX what variable should we use???
+	@ lxc-attach $ID -- turnkey-occ config:app:set richdocuments public_wopi_url "https://${NEXTCLOUD_SUBDOMAIN}${DOMAIN}"
+	@ lxc-attach $ID -- turnkey-occ config:app:set richdocuments wopi_url "https://${NEXTCLOUD_SUBDOMAIN}${DOMAIN}"
+	# XXX do we need this???
+	@ lxc-attach $ID -- turnkey-occ config:app:set richdocuments types prevent_group_restriction 
+	@ lxc-attach $ID -- turnkey-occ config:app:set richdocuments enabled yes
+fi
+
 echo "# Disabling fail2ban..."
 # NOTE: we do not need this as we'll be running from behind a reverse proxy...
 @ lxc-attach $ID systemctl stop fail2ban
