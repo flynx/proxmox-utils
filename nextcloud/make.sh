@@ -172,10 +172,9 @@ if ! [ -z $COLLABORA_OFFICE ] ; then
 	# nextcloud...
 	@ lxc-attach $ID -- turnkey-occ app:install richdocuments
 	@ lxc-attach $ID -- turnkey-occ config:app:set richdocuments disable_certificate_verification yes
-	# XXX what variable should we use???
 	@ lxc-attach $ID -- turnkey-occ config:app:set richdocuments public_wopi_url "https://${APP_DOMAIN}"
 	@ lxc-attach $ID -- turnkey-occ config:app:set richdocuments wopi_url "https://${APP_DOMAIN}"
-	# XXX do we need this???
+	# XXX do we need to set this differently???
 	@ lxc-attach $ID -- turnkey-occ config:app:set richdocuments types prevent_group_restriction 
 	@ lxc-attach $ID -- turnkey-occ config:app:set richdocuments enabled yes
 fi
@@ -203,4 +202,4 @@ echo "# Done."
 
 
 #----------------------------------------------------------------------
-# vim:set ts=4 sw=4 :
+# vim:set ts=4 sw=4 nowrap :
