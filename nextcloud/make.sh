@@ -19,6 +19,7 @@ readConfig
 
 webAppConfig Nextcloud
 
+
 DFL_ID=${DFL_ID:=1000}
 DFL_CTHOSTNAME=${DFL_CTHOSTNAME:=nextcloud}
 
@@ -40,6 +41,9 @@ LAN_IP=SKIP
 LAN_GATE=SKIP
 
 REBOOT=${REBOOT:=1}
+
+# XXX should we ask??
+COLLABORA_OFFICE=${COLLABORA_OFFICE:=1}
 
 readVars
 
@@ -128,8 +132,8 @@ pctPushAssets $ID
 # XXX need to push proxy config to gate...
 
 # Colabora...
-if false ; then
-	echo "# Colabora office..."
+if ! [ -z $COLLABORA_OFFICE ] ; then
+	echo "# Collabora office..."
 	# apache2...
 	@ lxc-attach $ID -- a2enmod proxy
 	@ lxc-attach $ID -- a2enmod proxy_http
