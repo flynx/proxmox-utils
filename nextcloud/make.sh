@@ -134,19 +134,6 @@ pctPushAssets $ID
 # Colabora...
 if ! [ -z $COLLABORA_OFFICE ] ; then
 	echo "# Collabora office..."
-	# apache2...
-	@ lxc-attach $ID -- a2enmod proxy
-	@ lxc-attach $ID -- a2enmod proxy_http
-	@ lxc-attach $ID -- a2enmod proxy_connect
-	@ lxc-attach $ID -- a2enmod proxy_wstunnel
-	# XXX TEST... 
-	@ lxc-attach $ID -- bash -c "\
-		sed -i \
-			-e '/<VirtualHost \*:443>/,/<\/VirtualHost>/ { 
-					/<\/VirtualHost>/ i\    Include /etc/apache2/conf-available/coolwsd.conf
-				}' \
-			/etc/apache2/sites-available/nextcloud.conf"
-	
 	# coolwsd...
 	# see:
 	# 	https://sdk.collaboraonline.com/docs/installation/Configuration.html
@@ -169,6 +156,21 @@ if ! [ -z $COLLABORA_OFFICE ] ; then
 			'/<ssl /,+5{ s/\(<termination [^>]*>\)false\(</termination>\)/\1true\2/ }' \
 			/etc/coolwsd/coolwsd.xml"
 	@ lxc-attach $ID -- systemctl restart coolswd
+
+	# apache2...
+	@ lxc-attach $ID -- a2enmod proxy
+	@ lxc-attach $ID -- a2enmod proxy_http
+	@ lxc-attach $ID -- a2enmod proxy_connect
+	@ lxc-attach $ID -- a2enmod proxy_wstunnel
+	# XXX TEST... 
+	@ lxc-attach $ID -- bash -c "\
+		sed -i \
+			-e '/<VirtualHost \*:443>/,/<\/VirtualHost>/ { 
+					/<\/VirtualHost>/ i\    Include /etc/apache2/conf-available/coolwsd.conf
+				}' \
+			/etc/apache2/sites-available/nextcloud.conf"
+	@ lxc-attach $ID -- systemctl restart apache2
+	
 	# nextcloud...
 	@ lxc-attach $ID -- turnkey-occ app:install richdocuments
 	@ lxc-attach $ID -- turnkey-occ config:app:set richdocuments disable_certificate_verification yes
@@ -181,6 +183,9 @@ fi
 
 echo "# Disabling fail2ban..."
 # NOTE: we do not need this as we'll be running from behind a reverse proxy...
+# XXX revise...
+# 		...can we configure this for reverse proxy, or should it be on 
+# 		the reverse proxy???
 @ lxc-attach $ID systemctl stop fail2ban
 @ lxc-attach $ID systemctl disable fail2ban
 
