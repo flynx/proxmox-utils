@@ -138,9 +138,10 @@ if false ; then
 	# XXX TEST... 
 	@ lxc-attach $ID -- bash -c "\
 		sed -i \
-			'/<VirtualHost \*:443>/,/<\/VirtualHost>/ { 
-				/<\/VirtualHost>/ iInclude /etc/apache2/conf-available/coolwsd.conf
-			}' /etc/apache2/sites-available/nextcloud.conf"
+			-e '/<VirtualHost \*:443>/,/<\/VirtualHost>/ { 
+					/<\/VirtualHost>/ iInclude /etc/apache2/conf-available/coolwsd.conf
+				}' \
+			/etc/apache2/sites-available/nextcloud.conf"
 	
 	# coolwsd...
 	# see:
