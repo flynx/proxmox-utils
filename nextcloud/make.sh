@@ -44,7 +44,9 @@ REBOOT=${REBOOT:=1}
 
 # XXX should we ask??
 COLLABORA_OFFICE=${COLLABORA_OFFICE:=1}
-NEXTCLOUD_UPGRADE=${NEXTCLOUD_UPGRADE:=1}
+
+# XXX not yet figured out how to do this from CLI...
+#NEXTCLOUD_UPGRADE=${NEXTCLOUD_UPGRADE:=1}
 
 readVars
 
