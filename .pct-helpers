@@ -287,12 +287,10 @@ xreadpass(){
 	local PASS2
 	for attempt in 1 2 3 ; do
 		read -sep "${prefix}${msg}password (Enter to skip): " PASS1
-		echo
 		if [ -z $PASS1 ] ; then
 			return
 		fi
 		read -sep "${prefix}retype password: " PASS2
-		echo
 		if [[ $PASS1 != $PASS2 ]] ; then
 			echo "ERROR: passwords do not match." >&2
 			continue
