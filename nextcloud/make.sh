@@ -229,6 +229,7 @@ echo "# Traefik config..."
 traefikPushConfig
 
 showNotes
+echo "# NOTE: nextcloud may take a few minutes to load and initialize all components."
 echo "# Done."
 
 
