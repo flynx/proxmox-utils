@@ -494,8 +494,18 @@ saveLastRunConfig(){
 }
 
 
+# Set app variables...
 #
 #	webAppConfig NAME
+#
+#
+# This will generate:
+# 	<app>_DOMAIN
+# 	<app>_SUBDOMAIN
+# 	DFL_DOMAIN
+#
+# This also will unset (to explicitly ask user):
+# 	DOMAIN
 #
 webAppConfig(){
 	local name=${1^^}

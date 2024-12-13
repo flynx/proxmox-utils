@@ -16,6 +16,45 @@ readConfig
 
 
 #----------------------------------------------------------------------
+# backup/restore...
+
+# Backup...
+# see:
+# 	https://docs.nextcloud.com/server/latest/admin_manual/maintenance/backup.html	
+if [ $1 == 'backup' ] ; then
+	# XXX maintenance mode:
+	# 	turnkey-occ maintenance:mode --on	
+	# XXX files:
+	# 	rsync -Aavx nextcloud/ nextcloud-dirbkp_`date +"%Y%m%d"`/	
+	# XXX db:
+	# 	mysqldump --single-transaction \
+	# 		-h [server] -u [username] -p[password] [db_name] \
+	# 		> nextcloud-sqlbkp_`date +"%Y%m%d"`.bak	
+	# or:
+	#	mysqldump --single-transaction --default-character-set=utf8mb4 \
+	#		-h [server] -u [username] -p[password] [db_name] \
+	#		> nextcloud-sqlbkp_`date +"%Y%m%d"`.bak
+	# XXX maintenance mode:
+	# 	turnkey-occ maintenance:mode --off
+	exit
+
+# Restore backup...
+# see:
+# 	https://docs.nextcloud.com/server/latest/admin_manual/maintenance/restore.html
+elif [ $1 == 'restore' ] ; then
+	# XXX
+	exit
+	
+# Migrate...
+elif [ $1 == 'migrate' ] ; then
+	# XXX similar to make.sh backup && make.sh restore but copies data directly (rsync)...
+	# XXX
+	exit
+fi
+
+
+#----------------------------------------------------------------------
+# build...
 
 webAppConfig Nextcloud
 
