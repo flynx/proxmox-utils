@@ -120,12 +120,13 @@ done
 		/var/www/nextcloud/config/config.php"
 
 # set opcache.interned_strings_buffer...
-PHP_VERSION=$(lxc-attach $ID -- php --version \
-	| sed -ne 's/^PHP \([0-9]\+\.[0-9]\+\).*/\1/p')
+PHP_VERSION=$(\
+	lxc-attach $ID -- php --version \
+		| sed -ne 's/^PHP \([0-9]\+\.[0-9]\+\).*/\1/p')
 @ lxc-attach $ID -- bash -c "\
 	sed -i \
 		-e '/opcache.interned_strings_buffer/ a opcache.interned_strings_buffer=32' \
-		/etc/php/${PHP_VERSION}/cli/php.ini"
+		/etc/php/${PHP_VERSION}/apache2/php.ini"
 
 # remove /index.php from urls...
 # for more info see:
