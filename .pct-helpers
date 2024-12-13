@@ -1021,6 +1021,10 @@ showNotes(){
 		&& ( cat "${BUILD_NOTES}".tpl \
 			| expandPCTTemplate $@ \
 			| tee "${BUILD_NOTES}" )
+	[ -e ./POST_INSTALL.md ] \
+		&& echo "####"
+		&& echo ./POST_INSTALL.md \
+			| sed 's/^/## /'
 }
 
 #
