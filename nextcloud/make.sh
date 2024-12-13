@@ -153,11 +153,10 @@ pctPushAssets $ID
 # Colabora...
 if ! [ -z $COLLABORA_OFFICE ] ; then
 	echo "# Collabora office..."
-
-	# coolwsd...
-	# XXX still need to make this work through a reverse proxy...
 	# see:
 	# 	https://sdk.collaboraonline.com/docs/installation/Configuration.html
+
+	# coolwsd...
 	@ lxc-attach $ID -- bash -c "\
 		cd /usr/share/keyrings \
 			&& wget https://collaboraoffice.com/downloads/gpg/collaboraonline-release-keyring.gpg"
@@ -165,19 +164,17 @@ if ! [ -z $COLLABORA_OFFICE ] ; then
 		apt update \
 			&& apt install -y coolwsd code-brand"
 	# XXX should these be set in here or as args in the coolwsd.service ???
-	# /etc/coolwsd/coolwsd.xml
-	# XXX add groups...
-	# 	ssl>enable -> false
+	# ssl>enable -> false
 	@ lxc-attach $ID -- bash -c "\
 		sed -i \
 			'/<ssl /,+5{ s/\(<enable [^>]*>\)true\(<\/enable>\)/\1false\2/ }' \
 			/etc/coolwsd/coolwsd.xml"
-	# 	ssl>termination -> true
+	# ssl>termination -> true
 	@ lxc-attach $ID -- bash -c "\
 		sed -i \
 			'/<ssl /,+5{ s/\(<termination [^>]*>\)false\(<\/termination>\)/\1true\2/ }' \
 			/etc/coolwsd/coolwsd.xml"
-	# alias_groups...
+	# alias_groups -- allow access both from $APP_PASS and from LAN...
 	@ lxc-attach $ID -- bash -c "\
 		sed -i \
 			-e '/<alias_groups .* mode=\"first\"/ s/mode=\"first\"/mode=\"groups\"/ ' \
