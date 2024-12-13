@@ -118,6 +118,10 @@ done
 	sed -z -i \
 		-e \"s/\\(trusted_domains[^)]*\\)/\\1${ADDRS}/\" \
 		/var/www/nextcloud/config/config.php"
+@ lxc-attach $ID -- bash -c "\
+	sed -i \
+		-e '/^\$CONFIG =/ a\  '\''opcache.interned_strings_buffer'\'' => 32,' \
+		/var/www/nextcloud/config/config.php"
 
 # remove /index.php from urls...
 # for more info see:
@@ -128,14 +132,16 @@ done
 		/var/www/nextcloud/config/config.php"
 @ lxc-attach $ID -- turnkey-occ maintenance:update:htaccess
 
+
 echo "# Copying assets..."
 pctPushAssets $ID
 # XXX need to push proxy config to gate...
 
-if ! [ -z $NEXTCLOUD_UPGRADE ] ; then
-	echo "# Upgrade nextcloud..."
-	@ lxc-attach $ID -- turnkey-occ upgrade 
-fi
+#if ! [ -z $NEXTCLOUD_UPGRADE ] ; then
+#	echo "# Upgrade nextcloud..."
+#	# XXX ERR need to install update before...
+#	@ lxc-attach $ID -- turnkey-occ upgrade 
+#fi
 
 # Colabora...
 if ! [ -z $COLLABORA_OFFICE ] ; then
