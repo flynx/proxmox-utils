@@ -44,6 +44,7 @@ REBOOT=${REBOOT:=1}
 
 # XXX should we ask??
 COLLABORA_OFFICE=${COLLABORA_OFFICE:=1}
+NEXTCLOUD_UPGRADE=${NEXTCLOUD_UPGRADE:=1}
 
 readVars
 
@@ -131,6 +132,11 @@ echo "# Copying assets..."
 pctPushAssets $ID
 # XXX need to push proxy config to gate...
 
+if ! [ -z $NEXTCLOUD_UPGRADE ] ; then
+	echo "# Upgrade nextcloud..."
+	@ lxc-attach $ID -- turnkey-occ upgrade 
+fi
+
 # Colabora...
 if ! [ -z $COLLABORA_OFFICE ] ; then
 	echo "# Collabora office..."
@@ -142,26 +148,27 @@ if ! [ -z $COLLABORA_OFFICE ] ; then
 			&& wget https://collaboraoffice.com/downloads/gpg/collaboraonline-release-keyring.gpg"
 	@ lxc-attach $ID -- bash -c "\
 		apt update \
-			&& apt install coolwsd code-brand"
+			&& apt install -y coolwsd code-brand"
 	# XXX should these be set in here or as args in the coolwsd.service ???
 	# /etc/coolwsd/coolwsd.xml
 	# 	ssl>enable -> false
 	@ lxc-attach $ID -- bash -c "\
 		sed -i \
-			'/<ssl /,+5{ s/\(<enable [^>]*>\)true\(</enable>\)/\1false\2/ }' \
+			'/<ssl /,+5{ s/\(<enable [^>]*>\)true\(<\/enable>\)/\1false\2/ }' \
 			/etc/coolwsd/coolwsd.xml"
 	# 	ssl>termination -> true
 	@ lxc-attach $ID -- bash -c "\
 		sed -i \
-			'/<ssl /,+5{ s/\(<termination [^>]*>\)false\(</termination>\)/\1true\2/ }' \
+			'/<ssl /,+5{ s/\(<termination [^>]*>\)false\(<\/termination>\)/\1true\2/ }' \
 			/etc/coolwsd/coolwsd.xml"
-	@ lxc-attach $ID -- systemctl restart coolswd
+	@ lxc-attach $ID -- systemctl restart coolwsd
 
 	# apache2...
-	@ lxc-attach $ID -- a2enmod proxy
-	@ lxc-attach $ID -- a2enmod proxy_http
-	@ lxc-attach $ID -- a2enmod proxy_connect
-	@ lxc-attach $ID -- a2enmod proxy_wstunnel
+	@ lxc-attach $ID -- a2enmod \
+		proxy \
+		proxy_http \
+		proxy_connect \
+		proxy_wstunnel
 	# XXX TEST... 
 	@ lxc-attach $ID -- bash -c "\
 		sed -i \
@@ -173,12 +180,12 @@ if ! [ -z $COLLABORA_OFFICE ] ; then
 	
 	# nextcloud...
 	@ lxc-attach $ID -- turnkey-occ app:install richdocuments
-	@ lxc-attach $ID -- turnkey-occ config:app:set richdocuments disable_certificate_verification yes
-	@ lxc-attach $ID -- turnkey-occ config:app:set richdocuments public_wopi_url "https://${APP_DOMAIN}"
-	@ lxc-attach $ID -- turnkey-occ config:app:set richdocuments wopi_url "https://${APP_DOMAIN}"
+	@ lxc-attach $ID -- turnkey-occ config:app:set --value yes richdocuments disable_certificate_verification 
+	@ lxc-attach $ID -- turnkey-occ config:app:set --value "https://${APP_DOMAIN}" richdocuments public_wopi_url 
+	@ lxc-attach $ID -- turnkey-occ config:app:set --value "https://${APP_DOMAIN}" richdocuments wopi_url 
 	# XXX do we need to set this differently???
-	@ lxc-attach $ID -- turnkey-occ config:app:set richdocuments types prevent_group_restriction 
-	@ lxc-attach $ID -- turnkey-occ config:app:set richdocuments enabled yes
+	@ lxc-attach $ID -- turnkey-occ config:app:set --value prevent_group_restriction richdocuments types  
+	@ lxc-attach $ID -- turnkey-occ config:app:set --value yes richdocuments enabled 
 fi
 
 echo "# Disabling fail2ban..."
