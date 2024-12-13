@@ -146,7 +146,9 @@ pctPushAssets $ID
 # Colabora...
 if ! [ -z $COLLABORA_OFFICE ] ; then
 	echo "# Collabora office..."
+
 	# coolwsd...
+	# XXX still need to make this work through a reverse proxy...
 	# see:
 	# 	https://sdk.collaboraonline.com/docs/installation/Configuration.html
 	@ lxc-attach $ID -- bash -c "\
@@ -157,6 +159,7 @@ if ! [ -z $COLLABORA_OFFICE ] ; then
 			&& apt install -y coolwsd code-brand"
 	# XXX should these be set in here or as args in the coolwsd.service ???
 	# /etc/coolwsd/coolwsd.xml
+	# XXX add groups...
 	# 	ssl>enable -> false
 	@ lxc-attach $ID -- bash -c "\
 		sed -i \
@@ -166,6 +169,13 @@ if ! [ -z $COLLABORA_OFFICE ] ; then
 	@ lxc-attach $ID -- bash -c "\
 		sed -i \
 			'/<ssl /,+5{ s/\(<termination [^>]*>\)false\(<\/termination>\)/\1true\2/ }' \
+			/etc/coolwsd/coolwsd.xml"
+	# alias_groups...
+	@ lxc-attach $ID -- bash -c "\
+		sed -i \
+			-e '/<alias_groups .* mode=\"first\"/ s/mode=\"first\"/mode=\"groups\"/ ' \
+			-e '/<\/alias_groups>/ i\                <group><host allow=\"true\">https://${APP_DOMAIN}</host></group>' \
+			-e '/<\/alias_groups>/ i\                <group><host allow=\"true\">https://${CTHOSTNAME}.srv</host></group>' \
 			/etc/coolwsd/coolwsd.xml"
 	@ lxc-attach $ID -- systemctl restart coolwsd
 
