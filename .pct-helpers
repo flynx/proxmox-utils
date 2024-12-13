@@ -1022,7 +1022,7 @@ showNotes(){
 			| expandPCTTemplate $@ \
 			| tee "${BUILD_NOTES}" )
 	[ -e ./POST_INSTALL.md ] \
-		&& echo "####"
+		&& echo "####" \
 		&& echo ./POST_INSTALL.md \
 			| sed 's/^/## /'
 }
