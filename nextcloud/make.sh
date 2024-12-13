@@ -24,7 +24,7 @@ DFL_ID=${DFL_ID:=1000}
 DFL_CTHOSTNAME=${DFL_CTHOSTNAME:=nextcloud}
 
 DFL_CORES=${DFL_CORES:=2}
-DFL_RAM=${DFL_RAM:=2048}
+DFL_RAM=${DFL_RAM:=4096}
 DFL_SWAP=${DFL_SWAP:=${DFL_RAM}}
 DFL_DRIVE=${DFL_DRIVE:=40}
 
@@ -118,10 +118,14 @@ done
 	sed -z -i \
 		-e \"s/\\(trusted_domains[^)]*\\)/\\1${ADDRS}/\" \
 		/var/www/nextcloud/config/config.php"
+
+# set opcache.interned_strings_buffer...
+PHP_VERSION=$(lxc-attach $ID -- php --version \
+	| sed -ne 's/^PHP \([0-9]\+\.[0-9]\+\).*/\1/p')
 @ lxc-attach $ID -- bash -c "\
 	sed -i \
-		-e '/^\$CONFIG =/ a\  '\''opcache.interned_strings_buffer'\'' => 32,' \
-		/var/www/nextcloud/config/config.php"
+		-e '/opcache.interned_strings_buffer/ a opcache.interned_strings_buffer=32' \
+		/etc/php/${PHP_VERSION}/cli/php.ini"
 
 # remove /index.php from urls...
 # for more info see:
