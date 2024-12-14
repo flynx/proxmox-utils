@@ -38,6 +38,16 @@ function @ (){
 	return $?
 }
 
+function @@ (){
+	if [ -z $DRY_RUN ] ; then
+		! [ $QUIET ] \
+			&& echo -e "${ECHO_PREFIX}$@"
+		eval "$@"
+	else
+		echo -e $@
+	fi
+	return $?
+}
 
 
 #----------------------------------------------------------------------
