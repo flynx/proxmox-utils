@@ -38,6 +38,7 @@ function @ (){
 	return $?
 }
 
+# XXX should @@ and @ be the same -- use eval???
 function @@ (){
 	if [ -z $DRY_RUN ] ; then
 		! [ $QUIET ] \
