@@ -25,6 +25,8 @@ readConfig
 @ lxc-attach $FROM -- turnkey-occ maintenance:mode --on
 @ lxc-attach $TO -- turnkey-occ maintenance:mode --on
 
+# XXX should we sleep here for a minute or 6 as is recommended in the docs???
+
 # sql
 @ lxc-attach $TO -- mysql -e "DROP DATABASE nextcloud"
 @ lxc-attach $TO -- mysql -e "CREATE DATABASE nextcloud"

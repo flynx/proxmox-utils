@@ -1,8 +1,8 @@
 #!/usr/bin/bash
 #----------------------------------------------------------------------
 
-cd $(dirname $0)
-PATH=$PATH:$(dirname "$(pwd)")
+#cd $(dirname $0)
+#PATH=$PATH:$(dirname "$(pwd)")
 
 
 #----------------------------------------------------------------------
@@ -16,24 +16,45 @@ readConfig
 
 
 #----------------------------------------------------------------------
+# handle args...
+
+usage(){
+	echo "$0 ID [DIR]"
+}
+
+# XXX 
+
+
+
+#----------------------------------------------------------------------
 # 
 # see:
 # 	https://docs.nextcloud.com/server/latest/admin_manual/maintenance/backup.html	
 
-# XXX confirm vars...
-# XXX
+BACKUPDIR=${BACKUPDIR:=backup}
 
 DATE=$(date +%Y%m%d%H%M)
-DIR=${DATE}-${CTHOSTNAME}-${ID}
+
+xread "ID: " ID
+
+# XXX confirm??
+CTHOSTNAME=$(ct2hostname $ID)
+
+
+DIR=${BACKUPDIR}/${DATE}-${CTHOSTNAME}-${ID}
+
+echo "# BACKUP: $DIR"
 
 
 
 #----------------------------------------------------------------------
 
-mkdir "${DIR}"
+mkdir -p "${DIR}"
 cd "${DIR}"
 
 @ lxc-attach $ID -- turnkey-occ maintenance:mode --on
+
+# XXX should we sleep here for a minute or 6 as is recommended in the docs???
 
 # sql...
 # XXX db:

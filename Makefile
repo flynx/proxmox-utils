@@ -60,6 +60,11 @@ FORCE:
 	@true
 
 
+%-backup: config %/backup.sh FORCE
+	$*/make.sh
+	@echo
+
+
 %: config %/make.sh FORCE
 	$*/make.sh
 	@echo
