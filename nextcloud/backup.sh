@@ -49,8 +49,8 @@ echo "# BACKUP: $DIR"
 
 #----------------------------------------------------------------------
 
-mkdir -p "${DIR}"
-cd "${DIR}"
+@ mkdir -p "${DIR}"
+@ cd "${DIR}"
 
 @ lxc-attach $ID -- turnkey-occ maintenance:mode --on
 
@@ -70,9 +70,9 @@ cd "${DIR}"
 @ lxc-attach $ID -- mysqldump --single-transaction nextcloud > nextcloud.sql
 
 # files...
-pct mount $ID
-rsync -Aavx /var/lib/lxc/$ID/rootfs/var/www/nextcloud-data .
-pct unmount $ID
+@ pct mount $ID
+@ rsync -Aavx /var/lib/lxc/$ID/rootfs/var/www/nextcloud-data .
+@ pct unmount $ID
 
 @ lxc-attach $ID -- turnkey-occ maintenance:mode --off
 

@@ -34,13 +34,13 @@ readConfig
 	| lxc-attach $TO -- mysql nextcloud"
 
 # files...
-pct mount $FROM
-pct mount $TO
-rsync -Aavx \
+@ pct mount $FROM
+@ pct mount $TO
+@ rsync -Aavx \
 	/var/lib/lxc/$FROM/rootfs/var/www/nextcloud-data
 	/var/lib/lxc/$TO/rootfs/var/www/nextcloud-data
-pct unmount $FROM
-pct unmount $TO
+@ pct unmount $FROM
+@ pct unmount $TO
 
 @ lxc-attach $FROM -- turnkey-occ maintenance:mode --off
 @ lxc-attach $TO -- turnkey-occ maintenance:mode --off
