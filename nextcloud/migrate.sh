@@ -19,6 +19,12 @@ readConfig
 
 # XXX handle commandline args...
 
+usage(){
+	echo "$0 FROM TO"
+}
+
+
+
 
 #----------------------------------------------------------------------
 
