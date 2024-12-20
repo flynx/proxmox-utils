@@ -23,6 +23,18 @@ usage(){
 	echo "$0 FROM TO"
 }
 
+if [ $# != 2 ] ; then
+	echo "$(usage)"
+	echo "Not enough arguments."
+	exit 1
+fi
+
+FROM=$1
+TO=$2
+
+
+# XXX should we build TO if it's not there???
+
 
 
 
