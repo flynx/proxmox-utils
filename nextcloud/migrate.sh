@@ -23,6 +23,7 @@ usage(){
 	echo "$0 FROM TO"
 }
 
+# XXX should we check for >2 ???
 if [ $# != 2 ] ; then
 	echo "$(usage)"
 	echo "Not enough arguments."
