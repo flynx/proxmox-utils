@@ -25,7 +25,7 @@ usage(){
 
 # XXX should we check for >2 ???
 if [ $# != 2 ] ; then
-	echo "$(usage)"
+	usage
 	echo "Not enough arguments."
 	exit 1
 fi
