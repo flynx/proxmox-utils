@@ -16,20 +16,19 @@ readConfig
 
 
 #----------------------------------------------------------------------
-
-# XXX handle commandline args...
+# CLI...
 
 usage(){
 	echo "$0 FROM TO"
 }
 
-# XXX should we check for >2 ???
 if [ $# != 2 ] ; then
 	usage
 	echo "Not enough arguments."
 	exit 1
 fi
 
+# XXX should we get FROm from config???
 FROM=$1
 TO=$2
 
