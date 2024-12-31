@@ -11,6 +11,8 @@ A set of scripts for automating setup and tasks in proxmox.
     - destroy
     - clone
     - cleanup
+  one way to apptoach this is to add a set of default action scripts (see:
+  `nextcloud/*.sh`)
   need to automate this...
 - backup/restore
 - config manager -- save/use/..
