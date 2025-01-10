@@ -153,8 +153,8 @@ pctPushAssets $ID
 #fi
 
 # Colabora...
-# XXX should this be a function, callable separately.... 
-# 		...to update existing installations???
+# XXX should this be a function/script, callable separately, usefull to 
+# 		update existing installations???
 if ! [ -z $COLLABORA_OFFICE ] ; then
 	echo "# Collabora office..."
 	# see:
