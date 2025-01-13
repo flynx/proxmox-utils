@@ -56,7 +56,7 @@ TO=$2
 @ pct mount $TO
 # XXX this seems to fail...
 @ rsync -Aavxr \
-	/var/lib/lxc/$FROM/rootfs/var/www/nextcloud-data
+	/var/lib/lxc/$FROM/rootfs/var/www/nextcloud-data \
 	/var/lib/lxc/$TO/rootfs/var/www/nextcloud-data
 @ pct unmount $FROM
 @ pct unmount $TO
