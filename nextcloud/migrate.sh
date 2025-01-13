@@ -54,6 +54,8 @@ TO=$2
 # files...
 @ pct mount $FROM
 @ pct mount $TO
+# XXX .../rootfs/ dirs are empty, unmounted???
+# 		...check how tjis shold be mounted canonically
 @ rsync -Aavx \
 	/var/lib/lxc/$FROM/rootfs/var/www/nextcloud-data
 	/var/lib/lxc/$TO/rootfs/var/www/nextcloud-data
