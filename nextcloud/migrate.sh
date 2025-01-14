@@ -42,8 +42,8 @@ TO=$2
 @ lxc-attach $FROM -- turnkey-occ maintenance:mode --on
 @ lxc-attach $TO -- turnkey-occ maintenance:mode --on
 
-##FROM_INSTANCEID=$(lxc-attach $FROM -- turnkey-occ config:system:get instanceid)
-##TO_INSTANCEID=$(lxc-attach $TO -- turnkey-occ config:system:get instanceid)
+FROM_INSTANCEID=$(lxc-attach $FROM -- turnkey-occ config:system:get instanceid)
+TO_INSTANCEID=$(lxc-attach $TO -- turnkey-occ config:system:get instanceid)
 
 # XXX should we sleep here for a minute or 6 as is recommended in the docs???
 
@@ -64,10 +64,10 @@ TO=$2
 	/var/lib/lxc/$FROM/rootfs/var/www/nextcloud-data/ \
 	/var/lib/lxc/$TO/rootfs/var/www/nextcloud-data
 # migrate cache and background/logo images... (XXX TEST)
-##@ mv -f \
-##	/var/lib/lxc/$TO/rootfs/var/www/nextcloud-data/appdata_$FROM_INSTANCEID{,.bak}
-##@ mv -f \
-##	/var/lib/lxc/$TO/rootfs/var/www/nextcloud-data/appdata_{$FROM_INSTANCEID,$TO_INSTANCEID}
+@ mv -f \
+	/var/lib/lxc/$TO/rootfs/var/www/nextcloud-data/appdata_$FROM_INSTANCEID{,.bak}
+@ mv -f \
+	/var/lib/lxc/$TO/rootfs/var/www/nextcloud-data/appdata_{$FROM_INSTANCEID,$TO_INSTANCEID}
 @ pct unmount $FROM
 @ pct unmount $TO
 
