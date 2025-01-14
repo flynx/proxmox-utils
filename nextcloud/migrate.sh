@@ -65,7 +65,7 @@ TO_INSTANCEID=$(lxc-attach $TO -- turnkey-occ config:system:get instanceid)
 	/var/lib/lxc/$TO/rootfs/var/www/nextcloud-data
 # migrate cache and background/logo images... (XXX TEST)
 @ mv -f \
-	/var/lib/lxc/$TO/rootfs/var/www/nextcloud-data/appdata_$FROM_INSTANCEID{,.bak}
+	/var/lib/lxc/$TO/rootfs/var/www/nextcloud-data/appdata_$TO_INSTANCEID{,.bak}
 @ mv -f \
 	/var/lib/lxc/$TO/rootfs/var/www/nextcloud-data/appdata_{$FROM_INSTANCEID,$TO_INSTANCEID}
 @ pct unmount $FROM
