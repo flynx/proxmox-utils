@@ -70,7 +70,7 @@ APPDATA=/var/lib/lxc/$TO/rootfs/var/www/nextcloud-data/appdata_$TO_INSTANCEID
 @ mv -f \
 	/var/lib/lxc/$TO/rootfs/var/www/nextcloud-data/appdata_$FROM_INSTANCEID \
 	"$APPDATA"
-### XXX should we copy the whole thing???
+### XXX should we copy the whole thing or just the logo/background???
 ##FROM_THEME_DIR=/var/lib/lxc/$TO/rootfs/var/www/nextcloud-data/appdata_$FROM_INSTANCEID/theming/global/images
 ##TO_THEME_DIR=/var/lib/lxc/$TO/rootfs/var/www/nextcloud-data/appdata_$TO_INSTANCEID/theming/global/images
 ##if [ -e "$FROM_THEME_DIR" ] ; then
