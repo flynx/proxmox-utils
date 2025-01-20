@@ -5,6 +5,20 @@ cd $(dirname $0)
 PATH=$PATH:$(dirname "$(pwd)")
 
 
+# this can be:
+# 	full
+# 	list
+# 	<empty>
+MIGRATE_CACHE=full
+
+# NOTE: paths here are relative to appdata_<instance_id>/
+MIGRATE_CACHE_FILES=(
+	theming/global/images/background
+	theming/global/images/logo
+	theming/global/images/favicon.ico
+)
+
+
 #----------------------------------------------------------------------
 
 source ../.pct-helpers
@@ -50,10 +64,6 @@ TO=$2
 @@ "lxc-attach $FROM -- mysqldump --single-transaction nextcloud \
 	| lxc-attach $TO -- mysql nextcloud"
 
-# instance id's...
-FROM_INSTANCEID=$(lxc-attach $FROM -- turnkey-occ config:system:get instanceid)
-TO_INSTANCEID=$(lxc-attach $TO -- turnkey-occ config:system:get instanceid)
-
 
 # files...
 @ pct mount $FROM
@@ -63,30 +73,38 @@ TO_INSTANCEID=$(lxc-attach $TO -- turnkey-occ config:system:get instanceid)
 @ rsync -Aavx \
 	/var/lib/lxc/$FROM/rootfs/var/www/nextcloud-data/ \
 	/var/lib/lxc/$TO/rootfs/var/www/nextcloud-data
-# migrate theming and other instance files...
-APPDATA=/var/lib/lxc/$TO/rootfs/var/www/nextcloud-data/appdata_$TO_INSTANCEID
-[ -e "$APPDATA" ] \
-	&& mv -f "$APPDATA" "${APPDATA}.bak"
-@ mv -f \
-	/var/lib/lxc/$TO/rootfs/var/www/nextcloud-data/appdata_$FROM_INSTANCEID \
-	"$APPDATA"
-### XXX should we copy the whole thing or just the logo/background???
-### XXX a better way to do this is to maintain a list of files to move...
-##FROM_THEME_DIR=/var/lib/lxc/$TO/rootfs/var/www/nextcloud-data/appdata_$FROM_INSTANCEID/theming/global/images
-##TO_THEME_DIR=/var/lib/lxc/$TO/rootfs/var/www/nextcloud-data/appdata_$TO_INSTANCEID/theming/global/images
-##if [ -e "$FROM_THEME_DIR" ] ; then
-##	[ -e "$TO_THEME_DIR" ] \
-##		|| mkdir -p "$TO_THEME_DIR" 
-##	[ -e "$FROM_THEME_DIR"/logo ] \
-##		&& @ mv -f \
-##			"$FROM_THEME_DIR/logo" \
-##			"$TO_THEME_DIR"
-##	[ -e "$FROM_THEME_DIR"/background ] \
-##		&& @ mv -f \
-##			"$FROM_THEME_DIR/background" \
-##			"$TO_THEME_DIR"
-## XXX favicon.ico
-##fi
+
+# migrate cache...
+if [ -e "$FROM_THEME_DIR" ] ; then
+	# instance id's...
+	FROM_INSTANCEID=$(lxc-attach $FROM -- turnkey-occ config:system:get instanceid)
+	TO_INSTANCEID=$(lxc-attach $TO -- turnkey-occ config:system:get instanceid)
+
+	# full...
+	if [ "$MIGRATE_CACHE" == "full" ] ; then
+		# migrate theming and other instance files...
+		APPDATA=/var/lib/lxc/$TO/rootfs/var/www/nextcloud-data/appdata_$TO_INSTANCEID
+		[ -e "$APPDATA" ] \
+			&& mv -f "$APPDATA" "${APPDATA}.bak"
+		@ mv -f \
+			/var/lib/lxc/$TO/rootfs/var/www/nextcloud-data/appdata_$FROM_INSTANCEID \
+			"$APPDATA"
+
+	# list...
+	elif [ "$MIGRATE_CACHE" == "list" ] ; then
+		FROM_CACHE_DIR=/var/lib/lxc/$TO/rootfs/var/www/nextcloud-data/appdata_$FROM_INSTANCEID/
+		TO_CACHE_DIR=/var/lib/lxc/$TO/rootfs/var/www/nextcloud-data/appdata_$TO_INSTANCEID/
+		for f in "${MIGRATE_CACHE_FILES[@]}" ; do
+			from=${FROM_CACHE_DIR}/$f
+			to=${TO_CACHE_DIR}/$f
+			if ! [ -e "$from" ] ; then
+				continue
+			fi
+			mkdir -p "$(dirname "$to")"
+			cp -r "$from" "$to"
+		done
+	fi
+fi
 
 @ pct unmount $FROM
 @ pct unmount $TO
