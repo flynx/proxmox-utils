@@ -9,7 +9,7 @@ PATH=$PATH:$(dirname "$(pwd)")
 # 	full
 # 	list
 # 	<empty>
-MIGRATE_CACHE=full
+MIGRATE_CACHE=${MIGRATE_CACHE:-full}
 
 # NOTE: paths here are relative to appdata_<instance_id>/
 MIGRATE_CACHE_FILES=(
@@ -75,8 +75,10 @@ TO=$2
 	/var/lib/lxc/$TO/rootfs/var/www/nextcloud-data
 
 # migrate cache...
-if [ -e "$FROM_THEME_DIR" ] ; then
+if ! [ -z "$DRY_RUN" ] \
+		|| [ -e "$FROM_THEME_DIR" ] ; then
 	# instance id's...
+	# XXX not sure how to deal with $DRY_RUN here...
 	FROM_INSTANCEID=$(lxc-attach $FROM -- turnkey-occ config:system:get instanceid)
 	TO_INSTANCEID=$(lxc-attach $TO -- turnkey-occ config:system:get instanceid)
 
@@ -85,7 +87,7 @@ if [ -e "$FROM_THEME_DIR" ] ; then
 		# migrate theming and other instance files...
 		APPDATA=/var/lib/lxc/$TO/rootfs/var/www/nextcloud-data/appdata_$TO_INSTANCEID
 		[ -e "$APPDATA" ] \
-			&& mv -f "$APPDATA" "${APPDATA}.bak"
+			&& @ mv -f "$APPDATA" "${APPDATA}.bak"
 		@ mv -f \
 			/var/lib/lxc/$TO/rootfs/var/www/nextcloud-data/appdata_$FROM_INSTANCEID \
 			"$APPDATA"
@@ -97,11 +99,12 @@ if [ -e "$FROM_THEME_DIR" ] ; then
 		for f in "${MIGRATE_CACHE_FILES[@]}" ; do
 			from=${FROM_CACHE_DIR}/$f
 			to=${TO_CACHE_DIR}/$f
-			if ! [ -e "$from" ] ; then
+			if [ -z "$DRY_RUN" ] \
+					&& ! [ -e "$from" ] ; then
 				continue
 			fi
-			mkdir -p "$(dirname "$to")"
-			cp -r "$from" "$to"
+			@ mkdir -p "$(dirname "$to")"
+			@ cp -r "$from" "$to"
 		done
 	fi
 fi
