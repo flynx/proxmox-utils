@@ -78,7 +78,6 @@ TO=$2
 if ! [ -z "$DRY_RUN" ] \
 		|| [ -e "$FROM_THEME_DIR" ] ; then
 	# instance id's...
-	# XXX not sure how to deal with $DRY_RUN here...
 	FROM_INSTANCEID=${DRY_RUN:-$(lxc-attach $FROM -- turnkey-occ config:system:get instanceid)}
 	FROM_INSTANCEID=${DRY_RUN:+FROM}
 	TO_INSTANCEID=${DRY_RUN:-$(lxc-attach $TO -- turnkey-occ config:system:get instanceid)}
