@@ -79,8 +79,13 @@ if ! [ -z "$DRY_RUN" ] \
 		|| [ -e "$FROM_THEME_DIR" ] ; then
 	# instance id's...
 	# XXX not sure how to deal with $DRY_RUN here...
-	FROM_INSTANCEID=$(lxc-attach $FROM -- turnkey-occ config:system:get instanceid)
-	TO_INSTANCEID=$(lxc-attach $TO -- turnkey-occ config:system:get instanceid)
+	if [ -z $DRY_RUN ] ; then
+		FROM_INSTANCEID=$(lxc-attach $FROM -- turnkey-occ config:system:get instanceid)
+		TO_INSTANCEID=$(lxc-attach $TO -- turnkey-occ config:system:get instanceid)
+	else 
+		FROM_INSTANCEID=FROM
+		TO_INSTANCEID=TO
+	fi
 
 	# full...
 	if [ "$MIGRATE_CACHE" == "full" ] ; then
