@@ -85,6 +85,7 @@ APPDATA=/var/lib/lxc/$TO/rootfs/var/www/nextcloud-data/appdata_$TO_INSTANCEID
 ##		&& @ mv -f \
 ##			"$FROM_THEME_DIR/background" \
 ##			"$TO_THEME_DIR"
+## XXX favicon.ico
 ##fi
 
 @ pct unmount $FROM
