@@ -72,6 +72,7 @@ echo "# BACKUP: $DIR"
 # files...
 @ pct mount $ID
 # XXX should this be an incremental backup/sync??? (i.e. removing deleted files (to a dir))???
+# 		...ask user / option??
 @ rsync -Aavx /var/lib/lxc/$ID/rootfs/var/www/nextcloud-data .
 @ pct unmount $ID
 
