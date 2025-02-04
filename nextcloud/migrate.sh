@@ -5,11 +5,14 @@ cd $(dirname $0)
 PATH=$PATH:$(dirname "$(pwd)")
 
 
+#
 # this can be:
 # 	full
 # 	list
 # 	<empty>
-MIGRATE_CACHE=${MIGRATE_CACHE:-full}
+#
+# XXX shat should be the default?
+MIGRATE_CACHE=${MIGRATE_CACHE:-list}
 
 # NOTE: paths here are relative to appdata_<instance_id>/
 MIGRATE_CACHE_FILES=(
