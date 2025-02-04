@@ -51,6 +51,10 @@ OPTS_STAGE_2="\
 
 
 #----------------------------------------------------------------------
+# XXX do a version using alpune...
+# 		see:
+# 			https://wiki.alpinelinux.org/wiki/Gitea
+#
 
 echo "# Building config..."
 buildAssets

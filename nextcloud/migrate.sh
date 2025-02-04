@@ -49,6 +49,8 @@ fi
 FROM=$1
 TO=$2
 
+SLEEP=${SLEEP:-}
+
 
 # XXX should we build TO if it's not there???
 
@@ -60,6 +62,9 @@ TO=$2
 @ lxc-attach $TO -- turnkey-occ maintenance:mode --on
 
 # XXX should we sleep here for a minute or 6 as is recommended in the docs???
+[ -z "$SLEEP" ] \
+	|| [ $SLEEP <= 0  ] \
+	|| sleep $(( $SLEEP * 60 ))
 
 # sql
 @ lxc-attach $TO -- mysql -e "DROP DATABASE nextcloud"

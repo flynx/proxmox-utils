@@ -155,6 +155,8 @@ pctPushAssets $ID
 # Colabora...
 # XXX should this be a function/script, callable separately, usefull to 
 # 		update existing installations???
+# XXX can we make the backup/restore/migrate scripts generic and simply adapt
+# 		them for running in lxc, over ssh or locally???
 if ! [ -z $COLLABORA_OFFICE ] ; then
 	echo "# Collabora office..."
 	# see:
