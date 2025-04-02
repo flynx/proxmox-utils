@@ -5,7 +5,7 @@
 # - cleanup/destroy
 # - update
 # - backup
-# - pull config
+# - pull config / data (diff?)
 #
 #
 #----------------------------------------------------------------------
