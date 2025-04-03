@@ -6,6 +6,7 @@
 # - update
 # - backup
 # - pull config / data (diff?)
+#   - list of files / dirs to monitor (git?)
 #
 #
 #----------------------------------------------------------------------
